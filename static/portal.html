@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NamY V3 - Cổng Lựa Chọn Chế Độ</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/portal.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">🎓 NamY English Portal</div>
+        <div class="navbar-user">
+            <span>Xin chào, <span id="portal-student-name" style="color: #11caa0;"></span>!</span>
+            <button id="logout-btn" class="btn btn-sm btn-danger">Đăng xuất</button>
+        </div>
+    </div>
+    
+    <div class="portal-wrapper">
+        <div class="portal-header">
+            <h1>Hôm nay em muốn làm gì?</h1>
+            <p>Hãy lựa chọn một không gian để bắt đầu hành trình chinh phục Tiếng Anh nhé!</p>
+        </div>
+        
+        <div class="mode-grid">
+            <a href="#" id="card-learning" class="mode-card mode-learning">
+                <div class="mode-icon">📚</div>
+                <div class="mode-title">Không Gian Học Tập</div>
+                <div class="mode-desc">Video bài giảng, Lý thuyết & Flashcard Từ vựng</div>
+            </a>
+            
+            <a href="#" id="card-practice" class="mode-card mode-practice">
+                <div class="mode-icon">✍️</div>
+                <div class="mode-title">Đấu Trường Luyện Tập</div>
+                <div class="mode-desc">Bài tập trắc nghiệm & Thử thách kỹ năng nâng cao</div>
+            </a>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/portal.js"></script>
+</body>
+</html>

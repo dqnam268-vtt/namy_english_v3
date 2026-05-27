@@ -1,0 +1,192 @@
+/* ==========================================
+   NAMY V3: CORE STYLESHEET
+========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ==========================================
+   CẤU TRÚC CONTAINER & NAVBAR
+========================================== */
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.navbar {
+    background: #ffffff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-bottom: 3px solid #11caa0;
+}
+
+.navbar-brand {
+    font-size: 22px;
+    font-weight: 800;
+    color: #005088;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* ==========================================
+   KHỐI CARD (THẺ CHỨA NỘI DUNG)
+========================================== */
+.card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+}
+
+.card h3 {
+    color: #005088;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.card .subtitle {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* Lưới Admin */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* ==========================================
+   FORM & INPUT (NHẬP LIỆU)
+========================================== */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #334155;
+    font-size: 0.95rem;
+}
+
+input[type="text"], 
+input[type="password"], 
+input[type="number"], 
+select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #11caa0;
+    box-shadow: 0 0 0 3px rgba(17, 202, 160, 0.1);
+}
+
+/* ==========================================
+   HỆ THỐNG NÚT BẤM (BUTTONS)
+========================================== */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn:active { transform: scale(0.97); }
+.btn-block { width: 100%; }
+.btn-sm { padding: 8px 12px; font-size: 0.85rem; }
+
+/* Bảng màu nút bấm */
+.btn-primary { background: #005088; color: white; }
+.btn-primary:hover { background: #003d69; }
+
+.btn-success { background: #11caa0; color: white; }
+.btn-success:hover { background: #0ea885; }
+
+.btn-danger { background: #f87171; color: white; }
+.btn-danger:hover { background: #dc2626; }
+
+.btn-purple { background: #6366f1; color: white; }
+.btn-purple:hover { background: #4f46e5; }
+
+/* ==========================================
+   THÔNG BÁO VÀ TAB ADMIN CMS
+========================================== */
+.message {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.message.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.message.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* Tabs Navigation CMS */
+.tabs-nav {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 15px;
+}
+.tab-btn {
+    padding: 10px 25px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    color: #64748b;
+    transition: all 0.2s;
+}
+.tab-btn:hover { background: #e2e8f0; }
+.tab-btn.active {
+    background: #005088;
+    color: white;
+    border-color: #005088;
+    box-shadow: 0 4px 10px rgba(0, 80, 136, 0.2);
+}
+
+.cms-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
+.cms-panel.active { display: block; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

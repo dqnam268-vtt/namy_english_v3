@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NamY V3 - Trung Tâm Quản Trị Hệ Thống</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">⚙️ Trạm Quản Trị Lõi NamY V3</div>
+        <div class="navbar-user">
+            <span id="admin-name">Thầy Quản Trị</span>
+            <button id="logout-btn" class="btn btn-sm btn-danger">Đăng xuất</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('tab-dashboard')">📊 Bảng Điều Khiển Lớp Học</button>
+            <button class="tab-btn" onclick="switchTab('tab-cms')">📝 Biên Soạn Lộ Trình (CMS)</button>
+            <button class="tab-btn" onclick="switchTab('tab-preview')">👁️ Live Preview Nội Dung DB</button>
+        </div>
+
+        <div id="tab-dashboard" class="cms-panel active">
+            <div class="admin-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <h3>📈 Chỉ Số Vận Hành Tổng Quan</h3>
+                    <div style="display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap;">
+                        <div style="background: #eff6ff; padding: 25px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #bfdbfe;">
+                            <h2 id="stat-students" style="color: #1d4ed8; font-size: 2.5rem;">0</h2><p style="font-weight: bold; color: #3b82f6;">Học Sinh</p>
+                        </div>
+                        <div style="background: #fff7ed; padding: 25px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #fed7aa;">
+                            <h2 id="stat-weeks" style="color: #c2410c; font-size: 2.5rem;">0</h2><p style="font-weight: bold; color: #f97316;">Tuần Được Kích Hoạt</p>
+                        </div>
+                        <div style="background: #fdf4ff; padding: 25px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #f5d0fe;">
+                            <h2 id="stat-feedbacks" style="color: #a21caf; font-size: 2.5rem;">0</h2><p style="font-weight: bold; color: #d946ef;">Tin Nhắn Thắc Mắc</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-grid" style="margin-top: 25px;">
+                <div class="card">
+                    <h3>➕ Nhập Tài Khoản Bằng Excel</h3>
+                    <p class="subtitle">Định dạng: Tên_Tài_Khoản, Mật_Khẩu</p>
+                    <textarea id="bulk-users-data" rows="5" placeholder="student01, pass123&#10;student02, pass456"></textarea>
+                    <button id="btn-bulk-register" class="btn btn-primary btn-block" style="margin-top:15px;">🚀 Tạo Hàng Loạt</button>
+                    <div id="bulk-message" class="message" style="display:none; margin-top:10px;"></div>
+                </div>
+                
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <h3>📋 Theo Dõi Tiến Độ Lớp Học</h3>
+                        <button id="btn-export-excel" class="btn btn-success btn-sm">📥 Tải File Excel</button>
+                    </div>
+                    <div style="max-height: 250px; overflow-y:auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+                        <table id="users-table" style="width:100%; border-collapse:collapse; text-align: left;">
+                            <thead style="background:#f1f5f9; position: sticky; top: 0;">
+                                <tr>
+                                    <th style="padding:12px; border-bottom:2px solid #cbd5e1;">Tài Khoản</th>
+                                    <th style="padding:12px; border-bottom:2px solid #cbd5e1;">Tiến độ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top:25px;">
+                <h3>📬 Hòm Thư Từ Học Sinh</h3>
+                <div id="feedback-list" style="margin-top:15px; max-height:250px; overflow-y:auto;"></div>
+            </div>
+        </div>
+
+        <div id="tab-cms" class="cms-panel">
+            <div class="admin-grid">
+                
+                <div class="card">
+                    <h3>📖 Bước 1: Khởi Tạo Chủ Đề</h3>
+                    <p class="subtitle">Hệ thống sẽ TỰ ĐỘNG sinh Tuần học nếu chưa tồn tại.</p>
+                    
+                    <div class="form-group">
+                        <label>Chọn thứ tự Tuần</label>
+                        <select id="cms-week-select" style="background:#f1f5f9; font-weight:bold;"></select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: #0ea5e9;">Thuộc phân hệ nào?</label>
+                        <select id="exe-module-type" style="border-color: #0ea5e9;">
+                            <option value="learning">📚 Không Gian Học Tập (Lý thuyết, Video, Từ vựng)</option>
+                            <option value="practice">✍️ Đấu Trường Luyện Tập (Trắc nghiệm, Bài tập)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tên bài / Chủ đề hiển thị</label>
+                        <input type="text" id="exe-title" placeholder="VD: Welcome Video / Let's Practise">
+                    </div>
+                    
+                    <button id="add-exe-btn" class="btn btn-primary btn-block">Ghim Vào Lộ Trình</button>
+                    <div id="exe-message" class="message" style="display:none; margin-top:15px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>🛠️ Bước 2: Bơm Nội Dung Hoạt Động</h3>
+                    <p class="subtitle">Thêm nội dung trực tiếp vào các nhóm đã tạo bên Bước 1.</p>
+                    
+                    <div class="form-group">
+                        <label>Chọn nhóm đích</label>
+                        <select id="cms-exe-select" style="background:#f1f5f9;"></select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Loại công cụ</label>
+                        <select id="act-type" style="font-weight:bold; color:#1b5e20;">
+                            <option value="vocab">📚 Thẻ Từ Vựng (Flashcard)</option>
+                            <option value="quiz">✍️ Câu Hỏi Trắc Nghiệm</option>
+                            <option value="video">🎬 Gắn Link Video</option>
+                        </select>
+                    </div>
+
+                    <div id="dynamic-form-area" style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1; margin-bottom: 20px;">
+                        <div id="form-vocab">
+                            <input type="text" id="vocab-word" placeholder="Từ Tiếng Anh" style="margin-bottom:10px;">
+                            <input type="text" id="vocab-meaning" placeholder="Nghĩa Tiếng Việt">
+                        </div>
+                        <div id="form-quiz" style="display:none;">
+                            <input type="text" id="quiz-q" placeholder="Câu hỏi" style="margin-bottom:10px;">
+                            <input type="text" id="quiz-opts" placeholder="Đáp án (cách nhau dấu phẩy)" style="margin-bottom:10px;">
+                            <input type="text" id="quiz-ans" placeholder="Đáp án ĐÚNG" style="border: 2px solid #10b981;">
+                        </div>
+                        <div id="form-video" style="display:none;">
+                            <input type="text" id="video-url" placeholder="Link (Youtube, Audio...)">
+                        </div>
+                    </div>
+
+                    <button id="add-act-btn" class="btn btn-success btn-block">Lưu Dữ Liệu</button>
+                    <div id="act-message" class="message" style="display:none; margin-top:15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-preview" class="cms-panel">
+            <div class="card">
+                <h3>👁️ Ánh xạ Dữ Liệu Cơ Sở (Database Mapping)</h3>
+                <p class="subtitle">Khung này hiển thị cấu trúc ngầm của toàn bộ dữ liệu đang có trong máy chủ.</p>
+                <div id="preview-course-content" style="background: #1e293b; color: #f8fafc; padding: 25px; border-radius: 12px; font-family: monospace; overflow-y: auto; max-height: 500px;">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

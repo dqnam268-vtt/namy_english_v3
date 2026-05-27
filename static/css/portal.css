@@ -1,0 +1,117 @@
+/* ==========================================
+   NAMY V3: PORTAL STYLESHEET (CỔNG CHỌN CHẾ ĐỘ)
+========================================== */
+
+.portal-wrapper {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: radial-gradient(circle at top right, #e0f2fe, #f4f7f6);
+}
+
+.portal-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.portal-header h1 {
+    font-size: 3rem;
+    color: #005088;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.portal-header p {
+    font-size: 1.2rem;
+    color: #64748b;
+}
+
+/* ==========================================
+   GRID CHỨA 2 THẺ LỰA CHỌN
+========================================== */
+.mode-grid {
+    display: flex;
+    gap: 40px;
+    max-width: 1000px;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Base Card Style */
+.mode-card {
+    flex: 1;
+    min-width: 320px;
+    min-height: 380px;
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+/* Hiệu ứng nổi lên khi di chuột */
+.mode-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.15);
+}
+
+/* Phần nền giả (Decal chìm) */
+.mode-card::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transition: all 0.5s;
+}
+.mode-card:hover::after { transform: scale(1.5); }
+
+/* ==========================================
+   THEME 1: KHÔNG GIAN HỌC TẬP (LEARNING)
+========================================== */
+.mode-learning {
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+}
+
+/* ==========================================
+   THEME 2: ĐẤU TRƯỜNG LUYỆN TẬP (PRACTICE)
+========================================== */
+.mode-practice {
+    background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+/* Nội dung bên trong thẻ */
+.mode-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.mode-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.mode-desc {
+    font-size: 1.1rem;
+    font-weight: 600;
+    opacity: 0.9;
+}
