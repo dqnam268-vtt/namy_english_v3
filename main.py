@@ -262,7 +262,7 @@ def register_bulk(users_data: List[schemas.UserCreate], db: Session = Depends(ge
 # ==========================================
 # KHỞI TẠO DỮ LIỆU PHÂN LUỒNG MẪU (SEED)
 # ==========================================
-@app.post("/api/seed_data")
+@app.get("/api/seed_data")
 def seed_data(db: Session = Depends(get_db)):
     if db.query(models.Week).first():
         return {"message": "Dữ liệu cấu trúc tuần mẫu đã tồn tại!"}
