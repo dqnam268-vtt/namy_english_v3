@@ -3,37 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NamY V3 - Cổng Lựa Chọn Chế Độ</title>
+    <title>NamY English V3 - Cổng Học Tập</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="/static/css/portal.css">
+    <style>
+        .portal-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .course-header { text-align: center; margin-bottom: 40px; }
+        
+        .topic-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 8px solid #3b82f6; }
+        .exe-btn { display: inline-block; padding: 12px 18px; margin: 8px 8px 8px 0; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; border: 1px solid #cbd5e1; background: #f8fafc; }
+        .exe-btn:hover { background: #eff6ff; border-color: #3b82f6; color: #1d4ed8; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); }
+        .exe-learning { border-left: 4px solid #3b82f6; }
+        .exe-practice { border-left: 4px solid #f59e0b; }
+
+        /* Giao diện Modal Lý Thuyết (Flashcard) */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-content { background: #fff; width: 90%; max-width: 750px; border-radius: 16px; padding: 30px; position: relative; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #94a3b8; line-height: 1; transition: 0.2s; }
+        .close-btn:hover { color: #ef4444; transform: scale(1.1); }
+        
+        /* Giao diện từng thẻ Flashcard */
+        .theory-card { background: #f0f9ff; border: 1px solid #bae6fd; padding: 20px; margin-bottom: 18px; border-radius: 12px; transition: 0.2s; }
+        .theory-card:hover { border-color: #7dd3fc; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15); }
+        .theory-title { font-weight: 800; color: #0369a1; font-size: 1.2rem; margin-bottom: 10px; border-bottom: 2px dashed #bae6fd; padding-bottom: 10px;}
+        .theory-desc { color: #1e293b; line-height: 1.7; font-size: 1.05rem; }
+    </style>
 </head>
 <body>
     <div class="navbar">
         <div class="navbar-brand">🎓 NamY English Portal</div>
         <div class="navbar-user">
-            <span>Xin chào, <span id="portal-student-name" style="color: #11caa0;"></span>!</span>
+            <span id="student-name">Học sinh</span>
             <button id="logout-btn" class="btn btn-sm btn-danger">Đăng xuất</button>
         </div>
     </div>
-    
-    <div class="portal-wrapper">
-        <div class="portal-header">
-            <h1>Hôm nay em muốn làm gì?</h1>
-            <p>Hãy lựa chọn một không gian để bắt đầu hành trình chinh phục Tiếng Anh nhé!</p>
+
+    <div class="portal-container">
+        <div class="course-header">
+            <h1 style="color: #1e3a8a; font-size: 2.5rem; margin-bottom: 10px;">Lộ Trình Chinh Phục CPE</h1>
+            <p style="color: #64748b; font-size: 1.1rem;">Hãy hoàn thành Lý thuyết trước khi bước vào Đấu trường luyện tập nhé!</p>
         </div>
-        
-        <div class="mode-grid">
-            <a href="#" id="card-learning" class="mode-card mode-learning">
-                <div class="mode-icon">📚</div>
-                <div class="mode-title">Không Gian Học Tập</div>
-                <div class="mode-desc">Video bài giảng, Lý thuyết & Flashcard Từ vựng</div>
-            </a>
+
+        <div id="syllabus-container">
+            <div style="text-align:center; padding: 40px; color: #64748b;">⏳ Đang tải lộ trình học từ máy chủ...</div>
+        </div>
+    </div>
+
+    <div id="learning-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('learning-modal').style.display='none'">&times;</span>
+            <h2 id="learning-title" style="color: #1d4ed8; margin-top: 0; padding-right: 30px; border-bottom: 3px solid #bfdbfe; padding-bottom: 15px;">Tiêu Đề Bài Học</h2>
             
-            <a href="#" id="card-practice" class="mode-card mode-practice">
-                <div class="mode-icon">✍️</div>
-                <div class="mode-title">Đấu Trường Luyện Tập</div>
-                <div class="mode-desc">Bài tập trắc nghiệm & Thử thách kỹ năng nâng cao</div>
-            </a>
+            <div id="learning-content" style="margin-top: 15px; overflow-y: auto; padding-right: 15px; flex: 1;">
+                </div>
+            
+            <button class="btn btn-success btn-block" style="margin-top: 25px; padding: 15px; font-size: 1.1rem; border-radius: 10px;" onclick="document.getElementById('learning-modal').style.display='none'">✨ Em đã ghi nhớ phần này!</button>
         </div>
     </div>
 
