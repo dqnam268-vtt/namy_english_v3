@@ -29,18 +29,12 @@ class FeedbackCreate(BaseModel):
     user_id: int
 
 # ==========================================
-# 3. DỮ LIỆU TẠO LỘ TRÌNH (CMS V3)
+# 3. DỮ LIỆU TẠO LỘ TRÌNH (CMS V3 - 15 CHUYÊN ĐỀ)
 # ==========================================
-# LƯU Ý: Không còn WeekCreate vì NamY V3 áp dụng cơ chế "Tạo lười" (Lazy Creation).
-# Tuần sẽ tự động được sinh ra khi giáo viên thêm bài tập vào số thứ tự tuần đó.
-
 class ExerciseCreate(BaseModel):
     title: str
-    week_order: int  # Bản V3: Gửi số tuần (1 đến 40) thay vì mã week_id
+    topic_order: int  # Gửi số thứ tự chuyên đề (1 đến 15)
     order_num: int = 1
-    
-    # ĐIỂM CỐT LÕI V3: Phân loại để đưa vào màn hình tương ứng
-    # Giá trị: "learning" (Nội Dung Học) hoặc "practice" (Rèn Luyện Thực Hành)
     module_type: str = "learning" 
 
 class ActivityCreate(BaseModel):

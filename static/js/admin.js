@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: ADMIN CMS MODULE
+// NAMY V3: ADMIN CMS MODULE (15 TOPICS)
 // ==========================================
 
 let currentSyllabusData = [];
@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Chuyển Tab (Tương tác UI)
 window.switchTab = function(tabId) {
     document.querySelectorAll('.cms-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -25,14 +24,10 @@ window.switchTab = function(tabId) {
     if(tabId === 'tab-preview') updateLivePreview();
 };
 
-// ------------------------------------------
-// 1. DASHBOARD & THỐNG KÊ
-// ------------------------------------------
 async function initAdminDashboard() {
     fetchStats();
     fetchFeedbacks();
 
-    // Export Excel
     const exportBtn = document.getElementById("btn-export-excel");
     if (exportBtn) {
         exportBtn.addEventListener("click", () => {
@@ -51,7 +46,6 @@ async function initAdminDashboard() {
         });
     }
 
-    // Nhập hàng loạt Excel
     const bulkBtn = document.getElementById("btn-bulk-register");
     if (bulkBtn) {
         bulkBtn.addEventListener("click", async () => {
@@ -78,7 +72,11 @@ async function fetchStats() {
     const sRes = await apiFetch("/stats");
     if (sRes.ok) {
         document.getElementById("stat-students").innerText = sRes.data.total_students;
-        document.getElementById("stat-weeks").innerText = sRes.data.total_weeks;
+        
+        // Lưu ý: Cần đổi id trong file admin.html từ stat-weeks thành stat-topics
+        const statTopics = document.getElementById("stat-topics") || document.getElementById("stat-weeks");
+        if(statTopics) statTopics.innerText = sRes.data.total_topics;
+        
         document.getElementById("stat-feedbacks").innerText = sRes.data.total_feedbacks;
     }
 
@@ -99,19 +97,15 @@ async function fetchFeedbacks() {
     }
 }
 
-// ------------------------------------------
-// 2. CHỨC NĂNG CMS (BIÊN SOẠN BÀI TẬP V3)
-// ------------------------------------------
 function initAdminCMS() {
     loadCmsComboboxes();
 
-    // Xử lý tạo Nhóm bài tập (CÓ CHỌN MODULE TYPE)
     const addExeBtn = document.getElementById("add-exe-btn");
     if (addExeBtn) {
         addExeBtn.addEventListener("click", async () => {
-            const week_order = parseInt(document.getElementById("cms-week-select").value);
+            const selectId = document.getElementById("cms-topic-select") ? "cms-topic-select" : "cms-week-select";
+            const topic_order = parseInt(document.getElementById(selectId).value);
             const title = document.getElementById("exe-title").value.trim();
-            // Lấy giá trị radio/select phân loại Học tập vs Thực hành
             const moduleType = document.getElementById("exe-module-type") ? document.getElementById("exe-module-type").value : "learning";
             const msg = document.getElementById("exe-message");
 
@@ -120,7 +114,7 @@ function initAdminCMS() {
             addExeBtn.disabled = true;
             const res = await apiFetch("/add_exercise", "POST", { 
                 title, 
-                week_order, 
+                topic_order: topic_order, 
                 order_num: 1, 
                 module_type: moduleType 
             });
@@ -134,7 +128,6 @@ function initAdminCMS() {
         });
     }
 
-    // Đổi form nhập liệu
     const actTypeSelect = document.getElementById("act-type");
     if (actTypeSelect) {
         actTypeSelect.addEventListener("change", (e) => {
@@ -145,7 +138,6 @@ function initAdminCMS() {
         });
     }
 
-    // Đẩy hoạt động
     const addActBtn = document.getElementById("add-act-btn");
     if (addActBtn) {
         addActBtn.addEventListener("click", async () => {
@@ -177,7 +169,7 @@ function initAdminCMS() {
             if (res.ok) { 
                 showStatus(msg, "✅ Đã lưu hoạt động thành công!", "success");
                 document.querySelectorAll("#dynamic-form-area input").forEach(inp => inp.value = "");
-                loadCmsComboboxes(); // Tải lại để update Preview
+                loadCmsComboboxes();
             }
             addActBtn.disabled = false;
         });
@@ -185,38 +177,39 @@ function initAdminCMS() {
 }
 
 async function loadCmsComboboxes() {
-    // 1. Tự sinh 40 tuần cố định
-    const weekSelect = document.getElementById("cms-week-select");
-    if (weekSelect && weekSelect.options.length === 0) {
+    const selectId = document.getElementById("cms-topic-select") ? "cms-topic-select" : "cms-week-select";
+    const topicSelect = document.getElementById(selectId);
+    
+    if (topicSelect && topicSelect.options.length === 0) {
         let optionsHtml = "";
-        for(let i = 1; i <= 40; i++) optionsHtml += `<option value="${i}">WEEK ${i}</option>`;
-        weekSelect.innerHTML = optionsHtml;
-        weekSelect.addEventListener("change", () => populateExerciseCombobox(parseInt(weekSelect.value)));
+        // 15 Chủ đề CPE thay cho 40 tuần
+        for(let i = 1; i <= 15; i++) optionsHtml += `<option value="${i}">UNIT ${i}</option>`;
+        topicSelect.innerHTML = optionsHtml;
+        topicSelect.addEventListener("change", () => populateExerciseCombobox(parseInt(topicSelect.value)));
     }
 
-    // 2. Fetch toàn bộ cục Data để xử lý
-    const res = await apiFetch("/get_syllabus"); // Lấy tất cả, không lọc mode
+    const res = await apiFetch("/get_syllabus"); 
     if (res.ok) {
         currentSyllabusData = res.data;
-        const selectedWeekOrder = weekSelect ? parseInt(weekSelect.value) : 1;
-        populateExerciseCombobox(selectedWeekOrder);
+        const selectedTopicOrder = topicSelect ? parseInt(topicSelect.value) : 1;
+        populateExerciseCombobox(selectedTopicOrder);
         updateLivePreview();
     }
 }
 
-function populateExerciseCombobox(weekOrder) {
+function populateExerciseCombobox(topicOrder) {
     const exeSelect = document.getElementById("cms-exe-select");
     if (!exeSelect) return;
     
-    const targetWeek = currentSyllabusData.find(w => w.order_num === weekOrder);
-    if (targetWeek && targetWeek.exercises && targetWeek.exercises.length > 0) {
-        exeSelect.innerHTML = targetWeek.exercises.map(e => {
+    const targetTopic = currentSyllabusData.find(w => w.order_num === topicOrder);
+    if (targetTopic && targetTopic.exercises && targetTopic.exercises.length > 0) {
+        exeSelect.innerHTML = targetTopic.exercises.map(e => {
             const badge = e.module_type === "learning" ? "[Học]" : "[Luyện]";
             return `<option value="${e.id}">${badge} ${e.title}</option>`;
         }).join("");
         exeSelect.disabled = false;
     } else {
-        exeSelect.innerHTML = `<option value="">-- Tuần này chưa có nhóm bài tập --</option>`;
+        exeSelect.innerHTML = `<option value="">-- Chuyên đề này chưa có nhóm bài tập --</option>`;
         exeSelect.disabled = true;
     }
 }
@@ -224,15 +217,14 @@ function populateExerciseCombobox(weekOrder) {
 function updateLivePreview() {
     const box = document.getElementById("preview-course-content");
     if (!box) return;
-    // Khung Preview Admin hiện toàn bộ cả Học tập và Luyện tập
     box.innerHTML = "<p><i>*Đây là toàn bộ cấu trúc bài học đang có trong DB*</i></p>";
     
-    currentSyllabusData.forEach(week => {
+    currentSyllabusData.forEach(topic => {
         const sec = document.createElement("div");
         sec.style.border = "1px solid #ccc"; sec.style.padding = "10px"; sec.style.margin = "10px 0";
-        sec.innerHTML = `<strong>${week.title}</strong><br>`;
+        sec.innerHTML = `<strong>${topic.title}</strong><br>`;
         
-        week.exercises.forEach(exe => {
+        topic.exercises.forEach(exe => {
             const color = exe.module_type === "learning" ? "blue" : "orange";
             sec.innerHTML += `<div style="margin-left: 20px; color: ${color};">↳ [${exe.module_type}] ${exe.title} (${exe.activities.length} acts)</div>`;
         });

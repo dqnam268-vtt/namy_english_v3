@@ -11,11 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function initSyllabusPage() {
-    // 1. Phân tích URL để biết đang ở chế độ nào
     const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('mode') || 'learning'; // Mặc định là learning nếu mất params
+    const mode = urlParams.get('mode') || 'learning'; 
     
-    // 2. Đổi giao diện UI dựa theo Mode
     const pageTitle = document.getElementById("syllabus-page-title");
     const bodyTag = document.body;
     
@@ -27,7 +25,6 @@ async function initSyllabusPage() {
         bodyTag.classList.add("theme-practice");
     }
 
-    // 3. Gọi API lấy dữ liệu đã được Backend lọc sẵn
     const container = document.getElementById("course-content-area");
     if(!container) return;
     
@@ -41,25 +38,26 @@ async function initSyllabusPage() {
     }
 }
 
-function renderSyllabusHTML(weeksData, container) {
-    if (weeksData.length === 0) {
+function renderSyllabusHTML(topicsData, container) {
+    if (topicsData.length === 0) {
         container.innerHTML = "<div class='empty-state'>Chưa có bài học nào được thiết lập cho phân hệ này.</div>";
         return;
     }
     
     container.innerHTML = "";
-    weeksData.forEach(week => {
+    topicsData.forEach(topic => {
         const sec = document.createElement("div");
-        sec.className = "week-card";
-        sec.innerHTML = `<div class="week-header">⭐ ${week.title}</div>`;
+        // CSS đã được đổi thành topic thay vì week
+        sec.className = "topic-card"; 
+        sec.innerHTML = `<div class="topic-header">⭐ ${topic.title}</div>`; 
         
         const exeList = document.createElement("div");
         exeList.className = "exercise-list";
 
-        week.exercises.forEach(exe => {
+        topic.exercises.forEach(exe => {
             const btn = document.createElement("button");
             btn.className = "exercise-btn";
-            btn.innerHTML = `<span>${exe.title}</span> <span class="badge">${exe.activities.length} tasks</span>`;
+            btn.innerHTML = `<span>${exe.title}</span> <span class="badge">${exe.activities.length} nhiệm vụ</span>`;
             
             btn.onclick = () => {
                 let actList = exe.activities.map(a => `- ${a.type}`).join("\n");
@@ -73,14 +71,16 @@ function renderSyllabusHTML(weeksData, container) {
     });
 }
 
+// Hàm Feedback giữ nguyên 100% logic
 function setupFeedback() {
     const feedbackBtn = document.getElementById("feedback-btn");
     if (feedbackBtn) {
         feedbackBtn.addEventListener("click", async () => {
-            const userMsg = prompt("🎓 Em có thắc mắc gì? Hãy nhập câu hỏi để gửi Thầy:");
+            const userMsg = prompt("🎓 Em có thắc mắc gì? Hãy nhập câu hỏi để gửi Thầy Nam:");
             if (userMsg && userMsg.trim() !== "") {
                 const userId = localStorage.getItem("user_id") || 0;
                 const urlParams = new URLSearchParams(window.location.search);
+                // Hệ thống tự nhận diện học sinh đang hỏi từ phân hệ nào
                 const modeName = urlParams.get('mode') === "learning" ? "Phân hệ Học Tập" : "Phân hệ Luyện Tập";
 
                 const res = await apiFetch("/send_feedback", "POST", {
