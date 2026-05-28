@@ -1,0 +1,159 @@
+{
+  "topic_order": 1,
+  "module_type": "practice",
+  "exercise_title": "Unit 1.5: Error Identification & Word Usage",
+  "activities": [
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "He considered it a honour to receive such a prestigious award.",
+        "error_word": "a",
+        "correction": "an",
+        "answer": "He considered it an honour to receive such a prestigious award."
+      }
+    },
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "Surveys show that above 75% of the voters approve of the new law.",
+        "error_word": "above",
+        "correction": "over",
+        "answer": "Surveys show that over 75% of the voters approve of the new law."
+      }
+    },
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "The teacher was concerned from the student's progress.",
+        "error_word": "from",
+        "correction": "about",
+        "answer": "The teacher was concerned about the student's progress."
+      }
+    },
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "We managed to find cheap accommodations in Paris.",
+        "error_word": "accommodations",
+        "correction": "accommodation",
+        "answer": "We managed to find cheap accommodation in Paris."
+      }
+    },
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "He is not accustomed to deal with such a difficult client.",
+        "error_word": "deal",
+        "correction": "dealing",
+        "answer": "He is not accustomed to dealing with such a difficult client."
+      }
+    },
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "She was advised to seek professional advise from a lawyer.",
+        "error_word": "advise",
+        "correction": "advice",
+        "answer": "She was advised to seek professional advice from a lawyer."
+      }
+    },
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "The drugs had such a strong affect on her that they effected her ability to drive.",
+        "error_word": "affect",
+        "correction": "effect",
+        "answer": "The drugs had such a strong effect on her that they affected her ability to drive."
+      }
+    },
+    {
+      "type": "Tìm lỗi sai (Error Identification)",
+      "content": {
+        "question": "I was afraid to lose my bag among all the others.",
+        "error_word": "to lose",
+        "correction": "of losing",
+        "answer": "I was afraid of losing my bag among all the others."
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "The Prime Minister managed to ___ any tricky questions asked by the interviewer.",
+        "options": ["shirk", "duck", "dodge", "evade"],
+        "answer": "evade"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "Smoking has ___ his health; he coughs all the time.",
+        "options": ["swayed", "influenced", "affected", "impressed"],
+        "answer": "affected"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "I'm sure that living with a vegetarian has ___ me to eat less meat.",
+        "options": ["swayed", "affected", "influenced", "impressed"],
+        "answer": "influenced"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "Before I pay for the painting, I need proof that it is a(n) ___ Picasso, not a copy.",
+        "options": ["real", "authentic", "genuine", "natural"],
+        "answer": "authentic"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "If you have stomach-problems it is best to avoid ___ food.",
+        "options": ["wealthy", "affluent", "rich", "opulent"],
+        "answer": "rich"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "Brazil earns the majority of its income from one ___: coffee.",
+        "options": ["goods", "merchandise", "commodity", "ware"],
+        "answer": "commodity"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "He may appear to be ___ but in fact he doesn't mean what he says at all.",
+        "options": ["authentic", "genuine", "natural", "real"],
+        "answer": "genuine"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "It is important not to ___ the rules of the competition.",
+        "options": ["bend", "challenge", "subscribe", "pledge"],
+        "answer": "bend"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "The students ___ when they saw that their teacher had sat on some chewing gum.",
+        "options": ["chuckled", "sniggered", "guffawed", "beamed"],
+        "answer": "sniggered"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "The woman ___ with pleasure when she saw her daughter get off the plane.",
+        "options": ["beamed", "sneered", "smirked", "chuckled"],
+        "answer": "beamed"
+      }
+    }
+  ]
+}

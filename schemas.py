@@ -42,3 +42,16 @@ class ActivityCreate(BaseModel):
     activity_type: str
     content: Dict[str, Any]
     order_num: int = 1
+
+# ==========================================
+# 4. DỮ LIỆU NẠP NHANH TỪ FILE JSON (BULK UPLOAD)
+# ==========================================
+class BulkActivity(BaseModel):
+    type: str
+    content: Dict[str, Any]
+
+class BulkExerciseUpload(BaseModel):
+    topic_order: int
+    module_type: str
+    exercise_title: str
+    activities: List[BulkActivity]

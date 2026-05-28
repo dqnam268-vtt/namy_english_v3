@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: ADMIN CMS MODULE (15 TOPICS)
+// NAMY V3: ADMIN CMS MODULE (15 TOPICS + JSON)
 // ==========================================
 
 let currentSyllabusData = [];
@@ -73,7 +73,6 @@ async function fetchStats() {
     if (sRes.ok) {
         document.getElementById("stat-students").innerText = sRes.data.total_students;
         
-        // Lưu ý: Cần đổi id trong file admin.html từ stat-weeks thành stat-topics
         const statTopics = document.getElementById("stat-topics") || document.getElementById("stat-weeks");
         if(statTopics) statTopics.innerText = sRes.data.total_topics;
         
@@ -174,16 +173,67 @@ function initAdminCMS() {
             addActBtn.disabled = false;
         });
     }
+
+    // Xử lý nạp JSON hàng loạt (BƯỚC 3)
+    const btnUploadJson = document.getElementById("btn-upload-json");
+    if (btnUploadJson) {
+        btnUploadJson.addEventListener("click", () => {
+            const fileInput = document.getElementById("json-upload-file");
+            const msg = document.getElementById("json-message");
+            
+            if (fileInput.files.length === 0) {
+                return showStatus(msg, "Vui lòng chọn file JSON trước khi tải lên!", "error");
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    
+                    btnUploadJson.disabled = true;
+                    btnUploadJson.innerText = "Đang xử lý...";
+                    
+                    const res = await apiFetch("/upload_json", "POST", jsonData);
+                    if (res.ok) {
+                        showStatus(msg, `✅ ${res.data.message}`, "success");
+                        fileInput.value = ""; 
+                        loadCmsComboboxes(); 
+                    } else {
+                        showStatus(msg, "Lỗi khi nạp dữ liệu từ máy chủ", "error");
+                    }
+                    
+                    btnUploadJson.disabled = false;
+                    btnUploadJson.innerText = "Tải Lên Hệ Thống";
+                } catch (error) {
+                    showStatus(msg, "❌ File JSON không đúng định dạng. Vui lòng kiểm tra lại cấu trúc file!", "error");
+                    btnUploadJson.disabled = false;
+                    btnUploadJson.innerText = "Tải Lên Hệ Thống";
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
 }
 
 async function loadCmsComboboxes() {
     const selectId = document.getElementById("cms-topic-select") ? "cms-topic-select" : "cms-week-select";
     const topicSelect = document.getElementById(selectId);
     
+    // Tích hợp tên 15 Unit gốc của CPE
+    const cpeTopics = [
+        "1. Tenses", "2. Modal Verbs", "3. Infinitive / Gerund", "4. Passive Voice", 
+        "5. Reported Speech", "6. Adjectives / Adverbs / Comparisons", "7. Conditionals", 
+        "8. Wishes / Unreal Past", "9. Relatives", "10. Nouns", "11. Articles", 
+        "12. Causative Form", "13. Clauses", "14. Inversion", "15. Conjunctions / Punctuation"
+    ];
+
     if (topicSelect && topicSelect.options.length === 0) {
         let optionsHtml = "";
-        // 15 Chủ đề CPE thay cho 40 tuần
-        for(let i = 1; i <= 15; i++) optionsHtml += `<option value="${i}">UNIT ${i}</option>`;
+        cpeTopics.forEach((title, index) => {
+            optionsHtml += `<option value="${index + 1}">UNIT ${title}</option>`;
+        });
         topicSelect.innerHTML = optionsHtml;
         topicSelect.addEventListener("change", () => populateExerciseCombobox(parseInt(topicSelect.value)));
     }

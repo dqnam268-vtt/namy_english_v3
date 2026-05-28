@@ -115,6 +115,42 @@ def add_activity(act: schemas.ActivityCreate, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Đã đẩy hoạt động vào hệ thống!"}
 
+# --- API NẠP JSON MỚI ---
+@app.post("/api/upload_json")
+def upload_json(data: schemas.BulkExerciseUpload, db: Session = Depends(get_db)):
+    topic = db.query(models.Topic).filter(models.Topic.order_num == data.topic_order).first()
+    if not topic:
+        topic = models.Topic(title=f"UNIT {data.topic_order}", order_num=data.topic_order)
+        db.add(topic)
+        db.commit()
+        db.refresh(topic)
+        
+    new_exe = models.Exercise(
+        title=data.exercise_title,
+        topic_id=topic.topic_id,
+        module_type=data.module_type
+    )
+    db.add(new_exe)
+    db.commit()
+    db.refresh(new_exe)
+    
+    created_count = 0
+    for act in data.activities:
+        new_act = models.Activity(
+            exercise_id=new_exe.exercise_id,
+            activity_type=act.type,
+            content=act.content,
+            order_num=created_count + 1
+        )
+        db.add(new_act)
+        created_count += 1
+        
+    db.commit()
+    return {
+        "status": "success", 
+        "message": f"Tuyệt vời! Đã nạp thành công {created_count} câu hỏi vào '{data.exercise_title}'"
+    }
+
 @app.post("/api/send_feedback")
 def receive_feedback(feedback: schemas.FeedbackCreate, db: Session = Depends(get_db)):
     db.add(models.Feedback(user_id=feedback.user_id, message=feedback.message, location=feedback.location))

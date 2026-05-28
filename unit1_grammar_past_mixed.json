@@ -1,0 +1,202 @@
+{
+  "topic_order": 1,
+  "module_type": "practice",
+  "exercise_title": "Unit 1.2: Past & Mixed Tenses",
+  "activities": [
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "He ___ to the front of the stage, ___ a bow and ___ to the audience.",
+        "options": [
+          "walked / took / waved",
+          "was walking / took / waved",
+          "had walked / had taken / waved",
+          "walked / taking / waving"
+        ],
+        "answer": "walked / took / waved"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "While the patients ___ in the surgery, the doctor ___ with a complicated case.",
+        "options": [
+          "waited / dealt",
+          "were waiting / was dealing",
+          "had waited / was dealing",
+          "were waiting / had dealt"
+        ],
+        "answer": "were waiting / was dealing"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "I'm starving - I ___ breakfast over five hours ago.",
+        "options": [
+          "have",
+          "have had",
+          "had",
+          "was having"
+        ],
+        "answer": "had"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "While the soldiers ___ they did not realise that the enemy ___ a surprise attack.",
+        "options": [
+          "advanced / planned",
+          "were advancing / had planned",
+          "had advanced / was planning",
+          "were advancing / plan"
+        ],
+        "answer": "were advancing / had planned"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "By the time the police ___ the stolen car, the thieves ___ to France.",
+        "options": [
+          "located / had already escaped",
+          "had located / already escaped",
+          "were locating / escaped",
+          "located / already escaped"
+        ],
+        "answer": "located / had already escaped"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "Her clothes were wet because she ___ in the rain.",
+        "options": [
+          "was walking",
+          "walked",
+          "had been walking",
+          "has walked"
+        ],
+        "answer": "had been walking"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "Jim ___ for the past two months, and still ___ sure that he knew even half of what he should know.",
+        "options": [
+          "studied / did not feel",
+          "was studying / had not felt",
+          "had been studying / did not feel",
+          "has studied / was not feeling"
+        ],
+        "answer": "had been studying / did not feel"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "In fact he ___ so tired that he ___ asleep in the middle of writing the exam, and ___ only just in time to finish it.",
+        "options": [
+          "had been / had fallen / had woken up",
+          "was / fell / woke up",
+          "was / was falling / was waking up",
+          "was being / fell / woke up"
+        ],
+        "answer": "was / fell / woke up"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "In the last few years there ___ a marked change in our attitude towards environmental issues. It ___ with scientists revealing the truth.",
+        "options": [
+          "was / has started",
+          "has been / started",
+          "had been / was starting",
+          "is / starts"
+        ],
+        "answer": "has been / started"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "...revealing that a hole ___ to develop in the ozone layer; when people ___ to notice changes in the climate...",
+        "options": [
+          "began / had started",
+          "was beginning / were starting",
+          "had begun / started",
+          "has begun / start"
+        ],
+        "answer": "had begun / started"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "Those of us who ___ an aerosol spray will presumably think twice before using one again.",
+        "options": [
+          "ever used",
+          "had ever used",
+          "have ever used",
+          "were ever using"
+        ],
+        "answer": "have ever used"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "If it ___ for Louis, Joan ___ her trip to Paris last month.",
+        "options": [
+          "wasn't / would never survive",
+          "hadn't been / would never have survived",
+          "isn't / will never survive",
+          "hadn't been / never survived"
+        ],
+        "answer": "hadn't been / would never have survived"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "The first thing that ___ was that the hotel where she planned to stay ___ her booking...",
+        "options": [
+          "was happening / never received",
+          "had happened / had never received",
+          "happened / had never received",
+          "happened / never received"
+        ],
+        "answer": "happened / had never received"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "Then, as she ___ to get a taxi, someone on a motorbike ___ her bag.",
+        "options": [
+          "tried / was snatching",
+          "was trying / snatched",
+          "had tried / snatched",
+          "was trying / had snatched"
+        ],
+        "answer": "was trying / snatched"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "As her French was quite rusty, she ___ how to explain what ___.",
+        "options": [
+          "didn't know / had happened",
+          "hadn't known / happened",
+          "wasn't knowing / had happened",
+          "didn't know / was happening"
+        ],
+        "answer": "didn't know / had happened"
+      }
+    }
+  ]
+}
