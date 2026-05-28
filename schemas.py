@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Dict, Any
+from typing import List, Dict, Any, Optional
 
 # ==========================================
 # 1. DỮ LIỆU ĐĂNG NHẬP VÀ TÀI KHOẢN (AUTH)
