@@ -1,0 +1,91 @@
+{
+  "topic_order": 1,
+  "module_type": "learning",
+  "exercise_title": "Unit 1: Lý Thuyết Phần 1 (Present Tenses & Stative Verbs)",
+  "activities": [
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "1. Present Simple: Cách dùng cơ bản",
+        "meaning": "Diễn tả chân lý, sự thật hiển nhiên (Water boils at 100°C), thói quen ở hiện tại (He plays tennis every Tuesday), và lịch trình/thời gian biểu cố định (The train leaves at 8:00 AM)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "2. Present Simple: Cách dùng nâng cao (CPE)",
+        "meaning": "Dùng trong tường thuật kịch tính (dramatic narrative), bình luận thể thao, và nhận xét sách/phim. Vd: The striker passes the ball and scores! / In this book, the hero saves the world."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "3. Present Continuous: Tạm thời & Xu hướng",
+        "meaning": "Diễn tả hành động đang xảy ra lúc nói, tình huống tạm thời (He is staying at a hotel this week), hoặc những sự thay đổi/xu hướng đang diễn ra (The climate is getting warmer)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "4. Present Continuous: Thói quen gây khó chịu",
+        "meaning": "Đi kèm với 'always', 'constantly', 'continually' để phàn nàn về một thói quen xấu xảy ra quá thường xuyên. Vd: You are always interrupting me when I speak!"
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "5. Stative Verbs (Động từ trạng thái)",
+        "meaning": "Các động từ chỉ giác quan, nhận thức, cảm xúc, sở hữu (know, believe, like, belong, seem, own) thường KHÔNG dùng ở thì tiếp diễn. Vd: I know the answer (KHÔNG dùng: I am knowing)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "6. Stative Verbs: Ngoại lệ (THINK & HAVE)",
+        "meaning": "Think (tin rằng) -> HTĐ. Think (đang suy nghĩ) -> Tiếp diễn. / Have (sở hữu) -> HTĐ. Have (đang ăn/tắm...) -> Tiếp diễn. Vd: I think he is right / I am thinking about you."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "7. Stative Verbs: Ngoại lệ (SEE, TASTE, SMELL)",
+        "meaning": "See/Taste/Smell (năng lực giác quan/bản chất) -> HTĐ. (Hành động có chủ đích) -> Tiếp diễn. Vd: This soup tastes good (Vị ngon) / The chef is tasting the soup (Đang nếm)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "8. Present Perfect Simple: Trải nghiệm & Kết quả",
+        "meaning": "Nhấn mạnh KẾT QUẢ của hành động trong quá khứ ảnh hưởng đến hiện tại (I have lost my keys), hoặc trải nghiệm sống cho đến nay (thường đi với ever/never, so far, recently)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "9. Present Perfect Continuous: Quá trình liên tục",
+        "meaning": "Nhấn mạnh ĐỘ DÀI hoặc TÍNH LIÊN TỤC của hành động bắt đầu trong QK kéo dài đến hiện tại. Vd: She has been studying all day. (Hành động có thể chưa kết thúc)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "10. Present Perfect: Dấu hiệu nhận biết",
+        "meaning": "Thường đi kèm: just, already, yet (dùng trong câu phủ định/nghi vấn), lately, recently, for (khoảng thời gian), since (mốc thời gian)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "11. Phân biệt: Simple vs. Continuous (CPE)",
+        "meaning": "Hoàn thành Đơn nhấn mạnh SỐ LƯỢNG (I have written 5 letters). Hoàn thành Tiếp diễn nhấn mạnh QUÁ TRÌNH (I have been writing letters all morning)."
+      }
+    },
+    {
+      "type": "Học Từ Vựng (Vocabulary)",
+      "content": {
+        "word": "12. Phân biệt: Bằng chứng ở hiện tại",
+        "meaning": "Hoàn thành Tiếp diễn thường dùng khi có hệ quả rõ ràng nhìn thấy ở hiện tại. Vd: You look exhausted! Have you been working out? (Trông bạn rất mệt! Bạn vừa tập thể dục à?)."
+      }
+    }
+  ]
+}
