@@ -174,45 +174,60 @@ function initAdminCMS() {
         });
     }
 
-    // Xử lý nạp JSON hàng loạt (BƯỚC 3)
+    // Xử lý nạp JSON hàng loạt (BƯỚC 3 - HỖ TRỢ CHỌN NHIỀU FILE)
     const btnUploadJson = document.getElementById("btn-upload-json");
     if (btnUploadJson) {
-        btnUploadJson.addEventListener("click", () => {
+        btnUploadJson.addEventListener("click", async () => {
             const fileInput = document.getElementById("json-upload-file");
             const msg = document.getElementById("json-message");
             
             if (fileInput.files.length === 0) {
-                return showStatus(msg, "Vui lòng chọn file JSON trước khi tải lên!", "error");
+                return showStatus(msg, "Vui lòng chọn ít nhất 1 file JSON trước khi tải lên!", "error");
             }
 
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+            btnUploadJson.disabled = true;
+            btnUploadJson.innerText = `Đang xử lý ${fileInput.files.length} file...`;
+            
+            let successCount = 0;
+            let errorCount = 0;
 
-            reader.onload = async function(e) {
+            // Chạy vòng lặp xử lý từng file
+            for (let i = 0; i < fileInput.files.length; i++) {
+                const file = fileInput.files[i];
                 try {
-                    const jsonData = JSON.parse(e.target.result);
+                    // Đọc file dưới dạng Promise để đợi xử lý xong mới qua file tiếp theo
+                    const jsonData = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(JSON.parse(e.target.result));
+                        reader.onerror = e => reject(e);
+                        reader.readAsText(file);
+                    });
                     
-                    btnUploadJson.disabled = true;
-                    btnUploadJson.innerText = "Đang xử lý...";
-                    
+                    // Gửi lên server
                     const res = await apiFetch("/upload_json", "POST", jsonData);
                     if (res.ok) {
-                        showStatus(msg, `✅ ${res.data.message}`, "success");
-                        fileInput.value = ""; 
-                        loadCmsComboboxes(); 
+                        successCount++;
                     } else {
-                        showStatus(msg, "Lỗi khi nạp dữ liệu từ máy chủ", "error");
+                        errorCount++;
                     }
-                    
-                    btnUploadJson.disabled = false;
-                    btnUploadJson.innerText = "Tải Lên Hệ Thống";
                 } catch (error) {
-                    showStatus(msg, "❌ File JSON không đúng định dạng. Vui lòng kiểm tra lại cấu trúc file!", "error");
-                    btnUploadJson.disabled = false;
-                    btnUploadJson.innerText = "Tải Lên Hệ Thống";
+                    console.error("Lỗi đọc file: ", file.name);
+                    errorCount++;
                 }
-            };
-            reader.readAsText(file);
+            }
+
+            // Báo cáo kết quả cuối cùng
+            if (errorCount === 0) {
+                showStatus(msg, `✅ Tuyệt vời! Đã nạp thành công toàn bộ ${successCount} bài tập vào hệ thống!`, "success");
+            } else {
+                showStatus(msg, `⚠️ Hoàn tất: ${successCount} file thành công, ${errorCount} file bị lỗi.`, "error");
+            }
+
+            fileInput.value = ""; // Xóa dữ liệu input
+            loadCmsComboboxes();  // Tải lại preview DB
+            
+            btnUploadJson.disabled = false;
+            btnUploadJson.innerText = "Tải Lên Hệ Thống";
         });
     }
 }
