@@ -213,3 +213,29 @@ def seed_data(db: Session = Depends(get_db)):
     
     db.commit()
     return {"message": "Hệ thống đã bơm 15 Chuyên đề CPE thành công!"}
+
+# --- API TẠO 2 TÀI KHOẢN ĐỘC LẬP BỔ SUNG ---
+@app.get("/api/init_users")
+def init_users(db: Session = Depends(get_db)):
+    # 1. Khởi tạo tài khoản Quản trị (Admin)
+    admin_user = db.query(models.User).filter(models.User.username == "admin").first()
+    if not admin_user:
+        new_admin = models.User(
+            username="admin",
+            password_hash=hash_password("123456"),
+            role="admin"
+        )
+        db.add(new_admin)
+        
+    # 2. Khởi tạo tài khoản Học sinh (Student demo)
+    student_user = db.query(models.User).filter(models.User.username == "namy_student").first()
+    if not student_user:
+        new_student = models.User(
+            username="namy_student",
+            password_hash=hash_password("123456"),
+            role="student"
+        )
+        db.add(new_student)
+        
+    db.commit()
+    return {"message": "✅ Tuyệt vời! Đã nạp thành công 2 tài khoản: admin và namy_student"}
