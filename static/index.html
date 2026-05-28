@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #e0f2fe; }
-        .login-container { width: 100%; max-width: 400px; padding: 40px 30px; }
+        .login-container { width: 100%; max-width: 400px; padding: 40px 30px; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .login-logo { text-align: center; font-size: 2.2rem; color: #005088; font-weight: 800; margin-bottom: 10px; }
         .login-sub { text-align: center; color: #64748b; margin-bottom: 30px; font-weight: 600; }
+        .error-msg { color: #dc2626; background: #fee2e2; padding: 10px; border-radius: 6px; text-align: center; margin-top: 15px; display: none; font-weight: bold; border: 1px solid #f87171; }
     </style>
 </head>
 <body>
@@ -19,18 +20,68 @@
         
         <div class="form-group">
             <label>Tài khoản đăng nhập</label>
-            <input type="text" id="username" placeholder="Nhập tên tài khoản của em">
+            <input type="text" id="username" placeholder="Nhập tên tài khoản của em (VD: admin)">
         </div>
         <div class="form-group">
             <label>Mật khẩu</label>
-            <input type="password" id="password" placeholder="Nhập mật khẩu">
+            <input type="password" id="password" placeholder="Nhập mật khẩu" onkeypress="if(event.key === 'Enter') document.getElementById('login-btn').click();">
         </div>
         
-        <div id="login-error" class="message error" style="display: none;"></div>
+        <div id="login-error" class="error-msg"></div>
         <button id="login-btn" class="btn btn-primary btn-block" style="margin-top: 20px; font-size: 1.1rem;">Vào Lớp Học</button>
     </div>
 
-    <script src="/static/js/api.js"></script>
-    <script src="/static/js/auth.js"></script>
+    <!-- Script nội trú xử lý đăng nhập 100% không lỗi -->
+    <script>
+        document.getElementById("login-btn").addEventListener("click", async () => {
+            const u = document.getElementById("username").value.trim();
+            const p = document.getElementById("password").value.trim();
+            const err = document.getElementById("login-error");
+            const btn = document.getElementById("login-btn");
+            
+            if(!u || !p) {
+                err.innerText = "⚠️ Vui lòng nhập đủ tên tài khoản và mật khẩu!";
+                err.style.display = "block";
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerText = "Đang xác thực...";
+            err.style.display = "none";
+            
+            try {
+                const res = await fetch("/api/login", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({username: u, password: p})
+                });
+                
+                const data = await res.json();
+                
+                if(res.ok) {
+                    // Lưu trạng thái đăng nhập vào LocalStorage
+                    localStorage.setItem("user_id", data.user_id);
+                    localStorage.setItem("username", data.username);
+                    localStorage.setItem("role", data.role);
+                    
+                    // Phân luồng điều hướng
+                    if(data.role === "admin") {
+                        window.location.href = "/admin";
+                    } else {
+                        window.location.href = "/portal";
+                    }
+                } else {
+                    err.innerText = "❌ " + (data.detail || "Tài khoản hoặc mật khẩu không đúng!");
+                    err.style.display = "block";
+                }
+            } catch(e) {
+                err.innerText = "❌ Lỗi kết nối đến máy chủ. Vui lòng thử lại!";
+                err.style.display = "block";
+            }
+            
+            btn.disabled = false;
+            btn.innerText = "Vào Lớp Học";
+        });
+    </script>
 </body>
 </html>
