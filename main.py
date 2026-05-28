@@ -51,12 +51,21 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     except Exception:
         return False
 
-@app.post("/api/login", response_model=schemas.LoginResponse)
+# CHÉP ĐÈ HÀM LOGIN NÀY VÀO MAIN.PY
+@app.post("/api/login")
 def login(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.username == user_data.username).first()
     if not user or not verify_password(user_data.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Tên đăng nhập hoặc mật khẩu không chính xác")
-    return {"status": "success", "message": "Đăng nhập thành công", "user_id": user.user_id, "role": user.role, "username": user.username}
+    
+    # Trả về trực tiếp Dictionary để đảm bảo role được gửi qua
+    return {
+        "status": "success", 
+        "message": "Đăng nhập thành công", 
+        "user_id": user.user_id, 
+        "role": user.role, 
+        "username": user.username
+    }
 
 @app.post("/api/register")
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
