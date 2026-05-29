@@ -28,7 +28,7 @@ async function loadStudentSyllabus() {
 
 function renderSyllabus(syllabusData, container) {
     if (!syllabusData || syllabusData.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color: #64748b; font-size: 1.2rem;">Thầy Nam chưa mở khóa bài học nào.</p>`;
+        container.innerHTML = `<p style="text-align:center; color: #64748b; font-size: 1.2rem;">Thầy chưa mở khóa bài học nào.</p>`;
         return;
     }
 
@@ -40,15 +40,14 @@ function renderSyllabus(syllabusData, container) {
         
         if (topic.exercises && topic.exercises.length > 0) {
             
-            // THUẬT TOÁN SẮP XẾP: Lý thuyết lên trước -> Tên bài theo ABC/Số
+            // THUẬT TOÁN SẮP XẾP CHUẨN XÁC: Lý thuyết trước, Bài tập sau -> Xếp theo số thứ tự
             topic.exercises.sort((a, b) => {
                 if (a.module_type !== b.module_type) {
-                    return a.module_type === 'learning' ? -1 : 1; // Học luôn xếp trước Luyện
+                    return a.module_type === 'learning' ? -1 : 1; 
                 }
-                return a.title.localeCompare(b.title); // Sau đó xếp theo tên (Unit 1.1 -> 1.2...)
+                return a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}); 
             });
 
-            // Loại bỏ trùng lặp nếu thầy vô tình bấm nạp file nhiều lần
             const uniqueExercises = [];
             const titlesSeen = new Set();
             for (let exe of topic.exercises) {
@@ -110,7 +109,7 @@ window.openExercise = function(encodedData) {
         document.getElementById("learning-modal").style.display = "flex";
         
     } else {
-        // MỞ ĐẤU TRƯỜNG LUYỆN TẬP
+        // MỞ ĐẤU TRƯỜNG LUYỆN TẬP ĐÃ HOÀN THIỆN
         currentPracticeActs = exe.activities;
         currentQIndex = 0;
         currentScore = 0;
@@ -130,7 +129,6 @@ function renderCurrentQuestion() {
     btnNext.style.display = "none";
     
     if (currentQIndex >= currentPracticeActs.length) {
-        // KẾT THÚC BÀI TẬP
         container.innerHTML = `<div style="text-align:center; padding: 20px;">
             <h3 style="color:#059669; font-size: 1.8rem;">🎉 Chúc mừng em đã hoàn thành!</h3>
             <p style="font-size:1.3rem;">Điểm số: <b style="color:#dc2626;">${currentScore} / ${currentPracticeActs.length}</b></p>
@@ -150,7 +148,6 @@ function renderCurrentQuestion() {
         <span style="background:#e0f2fe; color:#0284c7; padding: 5px 12px; border-radius: 12px; font-size: 0.85rem; font-weight:bold;">Câu ${currentQIndex + 1} / ${currentPracticeActs.length} - ${type}</span>
     </div>`;
 
-    // Nếu là Trắc nghiệm (có mảng options)
     if (content.options && Array.isArray(content.options)) {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color:#1e293b; line-height: 1.5;">${content.question}</div>`;
         html += `<div style="display:flex; flex-direction:column; gap: 10px;">`;
@@ -161,7 +158,6 @@ function renderCurrentQuestion() {
         });
         html += `</div>`;
     } 
-    // Nếu là Điền từ / Viết lại câu (Tự luận)
     else {
         let promptText = content.question || content.original || "";
         let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626;">TỪ KHÓA BẮT BUỘC SỬ DỤNG: [ ${content.keyword} ]</div>` : "";
@@ -201,7 +197,6 @@ window.checkAnswer = function() {
         userAnswer = inputEl.value.trim();
     }
 
-    // Chấm điểm (không phân biệt hoa thường, bỏ khoảng trắng thừa)
     const isCorrect = userAnswer.toLowerCase().trim() === content.answer.toLowerCase().trim();
 
     if (isCorrect) {
