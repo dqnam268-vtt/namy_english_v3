@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: PORTAL MODULE (STUDENT INTERFACE)
+// NAMY V3: PORTAL MODULE (STUDENT INTERFACE + PROGRESS ENGINE)
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -38,7 +38,7 @@ async function loadStudentSyllabus() {
 
 function renderSyllabus(syllabusData, container) {
     if (!syllabusData || syllabusData.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color: #64748b; font-size: 1.2rem;">Thầy Nam chưa mở khóa bài học nào.</p>`;
+        container.innerHTML = `<p style="text-align:center; color: #64748b; font-size: 1.2rem;">Thầy chưa mở khóa bài học nào.</p>`;
         return;
     }
 
@@ -46,11 +46,11 @@ function renderSyllabus(syllabusData, container) {
     syllabusData.forEach(topic => {
         html += `<div class="topic-card">
             <h2 style="color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top:0;">⭐ ${topic.title}</h2>
-            <div style="margin-top: 15px;">`;
+            <div style="display: flex; flex-wrap: wrap; margin-top: 15px;">`;
         
         if (topic.exercises && topic.exercises.length > 0) {
             
-            // SẮP XẾP CHUẨN XÁC
+            // SẮP XẾP CHUẨN LỘ TRÌNH
             topic.exercises.sort((a, b) => {
                 if (a.module_type !== b.module_type) {
                     return a.module_type === 'learning' ? -1 : 1; 
@@ -58,7 +58,6 @@ function renderSyllabus(syllabusData, container) {
                 return a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}); 
             });
 
-            // LOẠI BỎ TRÙNG LẶP
             const uniqueExercises = [];
             const titlesSeen = new Set();
             for (let exe of topic.exercises) {
@@ -69,21 +68,61 @@ function renderSyllabus(syllabusData, container) {
             }
 
             uniqueExercises.forEach(exe => {
-                const badge = exe.module_type === "learning" ? "📖 Học Lý thuyết" : "✍️ Làm Bài tập";
                 const btnClass = exe.module_type === "learning" ? "exe-learning" : "exe-practice";
-                
-                // Mã hóa dữ liệu an toàn 100%
                 const exeDataStr = encodeURIComponent(JSON.stringify(exe)).replace(/'/g, "%27");
+                
+                let progressPercent = 0;
+                let progressText = "Chưa học";
+                let barClass = "progress-learning-bar";
+
+                // ĐO TIẾN ĐỘ PHẦN LÝ THUYẾT (LEARNING)
+                if (exe.module_type === "learning") {
+                    const isCompleted = localStorage.getItem(`namy_theory_${exe.id}`);
+                    if (isCompleted === "completed") {
+                        progressPercent = 100;
+                        progressText = "🚀 Đã học xong (100%)";
+                    } else {
+                        progressPercent = 0;
+                        progressText = "⏳ Chưa hoàn thành";
+                    }
+                    barClass = "progress-learning-bar";
+                } 
+                // ĐO TIẾN ĐỘ PHẦN BÀI TẬP (PRACTICE)
+                else {
+                    barClass = "progress-practice-bar";
+                    const savedProgress = localStorage.getItem(`namy_progress_${exe.id}`);
+                    if (savedProgress) {
+                        const parsed = JSON.parse(savedProgress);
+                        const totalQ = parsed.total || (exe.activities ? exe.activities.length : 1);
+                        
+                        // Tính toán tỉ lệ hoàn thành dựa trên số câu đã làm qua
+                        progressPercent = Math.round((parsed.qIndex / totalQ) * 100);
+                        if (progressPercent > 100) progressPercent = 100;
+
+                        if (parsed.isCompleted) {
+                            progressText = `✅ Đúng: ${parsed.score}/${totalQ} câu (100%)`;
+                        } else {
+                            progressText = `📝 Đang làm: Câu ${parsed.qIndex}/${totalQ} (${progressPercent}%)`;
+                        }
+                    } else {
+                        const totalQ = exe.activities ? exe.activities.length : 0;
+                        progressText = `✍️ Làm Bài tập (${totalQ} câu)`;
+                    }
+                }
                 
                 html += `
                     <div class="exe-btn ${btnClass}" onclick="openExercise('${exeDataStr}')">
-                        <span style="color: #64748b; font-size: 0.85rem; text-transform: uppercase;">${badge}</span><br>
-                        <span style="font-size: 1.1rem; color: #1e293b; display: inline-block; margin-top: 5px;">${exe.title}</span>
+                        <span style="font-size: 1.05rem; color: #1e293b; display: inline-block; min-height: 44px; line-height: 1.4;">${exe.title}</span>
+                        
+                        <div class="mini-progress-container">
+                            <div class="mini-progress-bar ${barClass}" style="width: ${progressPercent}%;"></div>
+                        </div>
+                        <span class="mini-progress-text">${progressText}</span>
                     </div>
                 `;
             });
         } else {
-            html += `<p style="color: #94a3b8; font-style: italic;">Chuyên đề này đang được Thầy biên soạn...</p>`;
+            html += `<p style="color: #94a3b8; font-style: italic; padding-left: 8px;">Chuyên đề này đang được biên soạn...</p>`;
         }
         html += `</div></div>`;
     });
@@ -91,13 +130,16 @@ function renderSyllabus(syllabusData, container) {
     container.innerHTML = html;
 }
 
+// BIẾN TOÀN CỤC CHO BÀI TẬP VÀ TIẾN ĐỘ
 let currentPracticeActs = [];
 let currentQIndex = 0;
 let currentScore = 0;
+let currentExeId = null; 
 
 window.openExercise = function(encodedData) {
     try {
         const exe = JSON.parse(decodeURIComponent(encodedData));
+        currentExeId = exe.id; 
         
         if (exe.module_type === "learning") {
             document.getElementById("learning-title").innerText = exe.title;
@@ -119,18 +161,57 @@ window.openExercise = function(encodedData) {
             });
 
             if (!hasContent) contentDiv.innerHTML = `<p style="text-align:center;">Nội dung lý thuyết đang được cập nhật.</p>`;
+            
+            // Cài đặt sự kiện hoàn thành bài học lý thuyết
+            const finishBtn = document.getElementById("btn-finish-theory");
+            if (finishBtn) {
+                finishBtn.onclick = () => {
+                    localStorage.setItem(`namy_theory_${currentExeId}`, "completed");
+                    document.getElementById("learning-modal").style.display = "none";
+                    loadStudentSyllabus(); // Tải lại cây thư mục để cập nhật thanh tiến độ lập tức
+                };
+            }
+
             document.getElementById("learning-modal").style.display = "flex";
             
         } else {
             currentPracticeActs = exe.activities;
-            currentQIndex = 0;
-            currentScore = 0;
-            document.getElementById("practice-title").innerText = exe.title;
+            
+            // KHÔI PHỤC TIẾN ĐỘ ĐANG LÀM DỞ TỪ LOCALSTORAGE
+            const savedProgress = localStorage.getItem(`namy_progress_${currentExeId}`);
+            if (savedProgress) {
+                const parsed = JSON.parse(savedProgress);
+                currentQIndex = parsed.qIndex;
+                currentScore = parsed.score;
+            } else {
+                currentQIndex = 0;
+                currentScore = 0;
+            }
+
+            document.getElementById("practice-title").innerHTML = `${exe.title} <button onclick="restartExercise()" style="float:right; font-size:0.9rem; padding: 6px 12px; cursor:pointer; border-radius:8px; border:1px solid #cbd5e1; background:#f1f5f9; color:#475569; font-weight:bold; transition: 0.2s;">🔄 Làm lại từ đầu</button>`;
             document.getElementById("practice-modal").style.display = "flex";
             renderCurrentQuestion();
         }
     } catch (error) {
         alert("⚠️ Lỗi phân tích dữ liệu bài học. Mã lỗi: " + error.message);
+    }
+};
+
+// HÀM GHI ĐÈ KHI LÀM LẠI BÀI TẬP (RESET TIẾN ĐỘ VỀ 0)
+window.restartExercise = function() {
+    if (confirm("Em có chắc chắn muốn làm lại từ đầu không? Điểm số cũ sẽ được ghi đè bằng kết quả mới.")) {
+        currentQIndex = 0;
+        currentScore = 0;
+        
+        // Lưu đè dữ liệu rỗng lên thay vì xóa hẳn để giữ trạng thái bắt đầu lại
+        localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({
+            qIndex: 0,
+            score: 0,
+            total: currentPracticeActs.length,
+            isCompleted: false
+        }));
+        
+        renderCurrentQuestion();
     }
 };
 
@@ -146,9 +227,22 @@ function renderCurrentQuestion() {
     if (currentQIndex >= currentPracticeActs.length) {
         container.innerHTML = `<div style="text-align:center; padding: 20px;">
             <h3 style="color:#059669; font-size: 1.8rem;">🎉 Chúc mừng em đã hoàn thành!</h3>
-            <p style="font-size:1.3rem;">Điểm số: <b style="color:#dc2626;">${currentScore} / ${currentPracticeActs.length}</b></p>
+            <p style="font-size:1.3rem;">Điểm số cuối cùng: <b style="color:#dc2626;">${currentScore} / ${currentPracticeActs.length}</b></p>
+            <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:20px; font-size: 1.1rem; padding: 10px 20px;">🔄 Làm Lại Bài Này</button>
             </div>`;
         btnCheck.style.display = "none";
+        
+        // GHI ĐÈ VÀ LƯU VĨNH VIỄN ĐIỂM SỐ CHÍNH XÁC KHI HOÀN THÀNH
+        if (currentExeId) {
+            localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({
+                qIndex: currentPracticeActs.length,
+                score: currentScore,
+                total: currentPracticeActs.length,
+                isCompleted: true
+            }));
+        }
+        
+        loadStudentSyllabus(); // Cập nhật thanh tiến độ đồ họa ngoài giao diện
         return;
     }
 
@@ -174,7 +268,7 @@ function renderCurrentQuestion() {
         html += `</div>`;
     } else {
         let promptText = content.question || content.original || "";
-        let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626;">TỪ KHÓA: [ ${content.keyword} ]</div>` : "";
+        let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626;">TỪ KHÓA BẮT BUỘC: [ ${content.keyword} ]</div>` : "";
         
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += hintHtml;
@@ -227,5 +321,16 @@ window.checkAnswer = function() {
 
 window.nextQuestion = function() {
     currentQIndex++;
+    
+    // GHI NHỚ TIẾN ĐỘ TẠM THỜI QUA TỪNG CÂU HỎI
+    if (currentExeId) {
+        localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({
+            qIndex: currentQIndex,
+            score: currentScore,
+            total: currentPracticeActs.length,
+            isCompleted: false
+        }));
+    }
+    
     renderCurrentQuestion();
 };
