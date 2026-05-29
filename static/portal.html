@@ -15,12 +15,12 @@
         .exe-learning { border-left: 4px solid #3b82f6; }
         .exe-practice { border-left: 4px solid #f59e0b; }
 
-        /* THIẾT KẾ ĐỒ HỌA THANH TIẾN ĐỘ CHO MỤC NHỎ */
+        /* THIẾT KẾ ĐỒ HỌA THANH TIẾN ĐỘ */
         .mini-progress-container { width: 100%; background-color: #e2e8f0; border-radius: 9999px; height: 6px; margin-top: 10px; overflow: hidden; }
         .mini-progress-bar { height: 100%; width: 0%; transition: width 0.3s ease; }
-        .progress-learning-bar { background-color: #3b82f6; } /* Xanh dương cho lý thuyết */
-        .progress-practice-bar { background-color: #10b981; } /* Xanh lá cho bài tập */
-        .mini-progress-text { font-size: 0.8rem; color: #64748b; margin-top: 6px; display: block; font-weight: normal; }
+        .progress-learning-bar { background-color: #3b82f6; } 
+        .progress-practice-bar { background-color: #10b981; } 
+        .mini-progress-text { font-size: 0.85rem; color: #64748b; margin-top: 6px; display: block; font-weight: normal; }
 
         /* Giao diện Modal chung */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
@@ -61,7 +61,7 @@
 
     <div id="learning-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('learning-modal').style.display='none'">&times;</span>
+            <span class="close-btn" onclick="closeLearningModal()">&times;</span>
             <h2 id="learning-title" style="color: #1d4ed8; margin-top: 0; padding-right: 30px; border-bottom: 3px solid #bfdbfe; padding-bottom: 15px;">Tiêu Đề Bài Học</h2>
             
             <div id="learning-content" style="margin-top: 15px; overflow-y: auto; padding-right: 15px; flex: 1;"></div>
@@ -72,7 +72,7 @@
 
     <div id="practice-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('practice-modal').style.display='none'">&times;</span>
+            <span class="close-btn" onclick="closePracticeModal()">&times;</span>
             <h2 id="practice-title" style="color: #b45309; margin-top: 0; padding-right: 30px; border-bottom: 3px solid #fde68a; padding-bottom: 15px;">Bài Tập</h2>
             
             <div id="practice-content" style="margin-top: 15px; overflow-y: auto; padding-right: 15px; flex: 1;"></div>
@@ -88,6 +88,6 @@
 
     <script src="/static/js/api.js"></script>
     <script src="/static/js/auth.js"></script>
-    <script src="/static/js/portal.js?v=v3_progress"></script>
+    <script src="/static/js/portal.js?v=v4_progress"></script>
 </body>
 </html>

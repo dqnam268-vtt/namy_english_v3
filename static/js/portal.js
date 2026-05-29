@@ -50,7 +50,6 @@ function renderSyllabus(syllabusData, container) {
         
         if (topic.exercises && topic.exercises.length > 0) {
             
-            // SẮP XẾP CHUẨN LỘ TRÌNH
             topic.exercises.sort((a, b) => {
                 if (a.module_type !== b.module_type) {
                     return a.module_type === 'learning' ? -1 : 1; 
@@ -75,19 +74,17 @@ function renderSyllabus(syllabusData, container) {
                 let progressText = "Chưa học";
                 let barClass = "progress-learning-bar";
 
-                // ĐO TIẾN ĐỘ PHẦN LÝ THUYẾT (LEARNING)
                 if (exe.module_type === "learning") {
                     const isCompleted = localStorage.getItem(`namy_theory_${exe.id}`);
                     if (isCompleted === "completed") {
                         progressPercent = 100;
-                        progressText = "🚀 Đã học xong (100%)";
+                        progressText = "🚀 Đã ghi nhớ (100%)";
                     } else {
                         progressPercent = 0;
-                        progressText = "⏳ Chưa hoàn thành";
+                        progressText = "⏳ Chưa xem";
                     }
                     barClass = "progress-learning-bar";
                 } 
-                // ĐO TIẾN ĐỘ PHẦN BÀI TẬP (PRACTICE)
                 else {
                     barClass = "progress-practice-bar";
                     const savedProgress = localStorage.getItem(`namy_progress_${exe.id}`);
@@ -95,14 +92,13 @@ function renderSyllabus(syllabusData, container) {
                         const parsed = JSON.parse(savedProgress);
                         const totalQ = parsed.total || (exe.activities ? exe.activities.length : 1);
                         
-                        // Tính toán tỉ lệ hoàn thành dựa trên số câu đã làm qua
                         progressPercent = Math.round((parsed.qIndex / totalQ) * 100);
                         if (progressPercent > 100) progressPercent = 100;
 
                         if (parsed.isCompleted) {
-                            progressText = `✅ Đúng: ${parsed.score}/${totalQ} câu (100%)`;
+                            progressText = `✅ Điểm: ${parsed.score}/${totalQ} câu (100%)`;
                         } else {
-                            progressText = `📝 Đang làm: Câu ${parsed.qIndex}/${totalQ} (${progressPercent}%)`;
+                            progressText = `📝 Đang làm: ${parsed.qIndex}/${totalQ} câu (${progressPercent}%)`;
                         }
                     } else {
                         const totalQ = exe.activities ? exe.activities.length : 0;
@@ -130,7 +126,18 @@ function renderSyllabus(syllabusData, container) {
     container.innerHTML = html;
 }
 
-// BIẾN TOÀN CỤC CHO BÀI TẬP VÀ TIẾN ĐỘ
+// CÁC HÀM XỬ LÝ ĐÓNG MODAL VÀ LÀM MỚI TIẾN ĐỘ
+window.closeLearningModal = function() {
+    document.getElementById('learning-modal').style.display = 'none';
+    loadStudentSyllabus(); // Tải lại cây thư mục để cập nhật thanh tiến độ lập tức
+};
+
+window.closePracticeModal = function() {
+    document.getElementById('practice-modal').style.display = 'none';
+    loadStudentSyllabus(); // Tải lại cây thư mục để cập nhật thanh tiến độ lập tức
+};
+
+
 let currentPracticeActs = [];
 let currentQIndex = 0;
 let currentScore = 0;
@@ -162,13 +169,11 @@ window.openExercise = function(encodedData) {
 
             if (!hasContent) contentDiv.innerHTML = `<p style="text-align:center;">Nội dung lý thuyết đang được cập nhật.</p>`;
             
-            // Cài đặt sự kiện hoàn thành bài học lý thuyết
             const finishBtn = document.getElementById("btn-finish-theory");
             if (finishBtn) {
                 finishBtn.onclick = () => {
                     localStorage.setItem(`namy_theory_${currentExeId}`, "completed");
-                    document.getElementById("learning-modal").style.display = "none";
-                    loadStudentSyllabus(); // Tải lại cây thư mục để cập nhật thanh tiến độ lập tức
+                    closeLearningModal(); // Gọi hàm đóng để tự làm mới
                 };
             }
 
@@ -177,7 +182,6 @@ window.openExercise = function(encodedData) {
         } else {
             currentPracticeActs = exe.activities;
             
-            // KHÔI PHỤC TIẾN ĐỘ ĐANG LÀM DỞ TỪ LOCALSTORAGE
             const savedProgress = localStorage.getItem(`namy_progress_${currentExeId}`);
             if (savedProgress) {
                 const parsed = JSON.parse(savedProgress);
@@ -197,13 +201,11 @@ window.openExercise = function(encodedData) {
     }
 };
 
-// HÀM GHI ĐÈ KHI LÀM LẠI BÀI TẬP (RESET TIẾN ĐỘ VỀ 0)
 window.restartExercise = function() {
     if (confirm("Em có chắc chắn muốn làm lại từ đầu không? Điểm số cũ sẽ được ghi đè bằng kết quả mới.")) {
         currentQIndex = 0;
         currentScore = 0;
         
-        // Lưu đè dữ liệu rỗng lên thay vì xóa hẳn để giữ trạng thái bắt đầu lại
         localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({
             qIndex: 0,
             score: 0,
@@ -232,7 +234,6 @@ function renderCurrentQuestion() {
             </div>`;
         btnCheck.style.display = "none";
         
-        // GHI ĐÈ VÀ LƯU VĨNH VIỄN ĐIỂM SỐ CHÍNH XÁC KHI HOÀN THÀNH
         if (currentExeId) {
             localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({
                 qIndex: currentPracticeActs.length,
@@ -242,7 +243,7 @@ function renderCurrentQuestion() {
             }));
         }
         
-        loadStudentSyllabus(); // Cập nhật thanh tiến độ đồ họa ngoài giao diện
+        loadStudentSyllabus(); 
         return;
     }
 
@@ -322,7 +323,6 @@ window.checkAnswer = function() {
 window.nextQuestion = function() {
     currentQIndex++;
     
-    // GHI NHỚ TIẾN ĐỘ TẠM THỜI QUA TỪNG CÂU HỎI
     if (currentExeId) {
         localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({
             qIndex: currentQIndex,
