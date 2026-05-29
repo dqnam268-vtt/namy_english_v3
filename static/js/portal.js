@@ -48,6 +48,7 @@ function renderSyllabus(syllabusData, container) {
                 return a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}); 
             });
 
+            // Loại bỏ trùng lặp hiển thị
             const uniqueExercises = [];
             const titlesSeen = new Set();
             for (let exe of topic.exercises) {
