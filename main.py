@@ -124,7 +124,7 @@ def add_activity(act: schemas.ActivityCreate, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Đã đẩy hoạt động vào hệ thống!"}
 
-# --- API NẠP JSON MỚI ---
+# --- API NẠP JSON NÂNG CẤP (TỰ ĐỘNG XÓA TRÙNG LẶP VÀ GHI ĐÈ) ---
 @app.post("/api/upload_json")
 def upload_json(data: schemas.BulkExerciseUpload, db: Session = Depends(get_db)):
     topic = db.query(models.Topic).filter(models.Topic.order_num == data.topic_order).first()
@@ -134,6 +134,19 @@ def upload_json(data: schemas.BulkExerciseUpload, db: Session = Depends(get_db))
         db.commit()
         db.refresh(topic)
         
+    # TÍNH NĂNG MỚI: Dọn dẹp các bài tập bị trùng lặp (Cùng Chủ đề & Cùng Tên)
+    existing_exes = db.query(models.Exercise).filter(
+        models.Exercise.topic_id == topic.topic_id,
+        models.Exercise.title == data.exercise_title
+    ).all()
+    
+    # Nếu tìm thấy bản cũ, xóa toàn bộ hoạt động bên trong và xóa bài tập đó
+    for old_exe in existing_exes:
+        db.query(models.Activity).filter(models.Activity.exercise_id == old_exe.exercise_id).delete()
+        db.delete(old_exe)
+    db.commit() # Chốt lệnh xóa
+    
+    # Bắt đầu tạo mới duy nhất 1 bản chuẩn
     new_exe = models.Exercise(
         title=data.exercise_title,
         topic_id=topic.topic_id,
@@ -157,7 +170,7 @@ def upload_json(data: schemas.BulkExerciseUpload, db: Session = Depends(get_db))
     db.commit()
     return {
         "status": "success", 
-        "message": f"Tuyệt vời! Đã nạp thành công {created_count} câu hỏi vào '{data.exercise_title}'"
+        "message": f"Tuyệt vời! Đã dọn dẹp trùng lặp và nạp chuẩn {created_count} câu hỏi vào '{data.exercise_title}'"
     }
 
 @app.post("/api/send_feedback")
