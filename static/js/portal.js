@@ -95,14 +95,15 @@ function renderSyllabus(syllabusData, container) {
                         progressPercent = Math.round((parsed.qIndex / totalQ) * 100);
                         if (progressPercent > 100) progressPercent = 100;
 
+                        // Tinh chỉnh văn bản hiển thị theo Điểm Số (Score) thay vì qIndex
                         if (parsed.isCompleted) {
-                            progressText = `✅ Điểm: ${parsed.score}/${totalQ} câu (100%)`;
+                            progressText = `✅ Hoàn thành: Đúng ${parsed.score}/${totalQ} câu (100%)`;
                         } else {
-                            progressText = `📝 Đang làm: ${parsed.qIndex}/${totalQ} câu (${progressPercent}%)`;
+                            progressText = `📝 Đang làm: Đúng ${parsed.score}/${totalQ} câu (${progressPercent}%)`;
                         }
                     } else {
                         const totalQ = exe.activities ? exe.activities.length : 0;
-                        progressText = `✍️ Làm Bài tập (${totalQ} câu)`;
+                        progressText = `✍️ Làm Bài tập (0/${totalQ} câu)`;
                     }
                 }
                 
@@ -129,12 +130,12 @@ function renderSyllabus(syllabusData, container) {
 // CÁC HÀM XỬ LÝ ĐÓNG MODAL VÀ LÀM MỚI TIẾN ĐỘ
 window.closeLearningModal = function() {
     document.getElementById('learning-modal').style.display = 'none';
-    loadStudentSyllabus(); // Tải lại cây thư mục để cập nhật thanh tiến độ lập tức
+    loadStudentSyllabus(); 
 };
 
 window.closePracticeModal = function() {
     document.getElementById('practice-modal').style.display = 'none';
-    loadStudentSyllabus(); // Tải lại cây thư mục để cập nhật thanh tiến độ lập tức
+    loadStudentSyllabus(); 
 };
 
 
@@ -173,7 +174,7 @@ window.openExercise = function(encodedData) {
             if (finishBtn) {
                 finishBtn.onclick = () => {
                     localStorage.setItem(`namy_theory_${currentExeId}`, "completed");
-                    closeLearningModal(); // Gọi hàm đóng để tự làm mới
+                    closeLearningModal(); 
                 };
             }
 
