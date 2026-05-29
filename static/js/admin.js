@@ -174,7 +174,7 @@ function initAdminCMS() {
         });
     }
 
-    // Xử lý nạp JSON hàng loạt (BƯỚC 3 - HỖ TRỢ CHỌN NHIỀU FILE)
+    // Xử lý nạp JSON hàng loạt (BƯỚC 3)
     const btnUploadJson = document.getElementById("btn-upload-json");
     if (btnUploadJson) {
         btnUploadJson.addEventListener("click", async () => {
@@ -232,13 +232,12 @@ function initAdminCMS() {
     if (btnDelTopic) {
         btnDelTopic.addEventListener("click", async () => {
             const delSelect = document.getElementById("delete-topic-select");
-            if (!delSelect) return;
+            if (!delSelect || !delSelect.value) return;
             
             const topicOrder = delSelect.value;
             const topicName = delSelect.options[delSelect.selectedIndex].text;
             const msg = document.getElementById("delete-message");
             
-            // Cảnh báo chống bấm nhầm
             const confirmDelete = confirm(`⚠️ THẦY CÓ CHẮC CHẮN MUỐN XÓA TOÀN BỘ DỮ LIỆU CỦA ${topicName} KHÔNG?\n\nHành động này sẽ xóa sạch Lý thuyết và Bài tập của Unit này để làm lại từ đầu!`);
             
             if (!confirmDelete) return;
@@ -247,13 +246,12 @@ function initAdminCMS() {
             btnDelTopic.innerText = "Đang xử lý...";
             
             try {
-                // Sử dụng fetch gốc để gọi phương thức DELETE
                 const res = await fetch(`/api/clear_topic/${topicOrder}`, { method: "DELETE" });
                 const data = await res.json();
                 
                 if (res.ok) {
                     showStatus(msg, `✅ ${data.message}`, "success");
-                    loadCmsComboboxes(); // Tự động làm mới khung Preview
+                    loadCmsComboboxes(); 
                 } else {
                     showStatus(msg, `❌ Lỗi: ${data.detail}`, "error");
                 }
@@ -270,6 +268,7 @@ function initAdminCMS() {
 async function loadCmsComboboxes() {
     const selectId = document.getElementById("cms-topic-select") ? "cms-topic-select" : "cms-week-select";
     const topicSelect = document.getElementById(selectId);
+    const delSelect = document.getElementById("delete-topic-select"); // Lấy ô dropdown Xóa
     
     // Tích hợp tên 15 Unit gốc của CPE
     const cpeTopics = [
@@ -279,18 +278,20 @@ async function loadCmsComboboxes() {
         "12. Causative Form", "13. Clauses", "14. Inversion", "15. Conjunctions / Punctuation"
     ];
 
+    let optionsHtml = "";
+    cpeTopics.forEach((title, index) => {
+        optionsHtml += `<option value="${index + 1}">UNIT ${title}</option>`;
+    });
+
+    // Bơm danh sách Unit vào ô Bước 1 và 2
     if (topicSelect && topicSelect.options.length === 0) {
-        let optionsHtml = "";
-        cpeTopics.forEach((title, index) => {
-            optionsHtml += `<option value="${index + 1}">UNIT ${title}</option>`;
-        });
-        
         topicSelect.innerHTML = optionsHtml;
         topicSelect.addEventListener("change", () => populateExerciseCombobox(parseInt(topicSelect.value)));
-        
-        // Cập nhật cho Combobox Xóa Dữ Liệu ở Bước 4
-        const delSelect = document.getElementById("delete-topic-select");
-        if (delSelect) delSelect.innerHTML = optionsHtml;
+    }
+    
+    // Bơm danh sách Unit trực tiếp vào ô Bước 4 (Chống lỗi trống trơn)
+    if (delSelect && delSelect.options.length === 0) {
+        delSelect.innerHTML = optionsHtml;
     }
 
     const res = await apiFetch("/get_syllabus"); 
