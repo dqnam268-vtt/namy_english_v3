@@ -261,3 +261,24 @@ def init_users(db: Session = Depends(get_db)):
         
     db.commit()
     return {"message": "✅ Tuyệt vời! Đã nạp thành công 2 tài khoản: admin và namy_student"}
+
+# --- API DỌN DẸP SẠCH DỮ LIỆU CỦA 1 UNIT ---
+@app.delete("/api/clear_topic/{topic_order}")
+def clear_topic(topic_order: int, db: Session = Depends(get_db)):
+    topic = db.query(models.Topic).filter(models.Topic.order_num == topic_order).first()
+    if not topic:
+        raise HTTPException(status_code=404, detail="Không tìm thấy Unit này trong hệ thống!")
+    
+    # Tìm toàn bộ bài tập thuộc Unit này
+    exercises = db.query(models.Exercise).filter(models.Exercise.topic_id == topic.topic_id).all()
+    
+    deleted_count = 0
+    for exe in exercises:
+        # Xóa sạch các câu hỏi/thẻ từ vựng con bên trong bài tập
+        db.query(models.Activity).filter(models.Activity.exercise_id == exe.exercise_id).delete()
+        # Xóa khung bài tập
+        db.delete(exe)
+        deleted_count += 1
+        
+    db.commit()
+    return {"status": "success", "message": f"Đã dọn dẹp sạch sẽ {deleted_count} nhóm bài tập của UNIT {topic_order}!"}

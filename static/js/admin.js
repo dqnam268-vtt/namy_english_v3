@@ -191,11 +191,9 @@ function initAdminCMS() {
             let successCount = 0;
             let errorCount = 0;
 
-            // Chạy vòng lặp xử lý từng file
             for (let i = 0; i < fileInput.files.length; i++) {
                 const file = fileInput.files[i];
                 try {
-                    // Đọc file dưới dạng Promise để đợi xử lý xong mới qua file tiếp theo
                     const jsonData = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
                         reader.onload = e => resolve(JSON.parse(e.target.result));
@@ -203,7 +201,6 @@ function initAdminCMS() {
                         reader.readAsText(file);
                     });
                     
-                    // Gửi lên server
                     const res = await apiFetch("/upload_json", "POST", jsonData);
                     if (res.ok) {
                         successCount++;
@@ -216,18 +213,56 @@ function initAdminCMS() {
                 }
             }
 
-            // Báo cáo kết quả cuối cùng
             if (errorCount === 0) {
                 showStatus(msg, `✅ Tuyệt vời! Đã nạp thành công toàn bộ ${successCount} bài tập vào hệ thống!`, "success");
             } else {
                 showStatus(msg, `⚠️ Hoàn tất: ${successCount} file thành công, ${errorCount} file bị lỗi.`, "error");
             }
 
-            fileInput.value = ""; // Xóa dữ liệu input
-            loadCmsComboboxes();  // Tải lại preview DB
+            fileInput.value = ""; 
+            loadCmsComboboxes();  
             
             btnUploadJson.disabled = false;
             btnUploadJson.innerText = "Tải Lên Hệ Thống";
+        });
+    }
+
+    // XỬ LÝ NÚT XÓA DỮ LIỆU (BƯỚC 4)
+    const btnDelTopic = document.getElementById("btn-delete-topic");
+    if (btnDelTopic) {
+        btnDelTopic.addEventListener("click", async () => {
+            const delSelect = document.getElementById("delete-topic-select");
+            if (!delSelect) return;
+            
+            const topicOrder = delSelect.value;
+            const topicName = delSelect.options[delSelect.selectedIndex].text;
+            const msg = document.getElementById("delete-message");
+            
+            // Cảnh báo chống bấm nhầm
+            const confirmDelete = confirm(`⚠️ THẦY CÓ CHẮC CHẮN MUỐN XÓA TOÀN BỘ DỮ LIỆU CỦA ${topicName} KHÔNG?\n\nHành động này sẽ xóa sạch Lý thuyết và Bài tập của Unit này để làm lại từ đầu!`);
+            
+            if (!confirmDelete) return;
+
+            btnDelTopic.disabled = true;
+            btnDelTopic.innerText = "Đang xử lý...";
+            
+            try {
+                // Sử dụng fetch gốc để gọi phương thức DELETE
+                const res = await fetch(`/api/clear_topic/${topicOrder}`, { method: "DELETE" });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    showStatus(msg, `✅ ${data.message}`, "success");
+                    loadCmsComboboxes(); // Tự động làm mới khung Preview
+                } else {
+                    showStatus(msg, `❌ Lỗi: ${data.detail}`, "error");
+                }
+            } catch (error) {
+                showStatus(msg, "❌ Không thể kết nối tới máy chủ!", "error");
+            }
+            
+            btnDelTopic.disabled = false;
+            btnDelTopic.innerText = "Xóa Sạch Dữ Liệu";
         });
     }
 }
@@ -249,8 +284,13 @@ async function loadCmsComboboxes() {
         cpeTopics.forEach((title, index) => {
             optionsHtml += `<option value="${index + 1}">UNIT ${title}</option>`;
         });
+        
         topicSelect.innerHTML = optionsHtml;
         topicSelect.addEventListener("change", () => populateExerciseCombobox(parseInt(topicSelect.value)));
+        
+        // Cập nhật cho Combobox Xóa Dữ Liệu ở Bước 4
+        const delSelect = document.getElementById("delete-topic-select");
+        if (delSelect) delSelect.innerHTML = optionsHtml;
     }
 
     const res = await apiFetch("/get_syllabus"); 
