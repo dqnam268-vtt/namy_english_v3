@@ -1,91 +1,168 @@
 {
-  "topic_order": 1,
-  "module_type": "learning",
-  "exercise_title": "Unit 1: Lý Thuyết Phần 1 (Present Tenses & Stative Verbs)",
-  "activities": [
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "1. Present Simple: Cách dùng cơ bản",
-        "meaning": "Diễn tả chân lý, sự thật hiển nhiên (Water boils at 100°C), thói quen ở hiện tại (He plays tennis every Tuesday), và lịch trình/thời gian biểu cố định (The train leaves at 8:00 AM)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "2. Present Simple: Cách dùng nâng cao (CPE)",
-        "meaning": "Dùng trong tường thuật kịch tính (dramatic narrative), bình luận thể thao, và nhận xét sách/phim. Vd: The striker passes the ball and scores! / In this book, the hero saves the world."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "3. Present Continuous: Tạm thời & Xu hướng",
-        "meaning": "Diễn tả hành động đang xảy ra lúc nói, tình huống tạm thời (He is staying at a hotel this week), hoặc những sự thay đổi/xu hướng đang diễn ra (The climate is getting warmer)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "4. Present Continuous: Thói quen gây khó chịu",
-        "meaning": "Đi kèm với 'always', 'constantly', 'continually' để phàn nàn về một thói quen xấu xảy ra quá thường xuyên. Vd: You are always interrupting me when I speak!"
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "5. Stative Verbs (Động từ trạng thái)",
-        "meaning": "Các động từ chỉ giác quan, nhận thức, cảm xúc, sở hữu (know, believe, like, belong, seem, own) thường KHÔNG dùng ở thì tiếp diễn. Vd: I know the answer (KHÔNG dùng: I am knowing)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "6. Stative Verbs: Ngoại lệ (THINK & HAVE)",
-        "meaning": "Think (tin rằng) -> HTĐ. Think (đang suy nghĩ) -> Tiếp diễn. / Have (sở hữu) -> HTĐ. Have (đang ăn/tắm...) -> Tiếp diễn. Vd: I think he is right / I am thinking about you."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "7. Stative Verbs: Ngoại lệ (SEE, TASTE, SMELL)",
-        "meaning": "See/Taste/Smell (năng lực giác quan/bản chất) -> HTĐ. (Hành động có chủ đích) -> Tiếp diễn. Vd: This soup tastes good (Vị ngon) / The chef is tasting the soup (Đang nếm)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "8. Present Perfect Simple: Trải nghiệm & Kết quả",
-        "meaning": "Nhấn mạnh KẾT QUẢ của hành động trong quá khứ ảnh hưởng đến hiện tại (I have lost my keys), hoặc trải nghiệm sống cho đến nay (thường đi với ever/never, so far, recently)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "9. Present Perfect Continuous: Quá trình liên tục",
-        "meaning": "Nhấn mạnh ĐỘ DÀI hoặc TÍNH LIÊN TỤC của hành động bắt đầu trong QK kéo dài đến hiện tại. Vd: She has been studying all day. (Hành động có thể chưa kết thúc)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "10. Present Perfect: Dấu hiệu nhận biết",
-        "meaning": "Thường đi kèm: just, already, yet (dùng trong câu phủ định/nghi vấn), lately, recently, for (khoảng thời gian), since (mốc thời gian)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "11. Phân biệt: Simple vs. Continuous (CPE)",
-        "meaning": "Hoàn thành Đơn nhấn mạnh SỐ LƯỢNG (I have written 5 letters). Hoàn thành Tiếp diễn nhấn mạnh QUÁ TRÌNH (I have been writing letters all morning)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "12. Phân biệt: Bằng chứng ở hiện tại",
-        "meaning": "Hoàn thành Tiếp diễn thường dùng khi có hệ quả rõ ràng nhìn thấy ở hiện tại. Vd: You look exhausted! Have you been working out? (Trông bạn rất mệt! Bạn vừa tập thể dục à?)."
-      }
-    }
-  ]
+"topic_order": 1,
+"module_type": "learning",
+"exercise_title": "Unit 1: Tenses & Stative Verbs",
+"activities": [
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Simple: habitual action",
+"meaning": "e.g. He sometimes goes swimming."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Simple: permanent state",
+"meaning": "e.g. She works in a bank."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Simple: arranged future action",
+"meaning": "(timetables, programmes, etc.) e.g. The match begins at 8.30 next Monday evening."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Simple: permanent truth",
+"meaning": "e.g. Ice melts when heated."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Simple: instructions",
+"meaning": "e.g. First you chop the meat, then you fry it."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Cont.: temporary action",
+"meaning": "e.g. He's sleeping at the moment. Prices are rising nowadays."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Cont.: repeated action with always",
+"meaning": "(often to show annoyance) e.g. He's always biting his nails."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Cont.: definite arrangement or plan",
+"meaning": "e.g. They are going on an excursion tomorrow."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Perfect: recently completed action",
+"meaning": "e.g. She has just painted her room."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Perfect: action beginning in the past and continuing up to the present",
+"meaning": "e.g. I haven't seen him for years."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Perfect: indefinite past action",
+"meaning": "e.g. She has been to Rome. (We do not know when)"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Perfect: repeated action still continuing",
+"meaning": "e.g. He has worked as a teacher for four years. (He is still a teacher.)"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Perfect Cont.: past action producing visible result in the present",
+"meaning": "e.g. She has been painting her room. (It smells of paint.)"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Perfect Cont.: duration of an action beginning in the past and continuing up to the present",
+"meaning": "e.g. She has been waiting for two hours but there's still no sign of him."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Present Perfect Cont.: action showing annoyance, explanation, irritation or surprise",
+"meaning": "e.g. What have you been searching for in my desk?"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Stative verbs",
+"meaning": "Stative verbs describe a permanent state and do not have continuous forms. These include verbs of: senses, thinking, emotion & feelings, other."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Stative verbs: senses",
+"meaning": "see, hear, smell, feel, taste"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Stative verbs: thinking",
+"meaning": "agree, believe, consider, doubt, expect, feel (=think)"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Stative verbs: emotion & feelings",
+"meaning": "feel, forgive, hate, loathe, like, love, mind, wish, etc."
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Stative verbs: other",
+"meaning": "appear/seem, be, belong, have (=possess), keep (=continue), matter, owe, possess / own"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Notes: 1",
+"meaning": "Verbs of the senses can have continuous forms, but then there's a change in meaning. I'm seeing my dentist tomorrow. (=I'm visiting) but: Do you see those birds? (ability to see)"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Notes: 2",
+"meaning": "The verbs think, consider and expect can have continuous forms when they refer to an activity. Be quiet, please! I'm thinking. but: I think you are wrong. (= I believe)"
+}
+},
+{
+"type": "Học Từ Vựng (Vocabulary)",
+"content": {
+"word": "Notes: 3",
+"meaning": "Have can have continuous forms in certain expressions such as: have a bath, have a nap, have fun, etc. We were having a good time at the party before the fire broke out. but: Since you have his phone number, you can call him. (= possess)"
+}
+}
+]
 }
