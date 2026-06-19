@@ -95,7 +95,6 @@ function renderSyllabus(syllabusData, container) {
                         progressPercent = Math.round((parsed.qIndex / totalQ) * 100);
                         if (progressPercent > 100) progressPercent = 100;
 
-                        // Tinh chỉnh văn bản hiển thị theo Điểm Số (Score) thay vì qIndex
                         if (parsed.isCompleted) {
                             progressText = `✅ Hoàn thành: Đúng ${parsed.score}/${totalQ} câu (100%)`;
                         } else {
@@ -127,7 +126,6 @@ function renderSyllabus(syllabusData, container) {
     container.innerHTML = html;
 }
 
-// CÁC HÀM XỬ LÝ ĐÓNG MODAL VÀ LÀM MỚI TIẾN ĐỘ
 window.closeLearningModal = function() {
     document.getElementById('learning-modal').style.display = 'none';
     loadStudentSyllabus(); 
@@ -137,7 +135,6 @@ window.closePracticeModal = function() {
     document.getElementById('practice-modal').style.display = 'none';
     loadStudentSyllabus(); 
 };
-
 
 let currentPracticeActs = [];
 let currentQIndex = 0;
@@ -274,9 +271,23 @@ function renderCurrentQuestion() {
         
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += hintHtml;
-        html += `<div style="margin-top: 20px;">
-            <input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem;">
-        </div>`;
+        
+        // NHẬN DIỆN NHIỀU Ô TRỐNG BẰNG DẤU ";"
+        if (content.answer && content.answer.includes(";")) {
+            const parts = content.answer.split(";");
+            html += `<div style="margin-top: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">`;
+            for(let i=0; i<parts.length; i++) {
+                html += `<input type="text" class="q_multi_input" placeholder="Ô trống ${i+1}..." style="flex:1; min-width: 120px; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem; text-align: center;">`;
+                if (i < parts.length - 1) {
+                    html += `<span style="font-size: 2rem; font-weight: bold; color: #0284c7; padding-bottom: 5px;">;</span>`;
+                }
+            }
+            html += `</div>`;
+        } else {
+            html += `<div style="margin-top: 20px;">
+                <input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem;">
+            </div>`;
+        }
     }
 
     container.innerHTML = html;
@@ -299,22 +310,43 @@ window.checkAnswer = function() {
         }
         userAnswer = selected.value;
     } else {
-        const inputEl = document.getElementById("q_text_input");
-        if (!inputEl) return;
-        if (!inputEl.value.trim()) {
-            alert("Em chưa nhập câu trả lời!");
-            return;
+        // XỬ LÝ NHIỀU Ô TRỐNG
+        const multiInputs = document.querySelectorAll(".q_multi_input");
+        if (multiInputs.length > 0) {
+            let userAnswers = [];
+            let allFilled = true;
+            multiInputs.forEach(inp => {
+                if (!inp.value.trim()) allFilled = false;
+                userAnswers.push(inp.value.trim());
+            });
+            if (!allFilled) {
+                alert("Em chưa điền đủ tất cả các ô trống!");
+                return;
+            }
+            userAnswer = userAnswers.join(";"); 
+        } else {
+            const inputEl = document.getElementById("q_text_input");
+            if (!inputEl) return;
+            if (!inputEl.value.trim()) {
+                alert("Em chưa nhập câu trả lời!");
+                return;
+            }
+            userAnswer = inputEl.value.trim();
         }
-        userAnswer = inputEl.value.trim();
     }
 
-    const isCorrect = userAnswer.toLowerCase().trim() === (content.answer || "").toLowerCase().trim();
+    // Lọc bỏ khoảng trắng thừa quanh dấu ";" trước khi so sánh
+    let normalizedUser = userAnswer.toLowerCase().replace(/\s*;\s*/g, ";").trim();
+    let normalizedCorrect = (content.answer || "").toLowerCase().replace(/\s*;\s*/g, ";").trim();
+
+    const isCorrect = normalizedUser === normalizedCorrect;
 
     if (isCorrect) {
         feedback.innerHTML = `<span style="color:#16a34a;">✅ Chính xác! Giỏi lắm!</span>`;
         currentScore++;
     } else {
-        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br><span style="color:#1e3a8a; font-weight:normal;">${content.answer || ""}</span></span>`;
+        let displayAnswer = (content.answer || "").replace(/;/g, " ; ");
+        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br><span style="color:#1e3a8a; font-weight:normal;">${displayAnswer}</span></span>`;
     }
 
     btnCheck.style.display = "none";
