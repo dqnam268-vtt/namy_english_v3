@@ -191,9 +191,39 @@ def get_stats(db: Session = Depends(get_db)):
 def get_users(db: Session = Depends(get_db)):
     users = db.query(models.User).filter(models.User.role == "student").all()
     result = []
+    
     for u in users:
-        done_count = db.query(models.Progress).filter(models.Progress.user_id == u.user_id, models.Progress.is_completed == True).count()
-        result.append({"id": u.user_id, "username": u.username, "role": u.role, "done_count": done_count})
+        # Lấy toàn bộ tiến độ của học sinh này kèm theo tên bài học
+        progress_data = db.query(models.Progress, models.Exercise.title, models.Exercise.module_type)\
+            .join(models.Exercise, models.Progress.exercise_id == models.Exercise.exercise_id)\
+            .filter(models.Progress.user_id == u.user_id).all()
+            
+        done_count = 0
+        total_score = 0
+        details = []
+        
+        for prog, title, mod_type in progress_data:
+            if prog.is_completed:
+                done_count += 1
+            total_score += (prog.score or 0)
+            
+            # Đóng gói chi tiết từng bài học
+            details.append({
+                "exercise_name": title,
+                "type": mod_type,
+                "score": prog.score,
+                "status": "Hoàn thành" if prog.is_completed else "Đang làm"
+            })
+            
+        result.append({
+            "id": u.user_id, 
+            "username": u.username, 
+            "role": u.role, 
+            "done_count": done_count,
+            "total_score": total_score,
+            "details": details
+        })
+        
     return result
 
 @app.post("/api/register_bulk")

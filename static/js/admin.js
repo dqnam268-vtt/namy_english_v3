@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: ADMIN CMS MODULE (15 TOPICS + JSON)
+// NAMY V3: ADMIN CMS MODULE (15 TOPICS + JSON + DETAILED PROGRESS)
 // ==========================================
 
 let currentSyllabusData = [];
@@ -28,19 +28,25 @@ async function initAdminDashboard() {
     fetchStats();
     fetchFeedbacks();
 
+    // TỐI ƯU HÓA TÍNH NĂNG XUẤT EXCEL (Bỏ qua cột Nút bấm, gộp dòng gọn gàng)
     const exportBtn = document.getElementById("btn-export-excel");
     if (exportBtn) {
         exportBtn.addEventListener("click", () => {
-            const rows = document.querySelectorAll("#users-table tr");
+            const rows = document.querySelectorAll("#users-table tr, #users-list-table tr, table tr");
             let csv = [];
             for (let i = 0; i < rows.length; i++) {
                 let row = [], cols = rows[i].querySelectorAll("td, th");
-                for (let j = 0; j < cols.length; j++) row.push('"' + cols[j].innerText + '"');
+                // Chỉ xuất 2 cột đầu tiên (Tên và Tiến độ), bỏ cột Thao tác
+                let limit = cols.length >= 3 ? 2 : cols.length; 
+                for (let j = 0; j < limit; j++) {
+                    let cellText = cols[j].innerText.replace(/\n/g, ' - '); // Thay dấu xuống dòng bằng dấu gạch ngang
+                    row.push('"' + cellText + '"');
+                }
                 csv.push(row.join(","));
             }
             const csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
             const a = document.createElement("a");
-            a.download = "Bao_Cao_Lop_Hoc.csv";
+            a.download = "Bao_Cao_Tien_Do_Lop_Hoc.csv";
             a.href = window.URL.createObjectURL(csvFile);
             a.click();
         });
@@ -68,24 +74,87 @@ async function initAdminDashboard() {
     }
 }
 
+// CẬP NHẬT HÀM RENDER TIẾN ĐỘ HỌC SINH SIÊU CHI TIẾT
 async function fetchStats() {
     const sRes = await apiFetch("/stats");
     if (sRes.ok) {
         document.getElementById("stat-students").innerText = sRes.data.total_students;
-        
         const statTopics = document.getElementById("stat-topics") || document.getElementById("stat-weeks");
         if(statTopics) statTopics.innerText = sRes.data.total_topics;
-        
         document.getElementById("stat-feedbacks").innerText = sRes.data.total_feedbacks;
     }
 
     const uRes = await apiFetch("/users");
     if (uRes.ok) {
-        const body = document.getElementById("users-list-body");
+        const body = document.getElementById("users-list-body") || document.querySelector("tbody");
         if(body) {
-            body.innerHTML = uRes.data.map(u => `<tr><td style="padding:8px; border-bottom:1px solid #eee;">${u.username}</td><td style="padding:8px; border-bottom:1px solid #eee;">${u.done_count} Nhiệm vụ</td></tr>`).join("");
+            let html = "";
+            uRes.data.forEach(u => {
+                // Mã hóa dữ liệu chi tiết để truyền vào Nút bấm
+                const detailsStr = encodeURIComponent(JSON.stringify(u.details || []));
+                
+                html += `<tr>
+                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${u.username}</td>
+                    
+                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">
+                        <span style="color: #059669; font-weight: bold; font-size: 1.1rem;">${u.done_count} Nhiệm vụ</span><br>
+                        <span style="color: #64748b; font-size: 0.9rem;">(Tổng điểm: <b style="color:#dc2626;">${u.total_score || 0}</b> đ)</span>
+                    </td>
+                    
+                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; text-align: center;">
+                        <button onclick="showStudentDetails('${u.username}', '${detailsStr}')" style="background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap;">🔍 Xem chi tiết</button>
+                    </td>
+                </tr>`;
+            });
+            body.innerHTML = html;
         }
     }
+}
+
+// HÀM MỚI: HIỂN THỊ BẢNG POP-UP CHI TIẾT KẾT QUẢ TỪNG BÀI
+window.showStudentDetails = function(username, detailsStr) {
+    const modalName = document.getElementById("detail-student-name");
+    const modalData = document.getElementById("detail-student-data");
+    const modalBox = document.getElementById("student-detail-modal");
+    
+    if (!modalBox) {
+        alert("Thầy cần thêm đoạn mã HTML của Modal vào file admin.html trước nhé!");
+        return;
+    }
+
+    modalName.innerText = "Hồ sơ học tập: " + username;
+    const details = JSON.parse(decodeURIComponent(detailsStr));
+    let html = "";
+
+    if (!details || details.length === 0) {
+        html = "<p style='color: #64748b; font-style: italic; text-align:center;'>Học sinh này chưa tham gia bài học nào.</p>";
+    } else {
+        html += `<table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <tr style="background: #f8fafc;">
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; color:#475569;">Tên Bài Học</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; color:#475569;">Phân Loại</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; color:#475569;">Kết Quả</th>
+            </tr>`;
+            
+        details.forEach(d => {
+            // Nhúng CSS trực tiếp để đảm bảo Modal luôn đẹp dù chưa cập nhật file style.css
+            const badgeTheory = `<span style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display:inline-block; white-space:nowrap;">📖 Lý thuyết</span>`;
+            const badgePractice = `<span style="background: #dcfce3; color: #16a34a; padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display:inline-block; white-space:nowrap;">✍️ Bài tập</span>`;
+            
+            const badge = d.type === "learning" ? badgeTheory : badgePractice;
+            const scoreText = d.type === "learning" ? "Đã ghi nhớ" : `Đúng ${d.score} câu`;
+            
+            html += `<tr>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-weight: 500;">${d.exercise_name}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${badge}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #ea580c;">${scoreText}</td>
+            </tr>`;
+        });
+        html += `</table>`;
+    }
+
+    modalData.innerHTML = html;
+    modalBox.style.display = "flex";
 }
 
 async function fetchFeedbacks() {
@@ -174,7 +243,6 @@ function initAdminCMS() {
         });
     }
 
-    // Xử lý nạp JSON hàng loạt (BƯỚC 3)
     const btnUploadJson = document.getElementById("btn-upload-json");
     if (btnUploadJson) {
         btnUploadJson.addEventListener("click", async () => {
@@ -227,7 +295,6 @@ function initAdminCMS() {
         });
     }
 
-    // XỬ LÝ NÚT XÓA DỮ LIỆU (BƯỚC 4)
     const btnDelTopic = document.getElementById("btn-delete-topic");
     if (btnDelTopic) {
         btnDelTopic.addEventListener("click", async () => {
@@ -260,7 +327,7 @@ function initAdminCMS() {
             }
             
             btnDelTopic.disabled = false;
-            btnDelTopic.innerText = "Xóa Sạch Dữ Liệu";
+            btnDelTopic.innerText = "Xóa Sạch Dữ QUẢ";
         });
     }
 }
@@ -268,9 +335,8 @@ function initAdminCMS() {
 async function loadCmsComboboxes() {
     const selectId = document.getElementById("cms-topic-select") ? "cms-topic-select" : "cms-week-select";
     const topicSelect = document.getElementById(selectId);
-    const delSelect = document.getElementById("delete-topic-select"); // Lấy ô dropdown Xóa
+    const delSelect = document.getElementById("delete-topic-select"); 
     
-    // Tích hợp tên 15 Unit gốc của CPE
     const cpeTopics = [
         "1. Tenses", "2. Modal Verbs", "3. Infinitive / Gerund", "4. Passive Voice", 
         "5. Reported Speech", "6. Adjectives / Adverbs / Comparisons", "7. Conditionals", 
@@ -283,13 +349,11 @@ async function loadCmsComboboxes() {
         optionsHtml += `<option value="${index + 1}">UNIT ${title}</option>`;
     });
 
-    // Bơm danh sách Unit vào ô Bước 1 và 2
     if (topicSelect && topicSelect.options.length === 0) {
         topicSelect.innerHTML = optionsHtml;
         topicSelect.addEventListener("change", () => populateExerciseCombobox(parseInt(topicSelect.value)));
     }
     
-    // Bơm danh sách Unit trực tiếp vào ô Bước 4 (Chống lỗi trống trơn)
     if (delSelect && delSelect.options.length === 0) {
         delSelect.innerHTML = optionsHtml;
     }
