@@ -4,6 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from sqlalchemy import func  # Tích hợp hàm toán học để đếm số câu
 from pydantic import BaseModel
 import bcrypt
 
@@ -187,40 +188,73 @@ def get_stats(db: Session = Depends(get_db)):
         "total_feedbacks": db.query(models.Feedback).count()
     }
 
+# ==============================================================
+# HÀM MỚI: TÍNH TOÁN % LÝ THUYẾT, BÀI TẬP VÀ ĐIỂM SỐ TỪNG CÂU
+# ==============================================================
 @app.get("/api/users")
 def get_users(db: Session = Depends(get_db)):
     users = db.query(models.User).filter(models.User.role == "student").all()
-    result = []
     
+    # 1. Đếm tổng số lượng Lý thuyết và Bài tập đang có trên toàn hệ thống
+    total_learning = db.query(models.Exercise).filter(models.Exercise.module_type == "learning").count()
+    total_practice = db.query(models.Exercise).filter(models.Exercise.module_type == "practice").count()
+    
+    # 2. Gom sẵn tổng số câu hỏi của từng bài tập (để in ra tỷ lệ 1/8, 10/26...)
+    act_counts = db.query(models.Activity.exercise_id, func.count(models.Activity.activity_id)).group_by(models.Activity.exercise_id).all()
+    act_map = {exe_id: count for exe_id, count in act_counts}
+
+    result = []
     for u in users:
-        # Lấy toàn bộ tiến độ của học sinh này kèm theo tên bài học
-        progress_data = db.query(models.Progress, models.Exercise.title, models.Exercise.module_type)\
+        progresses = db.query(models.Progress, models.Exercise)\
             .join(models.Exercise, models.Progress.exercise_id == models.Exercise.exercise_id)\
             .filter(models.Progress.user_id == u.user_id).all()
             
-        done_count = 0
-        total_score = 0
+        learning_done = 0
+        practice_done = 0
+        practice_scores = []
         details = []
         
-        for prog, title, mod_type in progress_data:
-            if prog.is_completed:
-                done_count += 1
-            total_score += (prog.score or 0)
+        for prog, exe in progresses:
+            total_qs = act_map.get(exe.exercise_id, 1) # Lấy số câu hỏi của bài này
             
-            # Đóng gói chi tiết từng bài học
-            details.append({
-                "exercise_name": title,
-                "type": mod_type,
-                "score": prog.score,
-                "status": "Hoàn thành" if prog.is_completed else "Đang làm"
-            })
-            
+            if exe.module_type == "learning":
+                if prog.is_completed:
+                    learning_done += 1
+                details.append({
+                    "exercise_name": exe.title,
+                    "type": "learning",
+                    "score": "Đã ghi nhớ", 
+                    "status": "Hoàn thành" if prog.is_completed else "Chưa xong"
+                })
+            else:
+                if prog.is_completed:
+                    practice_done += 1
+                    
+                score_str = f"{prog.score}/{total_qs}"
+                # Lấy tên ngắn gọn (Vd: "Unit 1.1: Present Tenses" -> "Unit 1.1") để bảng không bị rối
+                short_title = exe.title.split(":")[0] if ":" in exe.title else exe.title
+                practice_scores.append(f"{short_title} ({score_str})")
+                
+                details.append({
+                    "exercise_name": exe.title,
+                    "type": "practice",
+                    "score": f"Đúng {score_str} câu",
+                    "status": "Hoàn thành" if prog.is_completed else "Đang làm"
+                })
+        
+        # 3. Tính phần trăm (%) tiến độ
+        theory_pct = round((learning_done / total_learning * 100)) if total_learning > 0 else 0
+        practice_pct = round((practice_done / total_practice * 100)) if total_practice > 0 else 0
+        
         result.append({
-            "id": u.user_id, 
-            "username": u.username, 
-            "role": u.role, 
-            "done_count": done_count,
-            "total_score": total_score,
+            "id": u.user_id,
+            "username": u.username,
+            "role": u.role,
+            "theory_pct": theory_pct,
+            "theory_text": f"{learning_done}/{total_learning} bài",
+            "practice_pct": practice_pct,
+            "practice_text": f"{practice_done}/{total_practice} bài",
+            "practice_scores": practice_scores,
             "details": details
         })
         
@@ -291,9 +325,6 @@ def clear_topic(topic_order: int, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": f"Đã dọn dẹp sạch sẽ {deleted_count} nhóm bài tập của UNIT {topic_order}!"}
 
-# ==============================================================
-# HÀM MỚI: API NHẬN TIẾN ĐỘ TỪ TRÌNH DUYỆT HỌC SINH LƯU VÀO DATABASE
-# ==============================================================
 class ProgressUpdate(BaseModel):
     username: str
     exercise_id: int
@@ -327,9 +358,6 @@ def update_progress(prog: ProgressUpdate, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Đã đồng bộ tiến độ lên máy chủ thành công!"}
 
-# ==============================================================
-# HÀM BẢO TRÌ: ĐẬP BẢNG TIẾN ĐỘ CŨ TRÊN MÂY VÀ XÂY LẠI
-# ==============================================================
 @app.get("/api/force_reset_progress")
 def force_reset_progress():
     try:

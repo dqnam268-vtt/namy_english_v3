@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: ADMIN CMS MODULE (15 TOPICS + JSON + DETAILED PROGRESS)
+// NAMY V3: ADMIN CMS MODULE (VISUAL BAR CHART & SPLIT PROGRESS)
 // ==========================================
 
 let currentSyllabusData = [];
@@ -7,7 +7,6 @@ let currentSyllabusData = [];
 document.addEventListener("DOMContentLoaded", () => {
     if (window.location.pathname.includes("/admin")) {
         checkAuth("admin");
-        
         const adminNameSpan = document.getElementById("admin-name");
         if (adminNameSpan) adminNameSpan.innerText = "Thầy " + (localStorage.getItem("username") || "Nam");
 
@@ -28,53 +27,29 @@ async function initAdminDashboard() {
     fetchStats();
     fetchFeedbacks();
 
-    // TỐI ƯU HÓA TÍNH NĂNG XUẤT EXCEL (Bỏ qua cột Nút bấm, gộp dòng gọn gàng)
     const exportBtn = document.getElementById("btn-export-excel");
     if (exportBtn) {
         exportBtn.addEventListener("click", () => {
-            const rows = document.querySelectorAll("#users-table tr, #users-list-table tr, table tr");
+            const rows = document.querySelectorAll("table tr");
             let csv = [];
             for (let i = 0; i < rows.length; i++) {
                 let row = [], cols = rows[i].querySelectorAll("td, th");
-                // Chỉ xuất 2 cột đầu tiên (Tên và Tiến độ), bỏ cột Thao tác
-                let limit = cols.length >= 3 ? 2 : cols.length; 
+                let limit = cols.length >= 4 ? 3 : cols.length; 
                 for (let j = 0; j < limit; j++) {
-                    let cellText = cols[j].innerText.replace(/\n/g, ' - '); // Thay dấu xuống dòng bằng dấu gạch ngang
+                    let cellText = cols[j].innerText.replace(/\n/g, ' | ').replace(/%/g, '% ');
                     row.push('"' + cellText + '"');
                 }
                 csv.push(row.join(","));
             }
             const csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
             const a = document.createElement("a");
-            a.download = "Bao_Cao_Tien_Do_Lop_Hoc.csv";
+            a.download = "Bao_Cao_Tien_Do.csv";
             a.href = window.URL.createObjectURL(csvFile);
             a.click();
         });
     }
-
-    const bulkBtn = document.getElementById("btn-bulk-register");
-    if (bulkBtn) {
-        bulkBtn.addEventListener("click", async () => {
-            const txt = document.getElementById("bulk-users-data").value.split("\n");
-            let list = [];
-            txt.forEach(line => {
-                let parts = line.split(/[\t,]+/);
-                if (parts.length >= 2) list.push({ username: parts[0].trim(), password: parts[1].trim() });
-            });
-            
-            bulkBtn.disabled = true;
-            const res = await apiFetch("/register_bulk", "POST", list);
-            if(res.ok) {
-                showStatus(document.getElementById("bulk-message"), res.data.message, "success");
-                document.getElementById("bulk-users-data").value = "";
-                fetchStats();
-            }
-            bulkBtn.disabled = false;
-        });
-    }
 }
 
-// CẬP NHẬT HÀM RENDER TIẾN ĐỘ HỌC SINH SIÊU CHI TIẾT
 async function fetchStats() {
     const sRes = await apiFetch("/stats");
     if (sRes.ok) {
@@ -86,23 +61,53 @@ async function fetchStats() {
 
     const uRes = await apiFetch("/users");
     if (uRes.ok) {
-        const body = document.getElementById("users-list-body") || document.querySelector("tbody");
+        const thead = document.querySelector("table thead tr");
+        if (thead) {
+            thead.innerHTML = `
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 20%;">Tài Khoản</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 25%;">📖 Lý Thuyết</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 40%;">✍️ Bài Tập & Điểm</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: center;">Thao tác</th>
+            `;
+        }
+
+        const body = document.querySelector("table tbody");
         if(body) {
             let html = "";
             uRes.data.forEach(u => {
-                // Mã hóa dữ liệu chi tiết để truyền vào Nút bấm
                 const detailsStr = encodeURIComponent(JSON.stringify(u.details || []));
                 
+                let scoresHtml = "";
+                if (u.practice_scores && u.practice_scores.length > 0) {
+                    scoresHtml = `<div style="margin-top: 8px;">` + 
+                        u.practice_scores.map(s => `<span style="background: #fffbeb; color: #b45309; padding: 3px 8px; border-radius: 6px; border: 1px solid #fcd34d; margin-right: 6px; display: inline-block; margin-bottom: 6px; font-weight: 500; font-size: 0.85rem;">${s}</span>`).join("") +
+                        `</div>`;
+                } else {
+                    scoresHtml = `<div style="margin-top: 8px; font-size: 0.85rem; color: #94a3b8; font-style: italic;">Chưa phát sinh điểm bài tập</div>`;
+                }
+
                 html += `<tr>
-                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${u.username}</td>
+                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #1e293b; vertical-align: top;">${u.username}</td>
                     
-                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">
-                        <span style="color: #059669; font-weight: bold; font-size: 1.1rem;">${u.done_count} Nhiệm vụ</span><br>
-                        <span style="color: #64748b; font-size: 0.9rem;">(Tổng điểm: <b style="color:#dc2626;">${u.total_score || 0}</b> đ)</span>
+                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: top;">
+                        <div style="background: #e0f2fe; border-radius: 10px; width: 100%; height: 8px; margin-bottom: 5px; overflow: hidden;">
+                            <div style="background: #0284c7; height: 100%; width: ${u.theory_pct}%;"></div>
+                        </div>
+                        <span style="color: #0284c7; font-weight: bold; font-size: 1.1rem;">${u.theory_pct}%</span> 
+                        <span style="color: #64748b; font-size: 0.85rem;">(${u.theory_text})</span>
                     </td>
                     
-                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; text-align: center;">
-                        <button onclick="showStudentDetails('${u.username}', '${detailsStr}')" style="background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap;">🔍 Xem chi tiết</button>
+                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: top;">
+                        <div style="background: #dcfce3; border-radius: 10px; width: 100%; height: 8px; margin-bottom: 5px; overflow: hidden;">
+                            <div style="background: #16a34a; height: 100%; width: ${u.practice_pct}%;"></div>
+                        </div>
+                        <span style="color: #16a34a; font-weight: bold; font-size: 1.1rem;">${u.practice_pct}%</span>
+                        <span style="color: #64748b; font-size: 0.85rem;">(${u.practice_text})</span>
+                        ${scoresHtml}
+                    </td>
+                    
+                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; text-align: center; vertical-align: top;">
+                        <button onclick="showStudentDetails('${u.username}', '${detailsStr}')" style="background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap;">🔍 Xem biểu đồ</button>
                     </td>
                 </tr>`;
             });
@@ -111,24 +116,90 @@ async function fetchStats() {
     }
 }
 
-// HÀM MỚI: HIỂN THỊ BẢNG POP-UP CHI TIẾT KẾT QUẢ TỪNG BÀI
+// ==========================================
+// TÍNH NĂNG MỚI: VẼ BIỂU ĐỒ BAR CHART CSS
+// ==========================================
 window.showStudentDetails = function(username, detailsStr) {
     const modalName = document.getElementById("detail-student-name");
     const modalData = document.getElementById("detail-student-data");
     const modalBox = document.getElementById("student-detail-modal");
     
     if (!modalBox) {
-        alert("Thầy cần thêm đoạn mã HTML của Modal vào file admin.html trước nhé!");
-        return;
+        alert("Thiếu HTML Modal chi tiết trong file admin.html."); return;
     }
 
-    modalName.innerText = "Hồ sơ học tập: " + username;
+    modalName.innerHTML = `Biểu đồ Phân tích của: <b style="color:#dc2626;">${username}</b>`;
     const details = JSON.parse(decodeURIComponent(detailsStr));
     let html = "";
 
     if (!details || details.length === 0) {
         html = "<p style='color: #64748b; font-style: italic; text-align:center;'>Học sinh này chưa tham gia bài học nào.</p>";
     } else {
+        // --- 1. CHÚ THÍCH MÀU SẮC (LEGEND) ---
+        html += `
+        <div style="display: flex; gap: 15px; margin-bottom: 20px; font-size: 0.85rem; justify-content: center; flex-wrap: wrap;">
+            <span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#94a3b8; border-radius:3px;"></div> Lý thuyết</span>
+            <span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#22c55e; border-radius:3px;"></div> Tốt (≥ 80%)</span>
+            <span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#f97316; border-radius:3px;"></div> Khá (50-79%)</span>
+            <span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#ef4444; border-radius:3px;"></div> Yếu (< 50%)</span>
+        </div>`;
+
+        // --- 2. KHUNG BIỂU ĐỒ (CHART CONTAINER) ---
+        html += `
+        <div style="position: relative; height: 220px; border-left: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1; margin-bottom: 120px; margin-left: 30px; display: flex; align-items: flex-end; padding-left: 10px; gap: 15px; overflow-x: auto; padding-top: 20px;">
+            
+            <!-- Trục Y: Đường gạch đứt báo 50% và 100% -->
+            <div style="position: absolute; bottom: 50%; left: 0; width: 100%; border-bottom: 1px dashed #cbd5e1; z-index: 1;">
+                <span style="position: absolute; left: -35px; bottom: -8px; font-size: 11px; color: #64748b; font-weight:bold;">50%</span>
+            </div>
+            <div style="position: absolute; bottom: 100%; left: 0; width: 100%; border-bottom: 1px dashed #cbd5e1; z-index: 1;">
+                <span style="position: absolute; left: -42px; bottom: -8px; font-size: 11px; color: #64748b; font-weight:bold;">100%</span>
+            </div>
+        `;
+
+        // --- 3. VẼ TỪNG CỘT DỮ LIỆU ---
+        details.forEach(d => {
+            let pct = 0;
+            
+            // Thuật toán bóc tách điểm (ví dụ: "Đúng 1/8 câu" -> lấy 1 chia 8)
+            if (d.type === 'learning') {
+                pct = 100;
+            } else {
+                let match = d.score.match(/(\d+)\/(\d+)/);
+                if (match) {
+                    let correct = parseInt(match[1]);
+                    let total = parseInt(match[2]);
+                    pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+                }
+            }
+
+            // Đổi màu cột cảnh báo
+            let barColor = "#94a3b8"; // Xám cho Lý thuyết
+            if (d.type === 'practice') {
+                if (pct < 50) barColor = "#ef4444"; // Đỏ (Yếu)
+                else if (pct < 80) barColor = "#f97316"; // Cam (Khá)
+                else barColor = "#22c55e"; // Xanh lá (Tốt)
+            }
+
+            // Cắt ngắn tên bài để khỏi dài
+            let shortName = d.exercise_name.length > 25 ? d.exercise_name.substring(0, 25) + "..." : d.exercise_name;
+
+            html += `
+            <div style="width: 35px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; z-index: 2;">
+                <span style="font-size: 11px; font-weight: 800; color: ${barColor}; margin-bottom: 5px;">${pct}%</span>
+                
+                <div title="${d.exercise_name}: ${pct}%" style="width: 100%; height: ${pct}%; background-color: ${barColor}; border-radius: 4px 4px 0 0; transition: 0.3s; box-shadow: 2px 0 5px rgba(0,0,0,0.1);"></div>
+                
+                <!-- Tên bài học xoay dọc bên dưới -->
+                <div style="position: absolute; top: 100%; left: 50%; writing-mode: vertical-rl; transform: rotate(180deg) translateX(50%); padding-top: 8px; font-size: 11px; color: #475569; height: 110px; text-align: left; white-space: nowrap;">
+                    ${shortName}
+                </div>
+            </div>`;
+        });
+
+        html += `</div>`; // Đóng khung biểu đồ
+
+        // --- 4. BẢNG CHI TIẾT (Giữ lại để xem rõ "Đúng 1/8 câu") ---
         html += `<table style="width: 100%; border-collapse: collapse; text-align: left;">
             <tr style="background: #f8fafc;">
                 <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; color:#475569;">Tên Bài Học</th>
@@ -137,17 +208,12 @@ window.showStudentDetails = function(username, detailsStr) {
             </tr>`;
             
         details.forEach(d => {
-            // Nhúng CSS trực tiếp để đảm bảo Modal luôn đẹp dù chưa cập nhật file style.css
-            const badgeTheory = `<span style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display:inline-block; white-space:nowrap;">📖 Lý thuyết</span>`;
-            const badgePractice = `<span style="background: #dcfce3; color: #16a34a; padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; display:inline-block; white-space:nowrap;">✍️ Bài tập</span>`;
-            
-            const badge = d.type === "learning" ? badgeTheory : badgePractice;
-            const scoreText = d.type === "learning" ? "Đã ghi nhớ" : `Đúng ${d.score} câu`;
+            const badge = d.type === "learning" ? `<span style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold;">📖 Lý thuyết</span>` : `<span style="background: #dcfce3; color: #16a34a; padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: bold;">✍️ Bài tập</span>`;
             
             html += `<tr>
                 <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; color: #1e293b; font-weight: 500;">${d.exercise_name}</td>
                 <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${badge}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #ea580c;">${scoreText}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #ea580c;">${d.score}</td>
             </tr>`;
         });
         html += `</table>`;
@@ -157,6 +223,7 @@ window.showStudentDetails = function(username, detailsStr) {
     modalBox.style.display = "flex";
 }
 
+// ... CÁC HÀM CMS BÊN DƯỚI GIỮ NGUYÊN NHƯ CŨ ...
 async function fetchFeedbacks() {
     const fRes = await apiFetch("/get_feedbacks");
     const fbList = document.getElementById("feedback-list");
@@ -180,12 +247,7 @@ function initAdminCMS() {
             if(!title) return showStatus(msg, "Vui lòng nhập tên bài tập!", "error");
 
             addExeBtn.disabled = true;
-            const res = await apiFetch("/add_exercise", "POST", { 
-                title, 
-                topic_order: topic_order, 
-                order_num: 1, 
-                module_type: moduleType 
-            });
+            const res = await apiFetch("/add_exercise", "POST", { title, topic_order: topic_order, order_num: 1, module_type: moduleType });
             
             if (res.ok) {
                 showStatus(msg, `✅ ${res.data.message}`, "success");
@@ -249,15 +311,12 @@ function initAdminCMS() {
             const fileInput = document.getElementById("json-upload-file");
             const msg = document.getElementById("json-message");
             
-            if (fileInput.files.length === 0) {
-                return showStatus(msg, "Vui lòng chọn ít nhất 1 file JSON trước khi tải lên!", "error");
-            }
+            if (fileInput.files.length === 0) return showStatus(msg, "Vui lòng chọn ít nhất 1 file JSON!", "error");
 
             btnUploadJson.disabled = true;
             btnUploadJson.innerText = `Đang xử lý ${fileInput.files.length} file...`;
             
-            let successCount = 0;
-            let errorCount = 0;
+            let successCount = 0; let errorCount = 0;
 
             for (let i = 0; i < fileInput.files.length; i++) {
                 const file = fileInput.files[i];
@@ -270,26 +329,15 @@ function initAdminCMS() {
                     });
                     
                     const res = await apiFetch("/upload_json", "POST", jsonData);
-                    if (res.ok) {
-                        successCount++;
-                    } else {
-                        errorCount++;
-                    }
-                } catch (error) {
-                    console.error("Lỗi đọc file: ", file.name);
-                    errorCount++;
-                }
+                    if (res.ok) successCount++; else errorCount++;
+                } catch (error) { errorCount++; }
             }
 
-            if (errorCount === 0) {
-                showStatus(msg, `✅ Tuyệt vời! Đã nạp thành công toàn bộ ${successCount} bài tập vào hệ thống!`, "success");
-            } else {
-                showStatus(msg, `⚠️ Hoàn tất: ${successCount} file thành công, ${errorCount} file bị lỗi.`, "error");
-            }
+            if (errorCount === 0) showStatus(msg, `✅ Đã nạp ${successCount} bài tập!`, "success");
+            else showStatus(msg, `⚠️ ${successCount} thành công, ${errorCount} lỗi.`, "error");
 
             fileInput.value = ""; 
             loadCmsComboboxes();  
-            
             btnUploadJson.disabled = false;
             btnUploadJson.innerText = "Tải Lên Hệ Thống";
         });
@@ -302,32 +350,17 @@ function initAdminCMS() {
             if (!delSelect || !delSelect.value) return;
             
             const topicOrder = delSelect.value;
-            const topicName = delSelect.options[delSelect.selectedIndex].text;
-            const msg = document.getElementById("delete-message");
-            
-            const confirmDelete = confirm(`⚠️ THẦY CÓ CHẮC CHẮN MUỐN XÓA TOÀN BỘ DỮ LIỆU CỦA ${topicName} KHÔNG?\n\nHành động này sẽ xóa sạch Lý thuyết và Bài tập của Unit này để làm lại từ đầu!`);
-            
+            const confirmDelete = confirm(`⚠️ THẦY CÓ CHẮC CHẮN MUỐN XÓA TOÀN BỘ DỮ LIỆU CỦA UNIT NÀY KHÔNG?`);
             if (!confirmDelete) return;
 
-            btnDelTopic.disabled = true;
-            btnDelTopic.innerText = "Đang xử lý...";
-            
+            btnDelTopic.disabled = true; btnDelTopic.innerText = "Đang xử lý...";
             try {
                 const res = await fetch(`/api/clear_topic/${topicOrder}`, { method: "DELETE" });
                 const data = await res.json();
-                
-                if (res.ok) {
-                    showStatus(msg, `✅ ${data.message}`, "success");
-                    loadCmsComboboxes(); 
-                } else {
-                    showStatus(msg, `❌ Lỗi: ${data.detail}`, "error");
-                }
-            } catch (error) {
-                showStatus(msg, "❌ Không thể kết nối tới máy chủ!", "error");
-            }
-            
-            btnDelTopic.disabled = false;
-            btnDelTopic.innerText = "Xóa Sạch Dữ QUẢ";
+                if (res.ok) { showStatus(document.getElementById("delete-message"), `✅ ${data.message}`, "success"); loadCmsComboboxes(); } 
+                else showStatus(document.getElementById("delete-message"), `❌ Lỗi: ${data.detail}`, "error");
+            } catch (error) { showStatus(document.getElementById("delete-message"), "❌ Lỗi kết nối", "error"); }
+            btnDelTopic.disabled = false; btnDelTopic.innerText = "Xóa Sạch Dữ Liệu";
         });
     }
 }
@@ -337,26 +370,15 @@ async function loadCmsComboboxes() {
     const topicSelect = document.getElementById(selectId);
     const delSelect = document.getElementById("delete-topic-select"); 
     
-    const cpeTopics = [
-        "1. Tenses", "2. Modal Verbs", "3. Infinitive / Gerund", "4. Passive Voice", 
-        "5. Reported Speech", "6. Adjectives / Adverbs / Comparisons", "7. Conditionals", 
-        "8. Wishes / Unreal Past", "9. Relatives", "10. Nouns", "11. Articles", 
-        "12. Causative Form", "13. Clauses", "14. Inversion", "15. Conjunctions / Punctuation"
-    ];
-
+    const cpeTopics = ["1. Tenses", "2. Modal Verbs", "3. Infinitive / Gerund", "4. Passive Voice", "5. Reported Speech", "6. Adjectives / Adverbs / Comparisons", "7. Conditionals", "8. Wishes / Unreal Past", "9. Relatives", "10. Nouns", "11. Articles", "12. Causative Form", "13. Clauses", "14. Inversion", "15. Conjunctions / Punctuation"];
     let optionsHtml = "";
-    cpeTopics.forEach((title, index) => {
-        optionsHtml += `<option value="${index + 1}">UNIT ${title}</option>`;
-    });
+    cpeTopics.forEach((title, index) => { optionsHtml += `<option value="${index + 1}">UNIT ${title}</option>`; });
 
     if (topicSelect && topicSelect.options.length === 0) {
         topicSelect.innerHTML = optionsHtml;
         topicSelect.addEventListener("change", () => populateExerciseCombobox(parseInt(topicSelect.value)));
     }
-    
-    if (delSelect && delSelect.options.length === 0) {
-        delSelect.innerHTML = optionsHtml;
-    }
+    if (delSelect && delSelect.options.length === 0) delSelect.innerHTML = optionsHtml;
 
     const res = await apiFetch("/get_syllabus"); 
     if (res.ok) {
@@ -370,7 +392,6 @@ async function loadCmsComboboxes() {
 function populateExerciseCombobox(topicOrder) {
     const exeSelect = document.getElementById("cms-exe-select");
     if (!exeSelect) return;
-    
     const targetTopic = currentSyllabusData.find(w => w.order_num === topicOrder);
     if (targetTopic && targetTopic.exercises && targetTopic.exercises.length > 0) {
         exeSelect.innerHTML = targetTopic.exercises.map(e => {
@@ -379,7 +400,7 @@ function populateExerciseCombobox(topicOrder) {
         }).join("");
         exeSelect.disabled = false;
     } else {
-        exeSelect.innerHTML = `<option value="">-- Chuyên đề này chưa có nhóm bài tập --</option>`;
+        exeSelect.innerHTML = `<option value="">-- Chuyên đề chưa có bài tập --</option>`;
         exeSelect.disabled = true;
     }
 }
@@ -388,12 +409,10 @@ function updateLivePreview() {
     const box = document.getElementById("preview-course-content");
     if (!box) return;
     box.innerHTML = "<p><i>*Đây là toàn bộ cấu trúc bài học đang có trong DB*</i></p>";
-    
     currentSyllabusData.forEach(topic => {
         const sec = document.createElement("div");
         sec.style.border = "1px solid #ccc"; sec.style.padding = "10px"; sec.style.margin = "10px 0";
         sec.innerHTML = `<strong>${topic.title}</strong><br>`;
-        
         topic.exercises.forEach(exe => {
             const color = exe.module_type === "learning" ? "blue" : "orange";
             sec.innerHTML += `<div style="margin-left: 20px; color: ${color};">↳ [${exe.module_type}] ${exe.title} (${exe.activities.length} acts)</div>`;
