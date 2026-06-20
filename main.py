@@ -4,6 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 import bcrypt
 
 import models
@@ -51,14 +52,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     except Exception:
         return False
 
-# CHÉP ĐÈ HÀM LOGIN NÀY VÀO MAIN.PY
 @app.post("/api/login")
 def login(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.username == user_data.username).first()
     if not user or not verify_password(user_data.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Tên đăng nhập hoặc mật khẩu không chính xác")
     
-    # Trả về trực tiếp Dictionary để đảm bảo role được gửi qua
     return {
         "status": "success", 
         "message": "Đăng nhập thành công", 
@@ -124,7 +123,6 @@ def add_activity(act: schemas.ActivityCreate, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Đã đẩy hoạt động vào hệ thống!"}
 
-# --- API NẠP JSON NÂNG CẤP (TỰ ĐỘNG XÓA TRÙNG LẶP VÀ GHI ĐÈ) ---
 @app.post("/api/upload_json")
 def upload_json(data: schemas.BulkExerciseUpload, db: Session = Depends(get_db)):
     topic = db.query(models.Topic).filter(models.Topic.order_num == data.topic_order).first()
@@ -134,19 +132,16 @@ def upload_json(data: schemas.BulkExerciseUpload, db: Session = Depends(get_db))
         db.commit()
         db.refresh(topic)
         
-    # TÍNH NĂNG MỚI: Dọn dẹp các bài tập bị trùng lặp (Cùng Chủ đề & Cùng Tên)
     existing_exes = db.query(models.Exercise).filter(
         models.Exercise.topic_id == topic.topic_id,
         models.Exercise.title == data.exercise_title
     ).all()
     
-    # Nếu tìm thấy bản cũ, xóa toàn bộ hoạt động bên trong và xóa bài tập đó
     for old_exe in existing_exes:
         db.query(models.Activity).filter(models.Activity.exercise_id == old_exe.exercise_id).delete()
         db.delete(old_exe)
-    db.commit() # Chốt lệnh xóa
+    db.commit() 
     
-    # Bắt đầu tạo mới duy nhất 1 bản chuẩn
     new_exe = models.Exercise(
         title=data.exercise_title,
         topic_id=topic.topic_id,
@@ -236,56 +231,39 @@ def seed_data(db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Hệ thống đã bơm 15 Chuyên đề CPE thành công!"}
 
-# --- API TẠO 2 TÀI KHOẢN ĐỘC LẬP BỔ SUNG ---
 @app.get("/api/init_users")
 def init_users(db: Session = Depends(get_db)):
-    # 1. Khởi tạo tài khoản Quản trị (Admin)
     admin_user = db.query(models.User).filter(models.User.username == "admin").first()
     if not admin_user:
-        new_admin = models.User(
-            username="admin",
-            password_hash=hash_password("123456"),
-            role="admin"
-        )
-        db.add(new_admin)
+        db.add(models.User(username="admin", password_hash=hash_password("123456"), role="admin"))
         
-    # 2. Khởi tạo tài khoản Học sinh (Student demo)
     student_user = db.query(models.User).filter(models.User.username == "namy_student").first()
     if not student_user:
-        new_student = models.User(
-            username="namy_student",
-            password_hash=hash_password("123456"),
-            role="student"
-        )
-        db.add(new_student)
+        db.add(models.User(username="namy_student", password_hash=hash_password("123456"), role="student"))
         
     db.commit()
     return {"message": "✅ Tuyệt vời! Đã nạp thành công 2 tài khoản: admin và namy_student"}
 
-# --- API DỌN DẸP SẠCH DỮ LIỆU CỦA 1 UNIT ---
 @app.delete("/api/clear_topic/{topic_order}")
 def clear_topic(topic_order: int, db: Session = Depends(get_db)):
     topic = db.query(models.Topic).filter(models.Topic.order_num == topic_order).first()
     if not topic:
         raise HTTPException(status_code=404, detail="Không tìm thấy Unit này trong hệ thống!")
     
-    # Tìm toàn bộ bài tập thuộc Unit này
     exercises = db.query(models.Exercise).filter(models.Exercise.topic_id == topic.topic_id).all()
     
     deleted_count = 0
     for exe in exercises:
-        # Xóa sạch các câu hỏi/thẻ từ vựng con bên trong bài tập
         db.query(models.Activity).filter(models.Activity.exercise_id == exe.exercise_id).delete()
-        # Xóa khung bài tập
         db.delete(exe)
         deleted_count += 1
         
     db.commit()
     return {"status": "success", "message": f"Đã dọn dẹp sạch sẽ {deleted_count} nhóm bài tập của UNIT {topic_order}!"}
 
-    # --- BỔ SUNG CẤU TRÚC DỮ LIỆU ĐỂ NHẬN BÁO CÁO TỪ HỌC SINH ---
-from pydantic import BaseModel
-
+# ==============================================================
+# HÀM MỚI: API NHẬN TIẾN ĐỘ TỪ TRÌNH DUYỆT HỌC SINH LƯU VÀO DATABASE
+# ==============================================================
 class ProgressUpdate(BaseModel):
     username: str
     exercise_id: int
@@ -293,21 +271,17 @@ class ProgressUpdate(BaseModel):
     score: int
     is_completed: bool
 
-# --- API NHẬN TIẾN ĐỘ TỪ TRÌNH DUYỆT HỌC SINH & LƯU VÀO DATABASE ---
 @app.post("/api/update_progress")
 def update_progress(prog: ProgressUpdate, db: Session = Depends(get_db)):
-    # 1. Tìm tài khoản học sinh đang gửi báo cáo
     user = db.query(models.User).filter(models.User.username == prog.username).first()
     if not user:
         raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
         
-    # 2. Kiểm tra xem học sinh này đã từng làm bài tập này chưa
     existing_prog = db.query(models.Progress).filter(
         models.Progress.user_id == user.user_id,
         models.Progress.exercise_id == prog.exercise_id
     ).first()
     
-    # 3. Ghi đè điểm mới (nếu làm lại) hoặc Thêm mới (nếu làm lần đầu)
     if existing_prog:
         existing_prog.score = prog.score
         existing_prog.is_completed = prog.is_completed
@@ -320,6 +294,19 @@ def update_progress(prog: ProgressUpdate, db: Session = Depends(get_db)):
         )
         db.add(new_prog)
         
-    # 4. Chốt lưu dữ liệu vĩnh viễn vào ổ cứng máy chủ
     db.commit()
     return {"status": "success", "message": "Đã đồng bộ tiến độ lên máy chủ thành công!"}
+
+# ==============================================================
+# HÀM BẢO TRÌ: ĐẬP BẢNG TIẾN ĐỘ CŨ TRÊN MÂY VÀ XÂY LẠI
+# ==============================================================
+@app.get("/api/force_reset_progress")
+def force_reset_progress():
+    try:
+        # 1. Đánh sập bảng progress cũ đang bị lỗi cấu trúc
+        models.Progress.__table__.drop(engine, checkfirst=True)
+        # 2. Yêu cầu hệ thống xây lại bảng progress với cấu trúc mới (có exercise_id)
+        models.Base.metadata.create_all(bind=engine)
+        return {"status": "success", "message": "🎉 Đã đập đi xây lại bảng Tiến độ (Progress) trên mây thành công!"}
+    except Exception as e:
+        return {"status": "error", "message": f"Lỗi: {str(e)}"}

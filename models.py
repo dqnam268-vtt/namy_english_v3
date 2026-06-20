@@ -18,14 +18,14 @@ class User(Base):
     feedbacks = relationship("Feedback", back_populates="user", cascade="all, delete-orphan")
 
 # ==========================================
-# 2. MÔ HÌNH CHỦ ĐỀ NGỮ PHÁP (TOPICS) - Thay thế cho WEEKS
+# 2. MÔ HÌNH CHỦ ĐỀ NGỮ PHÁP (TOPICS)
 # ==========================================
 class Topic(Base):
     __tablename__ = "topics"
     
     topic_id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(100), nullable=False)  # Ví dụ: 1. Tenses, 2. Modal Verbs...
-    order_num = Column(Integer, nullable=False, unique=True)  # Số thứ tự (1 đến 15)
+    title = Column(String(100), nullable=False) 
+    order_num = Column(Integer, nullable=False, unique=True)  
     
     exercises = relationship("Exercise", back_populates="topic", cascade="all, delete-orphan")
 
@@ -36,7 +36,7 @@ class Exercise(Base):
     __tablename__ = "exercises"
     
     exercise_id = Column(Integer, primary_key=True, index=True)
-    topic_id = Column(Integer, ForeignKey("topics.topic_id")) # Chuyển từ week_id sang topic_id
+    topic_id = Column(Integer, ForeignKey("topics.topic_id")) 
     title = Column(String(100), nullable=False) 
     order_num = Column(Integer, nullable=False, default=1)
     
@@ -44,6 +44,8 @@ class Exercise(Base):
     
     topic = relationship("Topic", back_populates="exercises")
     activities = relationship("Activity", back_populates="exercise", cascade="all, delete-orphan")
+    # LIÊN KẾT BÀI TẬP VỚI TIẾN ĐỘ
+    progresses = relationship("Progress", back_populates="exercise", cascade="all, delete-orphan")
 
 # ==========================================
 # 4. MÔ HÌNH HOẠT ĐỘNG CHI TIẾT (ACTIVITIES)
@@ -58,7 +60,6 @@ class Activity(Base):
     order_num = Column(Integer, nullable=False, default=1)
     
     exercise = relationship("Exercise", back_populates="activities")
-    progresses = relationship("Progress", back_populates="activity", cascade="all, delete-orphan")
 
 # ==========================================
 # 5. MÔ HÌNH TIẾN ĐỘ HỌC TẬP (PROGRESS)
@@ -68,12 +69,12 @@ class Progress(Base):
     
     progress_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.user_id"))
-    activity_id = Column(Integer, ForeignKey("activities.activity_id"))
+    exercise_id = Column(Integer, ForeignKey("exercises.exercise_id")) # ĐÃ SỬA THÀNH EXERCISE_ID
     score = Column(Integer, default=0)  
     is_completed = Column(Boolean, default=False)  
     
     user = relationship("User", back_populates="progresses")
-    activity = relationship("Activity", back_populates="progresses")
+    exercise = relationship("Exercise", back_populates="progresses") # ĐÃ SỬA LIÊN KẾT
 
 # ==========================================
 # 6. MÔ HÌNH HÒM THƯ PHẢN HỒI (FEEDBACKS)
