@@ -282,3 +282,44 @@ def clear_topic(topic_order: int, db: Session = Depends(get_db)):
         
     db.commit()
     return {"status": "success", "message": f"Đã dọn dẹp sạch sẽ {deleted_count} nhóm bài tập của UNIT {topic_order}!"}
+
+    # --- BỔ SUNG CẤU TRÚC DỮ LIỆU ĐỂ NHẬN BÁO CÁO TỪ HỌC SINH ---
+from pydantic import BaseModel
+
+class ProgressUpdate(BaseModel):
+    username: str
+    exercise_id: int
+    module_type: str
+    score: int
+    is_completed: bool
+
+# --- API NHẬN TIẾN ĐỘ TỪ TRÌNH DUYỆT HỌC SINH & LƯU VÀO DATABASE ---
+@app.post("/api/update_progress")
+def update_progress(prog: ProgressUpdate, db: Session = Depends(get_db)):
+    # 1. Tìm tài khoản học sinh đang gửi báo cáo
+    user = db.query(models.User).filter(models.User.username == prog.username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
+        
+    # 2. Kiểm tra xem học sinh này đã từng làm bài tập này chưa
+    existing_prog = db.query(models.Progress).filter(
+        models.Progress.user_id == user.user_id,
+        models.Progress.exercise_id == prog.exercise_id
+    ).first()
+    
+    # 3. Ghi đè điểm mới (nếu làm lại) hoặc Thêm mới (nếu làm lần đầu)
+    if existing_prog:
+        existing_prog.score = prog.score
+        existing_prog.is_completed = prog.is_completed
+    else:
+        new_prog = models.Progress(
+            user_id=user.user_id,
+            exercise_id=prog.exercise_id,
+            score=prog.score,
+            is_completed=prog.is_completed
+        )
+        db.add(new_prog)
+        
+    # 4. Chốt lưu dữ liệu vĩnh viễn vào ổ cứng máy chủ
+    db.commit()
+    return {"status": "success", "message": "Đã đồng bộ tiến độ lên máy chủ thành công!"}

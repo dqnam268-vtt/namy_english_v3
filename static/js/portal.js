@@ -20,6 +20,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// HÀM MỚI: TỰ ĐỘNG ĐỒNG BỘ DỮ LIỆU LÊN MÁY CHỦ CHO ADMIN
+async function syncProgressToServer(exeId, moduleType, score, isCompleted) {
+    const username = localStorage.getItem("username");
+    if (!username) return;
+
+    try {
+        await fetch("/api/update_progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: username,
+                exercise_id: exeId.toString(),
+                module_type: moduleType,
+                score: score,
+                is_completed: isCompleted
+            })
+        });
+    } catch (error) {
+        console.log("Lỗi đồng bộ tiến độ lên máy chủ:", error);
+    }
+}
+
 async function loadStudentSyllabus() {
     const container = document.getElementById("syllabus-container");
     try {
@@ -171,6 +193,8 @@ window.openExercise = function(encodedData) {
             if (finishBtn) {
                 finishBtn.onclick = () => {
                     localStorage.setItem(`namy_theory_${currentExeId}`, "completed");
+                    // GỌI HÀM BÁO CÁO LÊN MÁY CHỦ KHI HỌC XONG LÝ THUYẾT
+                    syncProgressToServer(currentExeId, "learning", 100, true);
                     closeLearningModal(); 
                 };
             }
@@ -239,6 +263,8 @@ function renderCurrentQuestion() {
                 total: currentPracticeActs.length,
                 isCompleted: true
             }));
+            // GỌI HÀM BÁO CÁO LÊN MÁY CHỦ KHI LÀM XONG BÀI TẬP
+            syncProgressToServer(currentExeId, "practice", currentScore, true);
         }
         
         loadStudentSyllabus(); 
@@ -272,7 +298,6 @@ function renderCurrentQuestion() {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += hintHtml;
         
-        // NHẬN DIỆN NHIỀU Ô TRỐNG BẰNG DẤU ";"
         if (content.answer && content.answer.includes(";")) {
             const parts = content.answer.split(";");
             html += `<div style="margin-top: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">`;
@@ -310,7 +335,6 @@ window.checkAnswer = function() {
         }
         userAnswer = selected.value;
     } else {
-        // XỬ LÝ NHIỀU Ô TRỐNG
         const multiInputs = document.querySelectorAll(".q_multi_input");
         if (multiInputs.length > 0) {
             let userAnswers = [];
@@ -335,7 +359,6 @@ window.checkAnswer = function() {
         }
     }
 
-    // Lọc bỏ khoảng trắng thừa quanh dấu ";" trước khi so sánh
     let normalizedUser = userAnswer.toLowerCase().replace(/\s*;\s*/g, ";").trim();
     let normalizedCorrect = (content.answer || "").toLowerCase().replace(/\s*;\s*/g, ";").trim();
 
