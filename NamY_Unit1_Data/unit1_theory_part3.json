@@ -1,76 +1,62 @@
 {
   "topic_order": 1,
   "module_type": "learning",
-  "exercise_title": "Unit 1: Lý Thuyết Phần 3 (Future Forms & Predictions)",
+  "exercise_title": "Unit 1: Future Forms & Other Ways",
   "activities": [
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "1. Will vs. Be going to (Quyết định & Dự đoán)",
-        "meaning": "'Will' dùng cho quyết định tức thì, lời hứa, hoặc dự đoán chủ quan. 'Be going to' dùng cho kế hoạch đã định trước hoặc dự đoán có dấu hiệu rõ ràng ở hiện tại (Vd: Look at those clouds! It is going to rain)."
+        "word": "Will / Shall",
+        "meaning": "1. predictions, offers, promises, requests, suggestions\n+ e.g. Will you help me with the dishes? / Shall I get you some coffee?\n2. on-the-spot decisions\n+ e.g. \"Your clothes are dirty.\" \"Are they? I'll wash them.\"\n3. when it is not certain whether sth will happen (prediction)\n+ e.g. If they come, I'll buy a bottle of wine.\n4. opinions, hopes, fears esp. with think, expect, suppose, etc.\n+ e.g. I think he'll pass his test."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "2. Present Continuous mang nghĩa Tương lai",
-        "meaning": "Diễn tả một sự sắp xếp cố định (fixed arrangement) đã lên lịch trình cụ thể, thường có sự tham gia của người khác. Vd: I am meeting the doctor at 3 PM tomorrow."
+        "word": "be going to",
+        "meaning": "1. intention\n+ e.g. She's going to take her driving test in a month.\n2. planned actions\n+ e.g. I know my clothes are dirty. I'm going to wash them tomorrow.\n3. when there is evidence that sth will definitely happen\n+ e.g. She's going to have a baby.\n4. action seen as a result of sth else in the future\n+ e.g. He doesn't know how to light a fire. He's going to burn himself."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "3. Present Simple mang nghĩa Tương lai",
-        "meaning": "Dùng cho lịch trình tàu xe, máy bay, rạp chiếu phim, hoặc các chương trình cố định (timetables/schedules). Vd: The flight leaves at 10:30 tomorrow morning."
+        "word": "Future Continuous",
+        "meaning": "1. action in progress at a certain time in the future\n+ e.g. I'll be flying to Paris this time tomorrow.\n2. logical assumption about the present\n+ e.g. He will be sleeping now. (It's midnight.)\n3. already planned action (instead of Present Cont.)\n+ e.g. I'll be seeing Sam tonight. Would you like me to tell him the news?"
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "4. Future Continuous (will be + V-ing)",
-        "meaning": "Hành động sẽ ĐANG diễn ra tại một thời điểm xác định trong tương lai, hoặc một sự việc chắc chắn xảy ra theo tiến trình bình thường. Vd: This time next week, I will be relaxing on the beach."
+        "word": "Future Perfect",
+        "meaning": "1. action finished before a certain future time\n+ e.g. By the end of July he will have been in Athens for two months.\n2. logical assumption in the past\n+ e.g. It's mid-night. She will have gone to sleep by now."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "5. Future Perfect (will have + V3/ed)",
-        "meaning": "Hành động sẽ HOÀN TẤT trước một mốc thời gian hoặc trước một hành động khác trong tương lai. Thường đi kèm với 'By', 'By the time', 'Before'. Vd: By 2030, they will have built a new bridge."
+        "word": "Future Perfect Continuous",
+        "meaning": "1. duration of an action up to a certain time in the future\n+ e.g. By next Sunday, they will have been painting that house for two weeks."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "6. Future Perfect Continuous (will have been + V-ing)",
-        "meaning": "Nhấn mạnh ĐỘ DÀI hoặc QUÁ TRÌNH của hành động tính đến một mốc thời gian trong tương lai. Vd: By next month, I will have been living here for 5 years."
+        "word": "Notes: by/before vs until",
+        "meaning": "by/before are used with Future Perfect in positive sentences; until is used in negative sentences.\n+ e.g. She will have cleaned the house by 6 o'clock.\n+ e.g. She won't have cleaned the house until 6 o'clock."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "7. Cấu trúc Tương lai trang trọng (Be to + V)",
-        "meaning": "Dùng trong văn phong trang trọng, thông báo tin tức, chỉ thị chính thức hoặc sự kiện đã được sắp xếp cố định. Vd: The Prime Minister is to visit Japan next week."
+        "word": "be + infinitive",
+        "meaning": "(future plans)\n+ e.g. The meeting is to take place on Wednesday."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "8. Tương lai sát sườn (Be about to + V)",
-        "meaning": "Diễn tả một hành động sắp sửa xảy ra ngay lập tức (immediate future). Thường không dùng kèm trạng từ chỉ thời gian cụ thể. Vd: Hurry up! The train is about to leave."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "9. Tương lai kịch tính (Be on the point/verge of + V-ing/Noun)",
-        "meaning": "Nhấn mạnh trạng thái 'bên bờ vực', sắp sửa đối mặt với một sự việc (thường quan trọng hoặc kịch tính). Vd: The company is on the verge of bankruptcy."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "10. QUAN TRỌNG: Mệnh đề thời gian (Time Clauses)",
-        "meaning": "KHÔNG BAO GIỜ dùng thì Tương lai (will) trong mệnh đề thời gian (sau when, as soon as, until, before, after). Bắt buộc phải dùng Hiện tại đơn hoặc Hiện tại hoàn thành. Vd: I will call you as soon as I arrive (KHÔNG dùng: will arrive)."
+        "word": "be about + infinitive / be on the point of + gerund",
+        "meaning": "(immediate future)\n+ e.g. They are about to leave.\n+ e.g. They are on the point of leaving."
       }
     }
   ]

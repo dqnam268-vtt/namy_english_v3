@@ -1,83 +1,55 @@
 {
   "topic_order": 1,
   "module_type": "learning",
-  "exercise_title": "Unit 1: Lý Thuyết Phần 2 (Past Tenses & Past Habits)",
+  "exercise_title": "Unit 1: Past Tenses & Used to / Would",
   "activities": [
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "1. Past Simple: Cách dùng cốt lõi",
-        "meaning": "Diễn tả hành động đã hoàn tất trọn vẹn trong quá khứ, biết rõ thời gian. Thường dùng kể một chuỗi hành động xảy ra liên tiếp. Vd: He walked in, took off his coat and sat down."
+        "word": "Simple Past",
+        "meaning": "1. action completed in the past when there is direct or indirect time reference\n+ e.g. He left an hour ago. (direct time reference)\n+ e.g. She phoned before the boss came. (indirect time reference)\n2. past habitual action\n+ e.g. He travelled/used to travel a lot when he was young.\n3. past actions happening one after the other\n+ e.g. He stood up, got his briefcase and left the office.\n4. past action which won't be repeated\n+ e.g. Monroe starred in \"The Seven Year Itch.\""
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "2. Past Continuous: Bối cảnh & Xen ngang",
-        "meaning": "Diễn tả hành động đang xảy ra (kéo dài) thì có hành động khác xen vào (Past Simple). Dùng để mô tả bối cảnh (background) của một câu chuyện. Vd: The sun was shining and the birds were singing when she woke up."
+        "word": "Past Continuous",
+        "meaning": "1. past action in progress at a given point in time.\n+ e.g. She was still working at eight o'clock yesterday evening.\n2. past action in progress interrupted by another action.\n+ e.g. She was leaving when the phone rang.\n3. simultaneous past actions\n+ e.g. While Jane was getting dressed, Tom was enjoying his drink.\n4. polite inquiries\n+ e.g. I was wondering if you could help me."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "3. Past Continuous: Hành động song song",
-        "meaning": "Hai hoặc nhiều hành động kéo dài xảy ra cùng một lúc trong quá khứ, thường nối với nhau bằng 'while'. Vd: While I was studying, my brother was playing games."
+        "word": "Past Perfect",
+        "meaning": "1. past action which happened before another past action\n+ e.g. She had already typed all the letters before her boss arrived.\n2. as the past equivalent of the Present Perfect\n+ Compare: I haven't done it yet. I had already done it by the time he called."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "4. Past Perfect Simple: 'Quá khứ của Quá khứ'",
-        "meaning": "Hành động xảy ra và hoàn tất TRƯỚC một thời điểm hoặc một hành động khác trong quá khứ. Vd: By the time the police arrived (QKĐ), the thieves had escaped (QKH)."
+        "word": "Past Perfect Continuous",
+        "meaning": "1. duration of a past action occurring before another past action\n+ e.g. She had been cooking all day long when Tom came home with some fish and chips.\n2. action producing visible results in the past\n+ e.g. She was covered in paint because she had been painting her room."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "5. Past Perfect vs. Past Simple (CPE Tip)",
-        "meaning": "Khi dùng 'before' hoặc 'after', nếu trình tự thời gian đã quá rõ ràng, ta có thể dùng Past Simple cho cả hai vế. Tuy nhiên, Past Perfect nhấn mạnh tính HOÀN TẤT trước hành động kia. Vd: After he (had) finished work, he went home."
+        "word": "used to + infinitive",
+        "meaning": "(past habitual action)\n+ e.g. He used to work till late at night. (He doesn't anymore.)"
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "6. Past Perfect Continuous: Nhấn mạnh quá trình",
-        "meaning": "Tương tự Past Perfect nhưng nhấn mạnh SỰ LIÊN TỤC của hành động kéo dài đến tận khi hành động khác (QKĐ) xảy ra. Vd: He had been waiting for an hour when the bus finally arrived."
+        "word": "be / get used to + gerund/noun",
+        "meaning": "(habitual action)\n+ e.g. She isn't used to driving on the left.\n+ e.g. I haven't got used to living abroad yet."
       }
     },
     {
       "type": "Học Từ Vựng (Vocabulary)",
       "content": {
-        "word": "7. Past Perfect Continuous: Bằng chứng trong quá khứ",
-        "meaning": "Dùng để giải thích cho một kết quả hoặc tình trạng nhìn thấy rõ trong quá khứ. Vd: The ground was wet (QKĐ). It had been raining (QKHTTD)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "8. Cấu trúc 'Used to': Thói quen & Trạng thái",
-        "meaning": "Diễn tả thói quen hoặc TRẠNG THÁI từng có trong quá khứ nhưng nay không còn. Vd: I used to smoke (Thói quen). / There used to be a cinema here (Trạng thái)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "9. Cấu trúc 'Would': Chỉ Thói quen",
-        "meaning": "Diễn tả sự lặp đi lặp lại (thói quen) trong quá khứ. KHÔNG dùng 'would' cho trạng thái (stative verbs). Vd: When I was young, I would play outside all day. (KHÔNG dùng: I would be a student)."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "10. Phân biệt: Used to vs. Be/Get used to",
-        "meaning": "Used to + V(bare): Đã từng. / Be used to + V-ing: Đã quen với (trạng thái). / Get used to + V-ing: Dần quen với (quá trình thay đổi). Vd: I am getting used to waking up early."
-      }
-    },
-    {
-      "type": "Học Từ Vựng (Vocabulary)",
-      "content": {
-        "word": "11. Dấu hiệu thời gian quá khứ cần nhớ",
-        "meaning": "Past Simple: ago, last, yesterday, in 1990. / Past Perfect: By the time, Before + mốc QK, After. / Past Continuous: At this time yesterday, While/When."
+        "word": "would",
+        "meaning": "(past repeated action and routine)\n+ e.g. When I was at my grandparents' cottage I would wake up early and go for a ride."
       }
     }
   ]
