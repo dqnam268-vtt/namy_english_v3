@@ -1,0 +1,973 @@
+{
+"topic_order": 1,
+"module_type": "learning",
+"exercise_title": "Words with Prepositions (A - B)",
+"activities": [
+{
+"type": "Vocabulary",
+"content": {
+"word": "abashed by",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "abide by",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "abscond with sth from",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "absent from",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "absorbed in",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "absorption by",
+"meaning": "(n) (= action of being absorbed by)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "absorption in",
+"meaning": "(n) (= fascination for)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "abstinence from",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "abstain from",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "abstraction of sth from sth",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "abuse of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "acceptable to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "access to",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "accompanied by",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "accord with",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "according to",
+"meaning": "(prep)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "account for",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "accuse sb of sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "accustomed to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "acquaint sb with sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "acquainted with",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "acquit sb of sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "act for",
+"meaning": "(v) (= on sb's behalf)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "act of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "act on",
+"meaning": "(v) (= as a result of sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "addicted to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "addition to",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "adequate for",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "adhere to",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "adjacent to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "adjust to",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "admission of",
+"meaning": "(n) (= confession)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "admission to/into",
+"meaning": "(n) (= permission to enter a place, join a group, club etc)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "admit to",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "advantage over sb",
+"meaning": "(n) (= better position than sb)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "advise sb against sth",
+"meaning": "(v) (= advise sb not to do sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "advise sb of sth",
+"meaning": "(v) (= inform sb about sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "advise sb on sth",
+"meaning": "(v) (= give suggestions)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "affectionate towards",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "affinity with",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "afraid of + noun",
+"meaning": "(adj) (spiders, the dark etc)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "afraid to + verb",
+"meaning": "(adj) (look, swim etc)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "age of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "agree on",
+"meaning": "(v) (= to reach a decision with others)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "agree to",
+"meaning": "(v) (= agree to do sth or allow sb else to do sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "agree with sb about sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "agree with sth",
+"meaning": "(v) (= to approve of sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "agreeable to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "ahead of",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "aim (sth) at",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "allergic to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "allusion to",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "amazed at/by",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "amenable to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "amount of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "amount to",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "amused at/by",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "angry at (+ gerund)",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "angry with sb about sth",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "animosity towards",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "annexe to/of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "annoyed at/about sth",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "annoyed with sb",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "answer to",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "antipathetic to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "anxious about sth",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "anxious for sb",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "apart from",
+"meaning": ""
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "apologise to sb for sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "apparent in/from sth",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "apparent to sb",
+"meaning": "(adj) (= clear, obvious)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "appeal to sb",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "apply to sb for sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "appreciative of",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "apprehensive of / about",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "approve of",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "aptitude for",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "argue about sth",
+"meaning": "(v) (= to disagree about sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "argue for/against sth",
+"meaning": "(v) (= give reasons why / why not sth should be, happen etc)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "argue with sb",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "arrest sb for sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "arrive at",
+"meaning": "(v) (a fixed address, a small place, conclusion)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "arrive in",
+"meaning": "(v) (a large area, country)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "ashamed of",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "ask (sb) about",
+"meaning": "(v) (= ask for information about sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "ask (sb) for",
+"meaning": "(v) (= say that you want sth)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "assault on",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "assigned to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "associate (sth/sb) with",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "assure sb of",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "astonished at / by",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "attached to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "attempt on (sb's life)",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "attend to",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "attendance at",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "attitude to/towards",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "auxiliary to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "averse to",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "aversion to",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "avoidance of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "aware of",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "awkward at / with",
+"meaning": "(adj) (at dancing etc / with one's hands etc)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "back out of",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bad at sth",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bad to sb",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bags of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "ban on",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "barter for",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "base sth on",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bash in/up",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "basis for/of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bear with",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bearer of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "(make a) beeline for",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "beg (sb) for",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "begin by (+ gerund)",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "begin with (+ noun)",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "belief in",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "believe in",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "belong to sb",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "benefit from",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "benefit of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bet (sth) on",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "beware of",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bit of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "blame sb for sth",
+"meaning": "(v) (but: put the blame on)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "boast of/about sth",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "book into",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bored with/by",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "borrow sth from sb",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bother about/with",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bottom of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "breach of",
+"meaning": "(n)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "break into/out of",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "brilliant at",
+"meaning": "(adj)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "bump into",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "burst into",
+"meaning": "(v)"
+}
+},
+{
+"type": "Vocabulary",
+"content": {
+"word": "busy with",
+"meaning": "(adj)"
+}
+}
+]
+}
