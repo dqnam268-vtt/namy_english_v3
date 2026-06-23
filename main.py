@@ -195,13 +195,22 @@ def get_stats(db: Session = Depends(get_db)):
 def get_users(db: Session = Depends(get_db)):
     users = db.query(models.User).filter(models.User.role == "student").all()
     
-    # 1. Đếm tổng số lượng Lý thuyết và Bài tập đang có trên toàn hệ thống
     total_learning = db.query(models.Exercise).filter(models.Exercise.module_type == "learning").count()
     total_practice = db.query(models.Exercise).filter(models.Exercise.module_type == "practice").count()
     
-    # 2. Gom sẵn tổng số câu hỏi của từng bài tập (để in ra tỷ lệ 1/8, 10/26...)
-    act_counts = db.query(models.Activity.exercise_id, func.count(models.Activity.activity_id)).group_by(models.Activity.exercise_id).all()
-    act_map = {exe_id: count for exe_id, count in act_counts}
+    # 2. Gom sẵn tổng số câu hỏi của từng bài tập
+    # THUẬT TOÁN MỚI: Duyệt để đếm chính xác số lượng dấu ";" sinh ra số ô trống
+    all_acts = db.query(models.Activity.exercise_id, models.Activity.content).all()
+    act_map = {}
+    for exe_id, content in all_acts:
+        if exe_id not in act_map:
+            act_map[exe_id] = 0
+            
+        ans = content.get("answer", "") if isinstance(content, dict) else ""
+        if ans and ";" in ans:
+            act_map[exe_id] += len(ans.split(";"))
+        else:
+            act_map[exe_id] += 1
 
     result = []
     for u in users:
@@ -215,7 +224,7 @@ def get_users(db: Session = Depends(get_db)):
         details = []
         
         for prog, exe in progresses:
-            total_qs = act_map.get(exe.exercise_id, 1) # Lấy số câu hỏi của bài này
+            total_qs = act_map.get(exe.exercise_id, 1) 
             
             if exe.module_type == "learning":
                 if prog.is_completed:
@@ -231,7 +240,6 @@ def get_users(db: Session = Depends(get_db)):
                     practice_done += 1
                     
                 score_str = f"{prog.score}/{total_qs}"
-                # Lấy tên ngắn gọn (Vd: "Unit 1.1: Present Tenses" -> "Unit 1.1") để bảng không bị rối
                 short_title = exe.title.split(":")[0] if ":" in exe.title else exe.title
                 practice_scores.append(f"{short_title} ({score_str})")
                 
@@ -242,7 +250,6 @@ def get_users(db: Session = Depends(get_db)):
                     "status": "Hoàn thành" if prog.is_completed else "Đang làm"
                 })
         
-        # 3. Tính phần trăm (%) tiến độ
         theory_pct = round((learning_done / total_learning * 100)) if total_learning > 0 else 0
         practice_pct = round((practice_done / total_practice * 100)) if total_practice > 0 else 0
         
