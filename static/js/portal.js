@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: PORTAL MODULE (INLINE CLOZE TEST & AUTO-SYNC)
+// NAMY V3: PORTAL MODULE (INLINE CLOZE TEST, AUTO-SYNC & SURVEY)
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -142,6 +142,12 @@ function renderSyllabus(syllabusData, container) {
         } else {
             html += `<p style="color: #94a3b8; font-style: italic; padding-left: 8px;">Chuyên đề này đang được biên soạn...</p>`;
         }
+        
+        // THÊM NÚT BẤM KHẢO SÁT VÀO CUỐI MỖI UNIT
+        html += `<div style="width: 100%; text-align: right; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1;">
+                    <button onclick="showSurvey()" style="background: #f59e0b; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🌟 Đánh giá Unit này</button>
+                 </div>`;
+                 
         html += `</div></div>`;
     });
     
@@ -390,32 +396,47 @@ window.nextQuestion = function() {
     localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({ qIndex: currentQIndex, score: currentScore, total: currentCalculatedTotal, isCompleted: false }));
     renderCurrentQuestion();
 };
+
 // Hiển thị bảng khảo sát
 window.showSurvey = function() {
     document.getElementById("survey-modal").style.display = "flex";
 }
 
-// Xử lý nộp khảo sát
-window.submitSurvey = function() {
+// Xử lý nộp khảo sát và gửi về Admin
+window.submitSurvey = async function() {
     const q1 = document.querySelector('input[name="q1"]:checked');
     const q2 = document.querySelector('input[name="q2"]:checked');
-    const q3 = document.querySelector('input[name="q3"]:checked'); // Câu hỏi Overall đã thành q3
+    const q3 = document.querySelector('input[name="q3"]:checked');
     const textFeedback = document.getElementById("survey-feedback").value;
 
-    // Đã thay đổi logic kiểm tra chỉ còn từ q1 đến q3
     if (!q1 || !q2 || !q3) {
         alert("Please answer all the Likert scale questions (1-3) before submitting!");
         return;
     }
 
-    // Ghi nhận dữ liệu ra console để thầy kiểm tra
-    console.log("Survey Submitted:", {
-        grammar_score: q1.value,
-        vocab_score: q2.value,
-        overall_score: q3.value,
-        suggestion: textFeedback
-    });
+    const username = localStorage.getItem("username");
+    if (!username) return;
 
-    alert("Thank you for your valuable feedback! 💖");
-    document.getElementById("survey-modal").style.display = "none";
+    try {
+        // Bắn dữ liệu về máy chủ
+        const res = await fetch("/api/submit_survey", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: username,
+                grammar: parseInt(q1.value),
+                vocab: parseInt(q2.value),
+                overall: parseInt(q3.value),
+                suggestion: textFeedback
+            })
+        });
+
+        if (res.ok) {
+            alert("Thank you for your valuable feedback! 💖");
+            document.getElementById("survey-modal").style.display = "none";
+            document.getElementById("unit-survey-form").reset(); // Xóa trắng form để lần sau đánh giá tiếp
+        }
+    } catch (error) {
+        alert("Lỗi kết nối máy chủ! Vui lòng thử lại sau.");
+    }
 }

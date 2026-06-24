@@ -189,7 +189,7 @@ def get_stats(db: Session = Depends(get_db)):
     }
 
 # ==============================================================
-# HÀM MỚI: TÍNH TOÁN % LÝ THUYẾT, BÀI TẬP VÀ ĐIỂM SỐ TỪNG CÂU
+# TÍNH TOÁN % LÝ THUYẾT, BÀI TẬP VÀ ĐIỂM SỐ TỪNG CÂU
 # ==============================================================
 @app.get("/api/users")
 def get_users(db: Session = Depends(get_db)):
@@ -198,8 +198,6 @@ def get_users(db: Session = Depends(get_db)):
     total_learning = db.query(models.Exercise).filter(models.Exercise.module_type == "learning").count()
     total_practice = db.query(models.Exercise).filter(models.Exercise.module_type == "practice").count()
     
-    # 2. Gom sẵn tổng số câu hỏi của từng bài tập
-    # THUẬT TOÁN MỚI: Duyệt để đếm chính xác số lượng dấu ";" sinh ra số ô trống
     all_acts = db.query(models.Activity.exercise_id, models.Activity.content).all()
     act_map = {}
     for exe_id, content in all_acts:
@@ -375,3 +373,31 @@ def force_reset_progress():
         return {"status": "success", "message": "🎉 Đã đập đi xây lại bảng Tiến độ (Progress) trên mây thành công!"}
     except Exception as e:
         return {"status": "error", "message": f"Lỗi: {str(e)}"}
+
+# ==============================================================
+# HÀM MỚI: API NHẬN ĐÁNH GIÁ (SURVEY) VÀ LƯU VÀO BẢNG FEEDBACK
+# ==============================================================
+class SurveySubmit(BaseModel):
+    username: str
+    grammar: int
+    vocab: int
+    overall: int
+    suggestion: str
+
+@app.post("/api/submit_survey")
+def submit_survey(survey: SurveySubmit, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username == survey.username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
+        
+    # Đóng gói điểm số thành một câu báo cáo đẹp mắt có chứa icon ngôi sao
+    msg = f"Ngữ pháp: {survey.grammar}⭐ | Từ vựng: {survey.vocab}⭐ | Chung: {survey.overall}⭐"
+    if survey.suggestion:
+        msg += f" | Góp ý: {survey.suggestion}"
+        
+    # Tận dụng bảng Feedback có sẵn để lưu trữ (không cần đập Database)
+    new_fb = models.Feedback(user_id=user.user_id, message=msg, location="Đánh giá Unit")
+    db.add(new_fb)
+    db.commit()
+    
+    return {"status": "success", "message": "Đã lưu đánh giá!"}
