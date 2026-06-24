@@ -279,15 +279,21 @@ function renderCurrentQuestion() {
 
     let html = `<div style="margin-bottom: 15px;"><span style="background:#e0f2fe; color:#0284c7; padding: 5px 12px; border-radius: 12px; font-size: 0.85rem; font-weight:bold;">Câu ${currentQIndex + 1} / ${currentPracticeActs.length} - ${type}</span></div>`;
     let promptText = content.question || content.original || "";
+    let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626; font-size: 0.95rem;">TỪ KHÓA BẮT BUỘC: [ ${content.keyword} ]</div>` : "";
     
+    // TÍNH NĂNG ĐIỀN TỪ TRỰC TIẾP (ĐÃ TỐI ƯU CSS CHO MOBILE)
     if (promptText.includes("___")) {
         let inputIndex = 0;
         promptText = promptText.replace(/___/g, function() {
-            let inpHtml = `<input type="text" class="q_multi_input_inline" data-index="${inputIndex}" placeholder="_____" style="width: 140px; padding: 2px 5px; border: none; border-bottom: 2px solid #3b82f6; border-radius: 0; font-size: 1.15rem; text-align: center; color: #1d4ed8; font-weight: bold; background: transparent; outline: none; margin: 0 6px; transition: 0.3s; font-family: inherit;">`;
+            // Điều chỉnh width xuống 100px để không đẩy chữ trên di động
+            let inpHtml = `<input type="text" class="q_multi_input_inline" data-index="${inputIndex}" placeholder="_____" style="width: 100px; padding: 2px 5px; border: none; border-bottom: 2px solid #3b82f6; border-radius: 0; font-size: 1.1rem; text-align: center; color: #1d4ed8; font-weight: bold; background: transparent; outline: none; margin: 0 4px; transition: 0.3s; font-family: inherit;">`;
             inputIndex++;
             return inpHtml;
         });
-        html += `<div style="font-size: 1.25rem; font-weight: normal; margin-bottom: 20px; color:#1e293b; line-height: 2.4; text-align: justify; padding: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">${promptText}</div>`;
+        
+        // Đổi text-align thành left, line-height thành 2.0, padding thành 15px, box-sizing: border-box; word-wrap: break-word
+        html += `<div style="font-size: 1.15rem; font-weight: normal; margin-bottom: 20px; color:#1e293b; line-height: 2.0; text-align: left; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); box-sizing: border-box; word-wrap: break-word;">${promptText}</div>`;
+        html += hintHtml;
     } 
     else if (content.options && Array.isArray(content.options)) {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
@@ -299,7 +305,9 @@ function renderCurrentQuestion() {
     } 
     else {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
-        html += `<div style="margin-top: 20px;"><input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem;"></div>`;
+        html += hintHtml;
+        // Đảm bảo thẻ input không tràn khung
+        html += `<div style="margin-top: 20px;"><input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box;"></div>`;
     }
     container.innerHTML = html;
 }
