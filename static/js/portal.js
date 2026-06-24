@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             const studentName = localStorage.getItem("username") || "Em";
             const nameEl = document.getElementById("student-name");
-            if (nameEl) nameEl.innerText = "Xin chào, " + studentName + "!";
+            if (nameEl) nameEl.innerText = "Superb day, " + studentName + "!";
             
             loadStudentSyllabus();
         }
@@ -133,7 +133,7 @@ function renderSyllabus(syllabusData, container) {
                     </div>`;
             });
         } else {
-            html += `<p style="color: #94a3b8; font-style: italic; padding-left: 8px;">Chuyên đề này đang được biên soạn...</p>`;
+            html += `<p style="color: #94a3b8; font-style: italic; padding-left: 8px;">New lesson is on the way. Stay tuned!</p>`;
         }
         
         // KIỂM TRA ĐIỀU KIỆN ĐỂ HIỂN THỊ NÚT KHẢO SÁT
