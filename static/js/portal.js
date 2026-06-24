@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: PORTAL MODULE (INLINE CLOZE TEST, AUTO-SYNC & SURVEY)
+// NAMY V3: PORTAL MODULE (INLINE CLOZE, AUTO-SYNC & FORCED SURVEY)
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,34 +15,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     } catch (err) {
         console.error("Lỗi khởi tạo:", err);
-        const container = document.getElementById("syllabus-container");
-        if (container) container.innerHTML = `<p style="color:red; text-align:center; font-weight:bold;">Lỗi giao diện: ${err.message}</p>`;
     }
 });
 
 async function syncProgressToServer(exeId, moduleType, score, isCompleted) {
     const username = localStorage.getItem("username");
     if (!username) return;
-
     try {
         const response = await fetch("/api/update_progress", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                username: username,
-                exercise_id: parseInt(exeId),
-                module_type: moduleType,
-                score: parseInt(score),
-                is_completed: isCompleted
-            })
+            body: JSON.stringify({ username, exercise_id: parseInt(exeId), module_type: moduleType, score: parseInt(score), is_completed: isCompleted })
         });
-        
-        if (response.ok) {
-            localStorage.setItem(`namy_synced_${exeId}_${score}`, "true");
-        }
-    } catch (error) {
-        console.log("Lỗi đồng bộ:", error);
-    }
+        if (response.ok) localStorage.setItem(`namy_synced_${exeId}_${score}`, "true");
+    } catch (error) { console.log("Lỗi đồng bộ:", error); }
 }
 
 async function loadStudentSyllabus() {
@@ -60,6 +46,10 @@ async function loadStudentSyllabus() {
     }
 }
 
+// Biến lưu trữ tạm thời Unit đang cần đánh giá
+let pendingSurveyTopicId = null;
+let pendingSurveyTopicTitle = "";
+
 function renderSyllabus(syllabusData, container) {
     if (!syllabusData || syllabusData.length === 0) {
         container.innerHTML = `<p style="text-align:center; color: #64748b;">Thầy chưa mở khóa bài học nào.</p>`;
@@ -67,31 +57,31 @@ function renderSyllabus(syllabusData, container) {
     }
 
     let html = "";
+    pendingSurveyTopicId = null; // Reset mỗi lần tải lại
+
     syllabusData.forEach(topic => {
         html += `<div class="topic-card">
             <h2 style="color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top:0;">⭐ ${topic.title}</h2>
             <div style="display: flex; flex-wrap: wrap; margin-top: 15px;">`;
         
-        if (topic.exercises && topic.exercises.length > 0) {
+        let isTopicCompleted = true; // Cờ kiểm tra hoàn thành 100%
+        let hasExercises = topic.exercises && topic.exercises.length > 0;
+
+        if (!hasExercises) isTopicCompleted = false;
+
+        if (hasExercises) {
             topic.exercises.sort((a, b) => {
                 if (a.module_type !== b.module_type) return a.module_type === 'learning' ? -1 : 1; 
                 return a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}); 
             });
 
-            const uniqueExercises = [];
-            const titlesSeen = new Set();
-            for (let exe of topic.exercises) {
-                if (!titlesSeen.has(exe.title)) { titlesSeen.add(exe.title); uniqueExercises.push(exe); }
-            }
-
-            uniqueExercises.forEach(exe => {
+            topic.exercises.forEach(exe => {
                 const btnClass = exe.module_type === "learning" ? "exe-learning" : "exe-practice";
                 const exeDataStr = encodeURIComponent(JSON.stringify(exe)).replace(/'/g, "%27");
                 
                 let progressPercent = 0; let progressText = "Chưa học"; let barClass = "progress-learning-bar";
-
-                // TÍNH TOÁN TỔNG SỐ ĐIỂM THỰC TẾ (Đếm số dấu chấm phẩy ; để lấy số ô trống)
                 let tempTotal = 0;
+                
                 if (exe.activities) {
                     exe.activities.forEach(a => {
                         let aAns = (a.content && a.content.answer) ? a.content.answer : "";
@@ -105,16 +95,17 @@ function renderSyllabus(syllabusData, container) {
                     if (isCompleted === "completed") {
                         progressPercent = 100; progressText = "🚀 Đã ghi nhớ (100%)";
                         syncProgressToServer(exe.id, "learning", 100, true);
-                    } else { progressText = "⏳ Chưa xem"; }
+                    } else { 
+                        progressText = "⏳ Chưa xem"; 
+                        isTopicCompleted = false; // Đánh dấu chưa hoàn thành Unit
+                    }
                     barClass = "progress-learning-bar";
-                } 
-                else {
+                } else {
                     barClass = "progress-practice-bar";
                     const savedProgress = localStorage.getItem(`namy_progress_${exe.id}`);
                     if (savedProgress) {
                         const parsed = JSON.parse(savedProgress);
                         const totalQ = parsed.total || tempTotal || 1;
-                        
                         progressPercent = Math.round((parsed.score / totalQ) * 100);
                         if (progressPercent > 100) progressPercent = 100;
 
@@ -124,9 +115,11 @@ function renderSyllabus(syllabusData, container) {
                         } else {
                             progressText = `📝 Đang làm: Đúng ${parsed.score}/${totalQ} điểm (${progressPercent}%)`;
                             syncProgressToServer(exe.id, "practice", parsed.score, false);
+                            isTopicCompleted = false; // Đánh dấu chưa hoàn thành Unit
                         }
                     } else {
                         progressText = `✍️ Làm Bài tập (0/${tempTotal} điểm)`;
+                        isTopicCompleted = false; // Đánh dấu chưa hoàn thành Unit
                     }
                 }
                 
@@ -143,17 +136,41 @@ function renderSyllabus(syllabusData, container) {
             html += `<p style="color: #94a3b8; font-style: italic; padding-left: 8px;">Chuyên đề này đang được biên soạn...</p>`;
         }
         
-        // THÊM NÚT BẤM KHẢO SÁT VÀO CUỐI MỖI UNIT
-        html += `<div style="width: 100%; text-align: right; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1;">
-                    <button onclick="showSurvey()" style="background: #f59e0b; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🌟 Đánh giá Unit này</button>
-                 </div>`;
-                 
-        html += `</div></div>`;
+        // KIỂM TRA ĐIỀU KIỆN ĐỂ HIỂN THỊ NÚT KHẢO SÁT
+        const isSurveyDone = localStorage.getItem(`namy_survey_done_${topic.topic_id}`);
+        let btnSurveyHtml = "";
+
+        if (hasExercises && isTopicCompleted && !isSurveyDone) {
+            // Trường hợp: Đã học xong 100% nhưng chưa đánh giá -> Ép làm
+            btnSurveyHtml = `<button onclick="showSurvey(${topic.topic_id}, '${topic.title.replace(/'/g, "\\'")}')" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.4);">⚠️ Bắt buộc: Đánh giá Unit này</button>`;
+            
+            // Lấy Unit đầu tiên thỏa mãn để tự động pop-up
+            if (!pendingSurveyTopicId) {
+                pendingSurveyTopicId = topic.topic_id;
+                pendingSurveyTopicTitle = topic.title;
+            }
+        } else if (hasExercises && isTopicCompleted && isSurveyDone) {
+            // Trường hợp: Đã đánh giá xong
+            btnSurveyHtml = `<button disabled style="background: #10b981; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: not-allowed; font-weight: bold; font-size: 0.95rem;">✅ Đã hoàn thành đánh giá</button>`;
+        } else if (hasExercises) {
+            // Trường hợp: Chưa học xong
+            btnSurveyHtml = `<button disabled style="background: #e2e8f0; color: #94a3b8; border: none; padding: 8px 15px; border-radius: 8px; cursor: not-allowed; font-weight: bold; font-size: 0.95rem;">🔒 Hoàn thành bài để Đánh giá</button>`;
+        }
+
+        html += `<div style="width: 100%; text-align: right; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1;">${btnSurveyHtml}</div></div></div>`;
     });
     
     container.innerHTML = html;
+
+    // TỰ ĐỘNG BẬT BẢNG KHẢO SÁT NẾU CÓ UNIT CHƯA ĐÁNH GIÁ
+    if (pendingSurveyTopicId) {
+        setTimeout(() => {
+            showSurvey(pendingSurveyTopicId, pendingSurveyTopicTitle);
+        }, 800);
+    }
 }
 
+// ... (Giữ nguyên các hàm closeLearningModal, closePracticeModal, openExercise, restartExercise, renderCurrentQuestion, checkAnswer, nextQuestion như cũ) ...
 window.closeLearningModal = function() { document.getElementById('learning-modal').style.display = 'none'; loadStudentSyllabus(); };
 window.closePracticeModal = function() { document.getElementById('practice-modal').style.display = 'none'; loadStudentSyllabus(); };
 
@@ -201,8 +218,6 @@ window.openExercise = function(encodedData) {
             
         } else {
             currentPracticeActs = exe.activities;
-            
-            // Tính tổng số điểm thực tế cho bài này
             currentCalculatedTotal = 0;
             currentPracticeActs.forEach(act => {
                 let ans = (act.content && act.content.answer) ? act.content.answer : "";
@@ -258,51 +273,34 @@ function renderCurrentQuestion() {
     }
 
     btnCheck.style.display = "block"; btnCheck.disabled = false;
-
     const act = currentPracticeActs[currentQIndex];
     const content = act.content || {};
     const type = act.type || act.activity_type || "Bài tập";
 
-    let html = `<div style="margin-bottom: 15px;">
-        <span style="background:#e0f2fe; color:#0284c7; padding: 5px 12px; border-radius: 12px; font-size: 0.85rem; font-weight:bold;">Câu ${currentQIndex + 1} / ${currentPracticeActs.length} - ${type}</span>
-    </div>`;
-
+    let html = `<div style="margin-bottom: 15px;"><span style="background:#e0f2fe; color:#0284c7; padding: 5px 12px; border-radius: 12px; font-size: 0.85rem; font-weight:bold;">Câu ${currentQIndex + 1} / ${currentPracticeActs.length} - ${type}</span></div>`;
     let promptText = content.question || content.original || "";
-    let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626;">TỪ KHÓA BẮT BUỘC: [ ${content.keyword} ]</div>` : "";
     
-    // TÍNH NĂNG MỚI: ĐIỀN TỪ TRỰC TIẾP VÀO ĐOẠN VĂN (INLINE CLOZE TEST)
     if (promptText.includes("___")) {
         let inputIndex = 0;
-        // Quét tất cả dấu ___ và thay bằng ô input
         promptText = promptText.replace(/___/g, function() {
             let inpHtml = `<input type="text" class="q_multi_input_inline" data-index="${inputIndex}" placeholder="_____" style="width: 140px; padding: 2px 5px; border: none; border-bottom: 2px solid #3b82f6; border-radius: 0; font-size: 1.15rem; text-align: center; color: #1d4ed8; font-weight: bold; background: transparent; outline: none; margin: 0 6px; transition: 0.3s; font-family: inherit;">`;
             inputIndex++;
             return inpHtml;
         });
-        
         html += `<div style="font-size: 1.25rem; font-weight: normal; margin-bottom: 20px; color:#1e293b; line-height: 2.4; text-align: justify; padding: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">${promptText}</div>`;
-        html += hintHtml;
     } 
     else if (content.options && Array.isArray(content.options)) {
-        // Trắc nghiệm
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += `<div style="display:flex; flex-direction:column; gap: 10px;">`;
         content.options.forEach((opt) => {
-            html += `<label class="opt-label" style="padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: 0.2s;">
-                <input type="radio" name="q_opt" value="${opt.replace(/"/g, '&quot;')}" style="margin-right: 10px;"> ${opt}
-            </label>`;
+            html += `<label class="opt-label" style="padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: 0.2s;"><input type="radio" name="q_opt" value="${opt.replace(/"/g, '&quot;')}" style="margin-right: 10px;"> ${opt}</label>`;
         });
         html += `</div>`;
     } 
     else {
-        // Tự luận 1 đáp án
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
-        html += hintHtml;
-        html += `<div style="margin-top: 20px;">
-            <input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem;">
-        </div>`;
+        html += `<div style="margin-top: 20px;"><input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem;"></div>`;
     }
-
     container.innerHTML = html;
 }
 
@@ -312,10 +310,8 @@ window.checkAnswer = function() {
     const feedback = document.getElementById("practice-feedback");
     const btnCheck = document.getElementById("btn-check-q");
     const btnNext = document.getElementById("btn-next-q");
-
     const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
-    // XỬ LÝ CHẤM ĐIỂM CHO ĐOẠN VĂN ĐIỀN TỪ (INLINE)
     if (inlineInputs.length > 0) {
         let correctAnswers = (content.answer || "").split(";").map(s => s.trim().toLowerCase());
         let blanksCorrect = 0;
@@ -323,29 +319,14 @@ window.checkAnswer = function() {
         inlineInputs.forEach((inp, idx) => {
             let userVal = inp.value.trim().toLowerCase();
             let correctAns = correctAnswers[idx] ? correctAnswers[idx] : "";
-            
-            // Hỗ trợ trường hợp có 2 đáp án đúng (cách nhau bởi dấu /)
             let possibleAnswers = correctAns.split("/").map(s => s.trim());
             
             if (userVal !== "" && possibleAnswers.includes(userVal)) {
                 blanksCorrect++;
-                inp.style.borderBottomColor = "transparent";
-                inp.style.backgroundColor = "#dcfce3";
-                inp.style.color = "#16a34a";
-                inp.style.borderRadius = "6px";
-                inp.style.padding = "2px 8px";
+                inp.style.borderBottomColor = "transparent"; inp.style.backgroundColor = "#dcfce3"; inp.style.color = "#16a34a"; inp.style.borderRadius = "6px"; inp.style.padding = "2px 8px";
             } else {
-                inp.style.borderBottomColor = "transparent";
-                inp.style.backgroundColor = "#fee2e2";
-                inp.style.color = "#dc2626";
-                inp.style.borderRadius = "6px";
-                inp.style.padding = "2px 8px";
-                
-                // Hiển thị trực tiếp đáp án đúng vào ô nếu sai
-                if (possibleAnswers[0]) {
-                    inp.value = userVal ? `${userVal} (Sửa: ${possibleAnswers[0]})` : `(Đáp án: ${possibleAnswers[0]})`;
-                }
-                
+                inp.style.borderBottomColor = "transparent"; inp.style.backgroundColor = "#fee2e2"; inp.style.color = "#dc2626"; inp.style.borderRadius = "6px"; inp.style.padding = "2px 8px";
+                if (possibleAnswers[0]) inp.value = userVal ? `${userVal} (Sửa: ${possibleAnswers[0]})` : `(Đáp án: ${possibleAnswers[0]})`;
                 let tempWidth = inp.value.length * 9 + 30; 
                 if (tempWidth > 140) inp.style.width = tempWidth + "px";
             }
@@ -353,14 +334,11 @@ window.checkAnswer = function() {
         });
         
         currentScore += blanksCorrect;
-        
         feedback.innerHTML = `<div style="margin-top: 15px; padding: 12px; background: #e0f2fe; color: #0284c7; border-radius: 8px; font-weight: bold; font-size: 1.15rem; text-align: center; border: 1px solid #bae6fd;">✅ Em đã làm đúng ${blanksCorrect} / ${inlineInputs.length} chỗ trống!</div>`;
-        
         btnCheck.style.display = "none"; btnNext.style.display = "block";
         return;
     }
 
-    // XỬ LÝ CHẤM ĐIỂM CHO TRẮC NGHIỆM VÀ TỰ LUẬN THƯỜNG
     let userAnswer = "";
     if (content.options && Array.isArray(content.options)) {
         const selected = document.querySelector('input[name="q_opt"]:checked');
@@ -375,8 +353,6 @@ window.checkAnswer = function() {
 
     let normalizedUser = userAnswer.toLowerCase().replace(/\s*;\s*/g, ";").trim();
     let normalizedCorrect = (content.answer || "").toLowerCase().replace(/\s*;\s*/g, ";").trim();
-
-    // Hỗ trợ dấu / cho câu hỏi đơn
     let possibleAnswers = normalizedCorrect.split("/").map(s => s.trim());
     const isCorrect = possibleAnswers.includes(normalizedUser);
 
@@ -384,10 +360,8 @@ window.checkAnswer = function() {
         feedback.innerHTML = `<span style="color:#16a34a;">✅ Chính xác! Giỏi lắm!</span>`;
         currentScore++;
     } else {
-        let displayAnswer = possibleAnswers.join(" hoặc ");
-        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br><span style="color:#1e3a8a; font-weight:normal;">${displayAnswer}</span></span>`;
+        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br><span style="color:#1e3a8a; font-weight:normal;">${possibleAnswers.join(" hoặc ")}</span></span>`;
     }
-
     btnCheck.style.display = "none"; btnNext.style.display = "block";
 };
 
@@ -397,12 +371,24 @@ window.nextQuestion = function() {
     renderCurrentQuestion();
 };
 
-// Hiển thị bảng khảo sát
-window.showSurvey = function() {
-    document.getElementById("survey-modal").style.display = "flex";
+// =======================
+// MODULE KHẢO SÁT (BẮT BUỘC)
+// =======================
+let currentSurveyTopicId = null;
+let currentSurveyTopicTitle = "";
+
+window.showSurvey = function(topicId, topicTitle) {
+    currentSurveyTopicId = topicId;
+    currentSurveyTopicTitle = topicTitle;
+    
+    const modal = document.getElementById("survey-modal");
+    modal.style.display = "flex";
+    
+    // Sửa tiêu đề bảng để HS biết đang đánh giá Unit nào
+    const titleEl = modal.querySelector("h2");
+    if(titleEl) titleEl.innerHTML = `📊 Đánh giá: ${topicTitle}`;
 }
 
-// Xử lý nộp khảo sát và gửi về Admin
 window.submitSurvey = async function() {
     const q1 = document.querySelector('input[name="q1"]:checked');
     const q2 = document.querySelector('input[name="q2"]:checked');
@@ -410,7 +396,7 @@ window.submitSurvey = async function() {
     const textFeedback = document.getElementById("survey-feedback").value;
 
     if (!q1 || !q2 || !q3) {
-        alert("Please answer all the Likert scale questions (1-3) before submitting!");
+        alert("⚠️ Em vui lòng tick đủ 3 câu hỏi bằng Emoji nhé!");
         return;
     }
 
@@ -418,12 +404,13 @@ window.submitSurvey = async function() {
     if (!username) return;
 
     try {
-        // Bắn dữ liệu về máy chủ
         const res = await fetch("/api/submit_survey", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 username: username,
+                topic_id: parseInt(currentSurveyTopicId),
+                topic_title: currentSurveyTopicTitle,
                 grammar: parseInt(q1.value),
                 vocab: parseInt(q2.value),
                 overall: parseInt(q3.value),
@@ -432,9 +419,15 @@ window.submitSurvey = async function() {
         });
 
         if (res.ok) {
-            alert("Thank you for your valuable feedback! 💖");
+            alert("Cảm ơn em đã gửi đánh giá! Hệ thống đã ghi nhận. 💖");
             document.getElementById("survey-modal").style.display = "none";
-            document.getElementById("unit-survey-form").reset(); // Xóa trắng form để lần sau đánh giá tiếp
+            document.getElementById("unit-survey-form").reset(); 
+            
+            // Đánh dấu là đã làm khảo sát cho Unit này ở máy học sinh
+            localStorage.setItem(`namy_survey_done_${currentSurveyTopicId}`, "true");
+            
+            // Tải lại giao diện để biến nút đỏ thành nút xanh ✅
+            loadStudentSyllabus(); 
         }
     } catch (error) {
         alert("Lỗi kết nối máy chủ! Vui lòng thử lại sau.");

@@ -19,6 +19,7 @@
         <div class="tabs-nav">
             <button class="tab-btn active" onclick="switchTab('tab-dashboard')">📊 Bảng Điều Khiển Lớp Học</button>
             <button class="tab-btn" onclick="switchTab('tab-cms')">📝 Biên Soạn Lộ Trình (CMS)</button>
+            <button class="tab-btn" onclick="switchTab('tab-survey')">🌟 Báo Cáo Khảo Sát</button>
             <button class="tab-btn" onclick="switchTab('tab-preview')">👁️ Live Preview Nội Dung DB</button>
         </div>
 
@@ -140,7 +141,6 @@
                     <div id="act-message" class="message" style="display:none; margin-top:15px;"></div>
                 </div>
 
-                <!-- KHUNG BƯỚC 3 NẠP JSON -->
                 <div class="card" style="grid-column: 1 / -1; margin-top: 20px; border: 2px dashed #3b82f6; background: #eff6ff;">
                     <h3 style="color: #1d4ed8;">🚀 Bước 3: Nạp Hàng Loạt Bằng File JSON (Khuyên dùng)</h3>
                     <p class="subtitle" style="color: #1e3a8a;">Nhập toàn bộ bài tập của 1 Unit chỉ bằng 1 cú click. Tải file JSON chuẩn lên đây.</p>
@@ -151,8 +151,7 @@
                     </div>
                     <div id="json-message" class="message" style="display:none; margin-top:15px;"></div>
                 </div>
-		<!-- KHUNG BƯỚC 4 DỌN DẸP DỮ LIỆU (RESET UNIT) -->
-                <div class="card" style="grid-column: 1 / -1; margin-top: 20px; border: 2px dashed #ef4444; background: #fef2f2;">
+		<div class="card" style="grid-column: 1 / -1; margin-top: 20px; border: 2px dashed #ef4444; background: #fef2f2;">
                     <h3 style="color: #b91c1c;">🗑️ Bước 4: Dọn Dẹp Dữ Liệu (Reset Unit)</h3>
                     <p class="subtitle" style="color: #991b1b;">Xóa sạch toàn bộ Lý thuyết và Bài tập của một Unit để nạp lại từ đầu. Thao tác này không thể hoàn tác!</p>
                     
@@ -161,6 +160,27 @@
                         <button id="btn-delete-topic" class="btn btn-danger" style="padding: 12px 25px;">Xóa Sạch Dữ Liệu</button>
                     </div>
                     <div id="delete-message" class="message" style="display:none; margin-top:15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-survey" class="cms-panel">
+            <div class="card">
+                <h3>🌟 Kết Quả Khảo Sát Đánh Giá Unit</h3>
+                <p class="subtitle">Hệ thống tự động thu thập và sàng lọc đánh giá từ tính năng bắt buộc khảo sát sau mỗi Unit.</p>
+                <div style="max-height: 500px; overflow-y:auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead style="background:#f1f5f9; position: sticky; top: 0;">
+                            <tr>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; width: 15%;">Học sinh</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; width: 25%;">Chuyên đề</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; width: 60%;">Đánh giá & Góp ý</th>
+                            </tr>
+                        </thead>
+                        <tbody id="survey-table-body">
+                            <tr><td colspan="3" style="text-align: center; padding: 20px; color: #94a3b8; font-style: italic;">Đang tải dữ liệu báo cáo...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -178,6 +198,58 @@
     <script src="/static/js/api.js"></script>
     <script src="/static/js/auth.js"></script>
     <script src="/static/js/admin.js"></script>
+    
+    <script>
+        // Mở rộng hàm switchTab từ file JS gốc để xử lý thêm tab Khảo Sát
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.cms-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            } else if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            if(tabId === 'tab-preview' && typeof updateLivePreview === 'function') updateLivePreview();
+            if(tabId === 'tab-survey') loadSurveyReports(); // Tự động load khi ấn sang tab
+        };
+
+        // Hàm gọi API lấy khảo sát
+        async function loadSurveyReports() {
+            try {
+                const res = await fetch("/api/get_feedbacks");
+                const data = await res.json();
+                const surveyBody = document.getElementById("survey-table-body");
+                if(!surveyBody) return;
+                surveyBody.innerHTML = "";
+
+                // Lọc lấy các khảo sát thay vì Feedback thông thường
+                const surveys = data.filter(fb => fb.location && fb.location.includes("Khảo sát:"));
+
+                if (surveys.length === 0) {
+                    surveyBody.innerHTML = `<tr><td colspan="3" style="padding: 20px; text-align: center; color: #64748b; font-style: italic;">Chưa có dữ liệu. Hãy đợi học sinh hoàn thành bài và đánh giá.</td></tr>`;
+                    return;
+                }
+
+                surveys.reverse().forEach(s => {
+                    const cleanTitle = s.location.replace("Khảo sát: ", "");
+                    surveyBody.innerHTML += `
+                        <tr style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 12px; font-weight: bold; color: #2563eb; vertical-align: top;">${s.username}</td>
+                            <td style="padding: 12px; color: #0f172a; font-weight: 600; vertical-align: top;">${cleanTitle}</td>
+                            <td style="padding: 12px; color: #475569; line-height: 1.5; vertical-align: top;">${s.message}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Lỗi tải báo cáo:", err);
+            }
+        }
+    </script>
+
 <style>
     .detail-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); display: none; align-items: center; justify-content: center; z-index: 1050; backdrop-filter: blur(4px); }
     .detail-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 650px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }

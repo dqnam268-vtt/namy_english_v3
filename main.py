@@ -379,6 +379,8 @@ def force_reset_progress():
 # ==============================================================
 class SurveySubmit(BaseModel):
     username: str
+    topic_id: int
+    topic_title: str
     grammar: int
     vocab: int
     overall: int
@@ -395,8 +397,8 @@ def submit_survey(survey: SurveySubmit, db: Session = Depends(get_db)):
     if survey.suggestion:
         msg += f" | Góp ý: {survey.suggestion}"
         
-    # Tận dụng bảng Feedback có sẵn để lưu trữ (không cần đập Database)
-    new_fb = models.Feedback(user_id=user.user_id, message=msg, location="Đánh giá Unit")
+    # Lưu vào DB với chữ "Khảo sát:" đứng trước để Admin dễ lọc
+    new_fb = models.Feedback(user_id=user.user_id, message=msg, location=f"Khảo sát: {survey.topic_title}")
     db.add(new_fb)
     db.commit()
     
