@@ -170,7 +170,6 @@ function renderSyllabus(syllabusData, container) {
     }
 }
 
-// ... (Giữ nguyên các hàm closeLearningModal, closePracticeModal, openExercise, restartExercise, renderCurrentQuestion, checkAnswer, nextQuestion như cũ) ...
 window.closeLearningModal = function() { document.getElementById('learning-modal').style.display = 'none'; loadStudentSyllabus(); };
 window.closePracticeModal = function() { document.getElementById('practice-modal').style.display = 'none'; loadStudentSyllabus(); };
 
@@ -320,21 +319,35 @@ window.checkAnswer = function() {
     const btnNext = document.getElementById("btn-next-q");
     const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
+    // XỬ LÝ Ô ĐIỀN TỪ (INLINE CLOZE)
     if (inlineInputs.length > 0) {
-        let correctAnswers = (content.answer || "").split(";").map(s => s.trim().toLowerCase());
+        let blanks = (content.answer || "").split(";");
         let blanksCorrect = 0;
         
         inlineInputs.forEach((inp, idx) => {
-            let userVal = inp.value.trim().toLowerCase();
-            let correctAns = correctAnswers[idx] ? correctAnswers[idx] : "";
-            let possibleAnswers = correctAns.split("/").map(s => s.trim());
+            let blankAns = blanks[idx] ? blanks[idx].trim() : "";
+            let displayBlank = blankAns;
+            let gradingBlank = blankAns;
             
-            if (userVal !== "" && possibleAnswers.includes(userVal)) {
+            // TÁCH ĐÁP ÁN HIỂN THỊ VÀ ĐÁP ÁN CHẤM NGẦM BẰNG DẤU "||"
+            if (blankAns.includes("||")) {
+                let parts = blankAns.split("||");
+                displayBlank = parts[0].trim();
+                gradingBlank = parts[0] + " / " + parts[1]; // Gom tất cả lại để chấm
+            }
+
+            let userVal = inp.value.trim().toLowerCase();
+            let correctAnswers = gradingBlank.split("/").map(s => s.trim().toLowerCase());
+            let displayOptions = displayBlank.split("/").map(s => s.trim());
+            
+            if (userVal !== "" && correctAnswers.includes(userVal)) {
                 blanksCorrect++;
                 inp.style.borderBottomColor = "transparent"; inp.style.backgroundColor = "#dcfce3"; inp.style.color = "#16a34a"; inp.style.borderRadius = "6px"; inp.style.padding = "2px 8px";
             } else {
                 inp.style.borderBottomColor = "transparent"; inp.style.backgroundColor = "#fee2e2"; inp.style.color = "#dc2626"; inp.style.borderRadius = "6px"; inp.style.padding = "2px 8px";
-                if (possibleAnswers[0]) inp.value = userVal ? `${userVal} (Sửa: ${possibleAnswers[0]})` : `(Đáp án: ${possibleAnswers[0]})`;
+                if (displayOptions.length > 0) {
+                    inp.value = userVal ? `${userVal} (Sửa: ${displayOptions.join(" hoặc ")})` : `(Đáp án: ${displayOptions.join(" hoặc ")})`;
+                }
                 let tempWidth = inp.value.length * 9 + 30; 
                 if (tempWidth > 140) inp.style.width = tempWidth + "px";
             }
@@ -347,6 +360,7 @@ window.checkAnswer = function() {
         return;
     }
 
+    // XỬ LÝ NHẬP TỰ LUẬN HOẶC TRẮC NGHIỆM
     let userAnswer = "";
     if (content.options && Array.isArray(content.options)) {
         const selected = document.querySelector('input[name="q_opt"]:checked');
@@ -359,16 +373,28 @@ window.checkAnswer = function() {
         userAnswer = inputEl.value.trim();
     }
 
+    let rawAnswer = content.answer || "";
+    let displayPart = rawAnswer;
+    let gradingPart = rawAnswer;
+
+    // TÁCH ĐÁP ÁN HIỂN THỊ VÀ ĐÁP ÁN CHẤM NGẦM BẰNG DẤU "||"
+    if (rawAnswer.includes("||")) {
+        let parts = rawAnswer.split("||");
+        displayPart = parts[0].trim();
+        gradingPart = parts[0] + " / " + parts[1]; // Gom tất cả lại để chấm
+    }
+
     let normalizedUser = userAnswer.toLowerCase().replace(/\s*;\s*/g, ";").trim();
-    let normalizedCorrect = (content.answer || "").toLowerCase().replace(/\s*;\s*/g, ";").trim();
-    let possibleAnswers = normalizedCorrect.split("/").map(s => s.trim());
+    let possibleAnswers = gradingPart.toLowerCase().replace(/\s*;\s*/g, ";").trim().split("/").map(s => s.trim());
     const isCorrect = possibleAnswers.includes(normalizedUser);
 
     if (isCorrect) {
         feedback.innerHTML = `<span style="color:#16a34a;">✅ Chính xác! Giỏi lắm!</span>`;
         currentScore++;
     } else {
-        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br><span style="color:#1e3a8a; font-weight:normal;">${possibleAnswers.join(" hoặc ")}</span></span>`;
+        // CHỈ HIỂN THỊ NHỮNG ĐÁP ÁN ĐỨNG TRƯỚC DẤU "||"
+        let displayOptions = displayPart.split("/").map(s => `<span style="color:#1e3a8a; font-weight:bold;">${s.trim()}</span>`);
+        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br>${displayOptions.join(" hoặc ")}</span>`;
     }
     btnCheck.style.display = "none"; btnNext.style.display = "block";
 };
