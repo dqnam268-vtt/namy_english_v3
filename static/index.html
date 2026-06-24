@@ -27,20 +27,77 @@
             <input type="password" id="password" placeholder="Nhập mật khẩu" onkeypress="if(event.key === 'Enter') document.getElementById('login-btn').click();">
         </div>
         
+        <!-- Ô CHECKBOX ĐIỀU KHOẢN -->
+        <div style="margin: 15px 0; text-align: left; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div style="display: flex; align-items: flex-start; gap: 10px;">
+                <input type="checkbox" id="terms-checkbox" style="margin-top: 3px; cursor: pointer; width: 18px; height: 18px; accent-color: #2563eb;">
+                <label for="terms-checkbox" style="cursor: pointer; font-size: 0.9rem; color: #475569; line-height: 1.5; margin: 0;">
+                    I have read, understood, and agree to the 
+                    <a href="#" onclick="showTermsModal(); return false;" style="color: #2563eb; font-weight: bold; text-decoration: underline;">Terms of Service & Privacy Policy</a>.
+                </label>
+            </div>
+        </div>
+        
         <div id="login-error" class="error-msg"></div>
         <button id="login-btn" class="btn btn-primary btn-block" style="margin-top: 20px; font-size: 1.1rem;">Vào Lớp Học</button>
     </div>
 
-    <!-- Script nội trú xử lý đăng nhập 100% không lỗi -->
+    <!-- BẢNG CHI TIẾT ĐIỀU KHOẢN (TERMS MODAL) -->
+    <div id="terms-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: white; width: 90%; max-width: 650px; border-radius: 12px; padding: 30px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); max-height: 85vh; display: flex; flex-direction: column;">
+            
+            <h2 style="color: #1e293b; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">📜 Terms of Service & Privacy Policy</h2>
+            
+            <div style="overflow-y: auto; padding-right: 10px; color: #334155; line-height: 1.6; font-size: 0.95rem; flex: 1;">
+                <p>Welcome to our internal learning platform. By registering an account and accessing this application, you explicitly agree to comply with the following terms:</p>
+                
+                <p><b>1. Internal Circulation & Account Security</b><br>
+                This application is strictly developed for internal educational purposes and authorized students only. You strictly agree not to share your account access with any unauthorized individuals.</p>
+                
+                <p><b>2. Completely Free & Ad-Free Experience</b><br>
+                We are committed to providing a pure educational environment. This application is completely free of charge. There are no hidden fees or third-party advertisements.</p>
+                
+                <p><b>3. Parental Consent for Minors</b><br>
+                If you are under 18, you confirm that you have notified your parents/guardians and obtained their explicit consent to use this application.</p>
+                
+                <p><b>4. Data Collection for Academic Research</b><br>
+                To evaluate the efficacy of this application, your learning progress and test scores will be recorded. This data may be analyzed for academic research and educational publications.</p>
+                
+                <p><b>5. Strict Privacy Guarantee</b><br>
+                Your real name and identity will remain strictly confidential. All personal identifiers will be replaced with numerical IDs and pseudonyms to ensure absolute anonymity.</p>
+            </div>
+
+            <div style="text-align: right; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                <button onclick="closeTermsModal()" style="background: #2563eb; color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem;">I Understand / Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script nội trú xử lý Modal và Đăng nhập -->
     <script>
+        function showTermsModal() {
+            document.getElementById("terms-modal").style.display = "flex";
+        }
+        
+        function closeTermsModal() {
+            document.getElementById("terms-modal").style.display = "none";
+        }
+
         document.getElementById("login-btn").addEventListener("click", async () => {
             const u = document.getElementById("username").value.trim();
             const p = document.getElementById("password").value.trim();
+            const termsChecked = document.getElementById("terms-checkbox").checked;
             const err = document.getElementById("login-error");
             const btn = document.getElementById("login-btn");
             
             if(!u || !p) {
                 err.innerText = "⚠️ Vui lòng nhập đủ tên tài khoản và mật khẩu!";
+                err.style.display = "block";
+                return;
+            }
+
+            if(!termsChecked) {
+                err.innerText = "⚠️ Vui lòng đọc và tick chọn đồng ý với Điều khoản Sử dụng (Terms of Service) trước khi vào lớp!";
                 err.style.display = "block";
                 return;
             }
