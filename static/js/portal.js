@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             const studentName = localStorage.getItem("username") || "Em";
             const nameEl = document.getElementById("student-name");
-            if (nameEl) nameEl.innerText = "Superb day, " + studentName + "!";
+            if (nameEl) nameEl.innerText = "Welcome, " + studentName + "!";
             
             loadStudentSyllabus();
         }
