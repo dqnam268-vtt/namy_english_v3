@@ -390,3 +390,32 @@ window.nextQuestion = function() {
     localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({ qIndex: currentQIndex, score: currentScore, total: currentCalculatedTotal, isCompleted: false }));
     renderCurrentQuestion();
 };
+// Hiển thị bảng khảo sát
+window.showSurvey = function() {
+    document.getElementById("survey-modal").style.display = "flex";
+}
+
+// Xử lý nộp khảo sát
+window.submitSurvey = function() {
+    const q1 = document.querySelector('input[name="q1"]:checked');
+    const q2 = document.querySelector('input[name="q2"]:checked');
+    const q3 = document.querySelector('input[name="q3"]:checked'); // Câu hỏi Overall đã thành q3
+    const textFeedback = document.getElementById("survey-feedback").value;
+
+    // Đã thay đổi logic kiểm tra chỉ còn từ q1 đến q3
+    if (!q1 || !q2 || !q3) {
+        alert("Please answer all the Likert scale questions (1-3) before submitting!");
+        return;
+    }
+
+    // Ghi nhận dữ liệu ra console để thầy kiểm tra
+    console.log("Survey Submitted:", {
+        grammar_score: q1.value,
+        vocab_score: q2.value,
+        overall_score: q3.value,
+        suggestion: textFeedback
+    });
+
+    alert("Thank you for your valuable feedback! 💖");
+    document.getElementById("survey-modal").style.display = "none";
+}
