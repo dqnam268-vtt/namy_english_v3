@@ -86,87 +86,104 @@
         </div>
     </div>
 
+    <!-- BẢNG ĐÁNH GIÁ SAU KHI HOÀN THÀNH UNIT (UNIT EVALUATION FORM) -->
+    <div id="survey-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; width: 90%; max-width: 650px; border-radius: 16px; padding: 30px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); max-height: 90vh; overflow-y: auto;">
+            
+            <h2 style="color: #1e293b; text-align: center; margin-top: 0;">📊 Unit Evaluation</h2>
+            <p style="text-align: center; color: #64748b; font-size: 0.95rem; margin-bottom: 25px;">Please take a moment to share your feedback. Your responses are anonymous and will help us improve the learning experience.</p>
+
+            <style>
+                .survey-q { margin-bottom: 25px; }
+                .survey-q-title { font-weight: bold; color: #334155; margin-bottom: 12px; font-size: 1.05rem; }
+                .likert-scale { display: flex; justify-content: space-between; gap: 8px; }
+                .likert-option { flex: 1; text-align: center; cursor: pointer; }
+                .likert-option input[type="radio"] { display: none; }
+                .likert-box {
+                    height: 55px; display: flex; align-items: center; justify-content: center;
+                    font-size: 1.8rem; border-radius: 8px; transition: 0.2s; filter: grayscale(100%); opacity: 0.4;
+                }
+                .likert-option input[type="radio"]:checked + .likert-box {
+                    filter: grayscale(0%); opacity: 1; transform: scale(1.08); box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                }
+                /* Phối màu bám sát ảnh của thầy */
+                .c1 { background-color: #f97316; } /* Orange */
+                .c2 { background-color: #fcd34d; } /* Yellow/Orange */
+                .c3 { background-color: #fbcfe8; } /* Pink */
+                .c4 { background-color: #c084fc; } /* Purple */
+                .c5 { background-color: #22c55e; } /* Green */
+                .likert-label { font-size: 0.75rem; margin-top: 8px; color: #64748b; font-weight: 600; display: block; line-height: 1.2; }
+            </style>
+
+            <form id="unit-survey-form">
+                <!-- Câu hỏi 1 -->
+                <div class="survey-q">
+                    <div class="survey-q-title">1. The app is highly effective for learning and practicing grammar.</div>
+                    <div class="likert-scale">
+                        <label class="likert-option"><input type="radio" name="q1" value="1"><div class="likert-box c1">😫</div><span class="likert-label">Strongly<br>disagree</span></label>
+                        <label class="likert-option"><input type="radio" name="q1" value="2"><div class="likert-box c2">🙁</div><span class="likert-label">Disagree</span></label>
+                        <label class="likert-option"><input type="radio" name="q1" value="3"><div class="likert-box c3">😐</div><span class="likert-label">Neutral</span></label>
+                        <label class="likert-option"><input type="radio" name="q1" value="4"><div class="likert-box c4">🙂</div><span class="likert-label">Agree</span></label>
+                        <label class="likert-option"><input type="radio" name="q1" value="5"><div class="likert-box c5">😍</div><span class="likert-label">Strongly<br>agree</span></label>
+                    </div>
+                </div>
+
+                <!-- Câu hỏi 2 -->
+                <div class="survey-q">
+                    <div class="survey-q-title">2. The app helps me master vocabulary, idioms, and phrasal verbs efficiently.</div>
+                    <div class="likert-scale">
+                        <label class="likert-option"><input type="radio" name="q2" value="1"><div class="likert-box c1">😫</div><span class="likert-label">Strongly<br>disagree</span></label>
+                        <label class="likert-option"><input type="radio" name="q2" value="2"><div class="likert-box c2">🙁</div><span class="likert-label">Disagree</span></label>
+                        <label class="likert-option"><input type="radio" name="q2" value="3"><div class="likert-box c3">😐</div><span class="likert-label">Neutral</span></label>
+                        <label class="likert-option"><input type="radio" name="q2" value="4"><div class="likert-box c4">🙂</div><span class="likert-label">Agree</span></label>
+                        <label class="likert-option"><input type="radio" name="q2" value="5"><div class="likert-box c5">😍</div><span class="likert-label">Strongly<br>agree</span></label>
+                    </div>
+                </div>
+
+                <!-- Câu hỏi 3 -->
+                <div class="survey-q">
+                    <div class="survey-q-title">3. Overall, I feel more confident in my English skills after completing this Unit.</div>
+                    <div class="likert-scale">
+                        <label class="likert-option"><input type="radio" name="q3" value="1"><div class="likert-box c1">😫</div><span class="likert-label">Strongly<br>disagree</span></label>
+                        <label class="likert-option"><input type="radio" name="q3" value="2"><div class="likert-box c2">🙁</div><span class="likert-label">Disagree</span></label>
+                        <label class="likert-option"><input type="radio" name="q3" value="3"><div class="likert-box c3">😐</div><span class="likert-label">Neutral</span></label>
+                        <label class="likert-option"><input type="radio" name="q3" value="4"><div class="likert-box c4">🙂</div><span class="likert-label">Agree</span></label>
+                        <label class="likert-option"><input type="radio" name="q3" value="5"><div class="likert-box c5">😍</div><span class="likert-label">Strongly<br>agree</span></label>
+                    </div>
+                </div>
+
+                <!-- Câu hỏi mở -->
+                <div class="survey-q">
+                    <div class="survey-q-title">4. Do you have any suggestions to make this app even better? (Optional)</div>
+                    <textarea id="survey-feedback" rows="3" placeholder="Type your ideas here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 1rem; resize: vertical;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" onclick="document.getElementById('survey-modal').style.display='none'" style="background: #f1f5f9; color: #475569; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Skip</button>
+                    <button type="button" onclick="submitSurvey()" style="background: #3b82f6; color: white; padding: 10px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Submit Feedback</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NÚT HỖ TRỢ VÀ GÓP Ý TRÔI NỔI -->
+    <button onclick="document.getElementById('feedback-modal').style.display='flex'" style="position: fixed; bottom: 25px; right: 25px; background: #3b82f6; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 24px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; transition: 0.3s;">?</button>
+
+    <!-- BẢNG NHẬP GÓP Ý -->
+    <div id="feedback-modal" class="modal" style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000;">
+        <div style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; color: #1e3a8a;">🙋 Gửi ý kiến cho Thầy Nam</h3>
+            <p style="font-size: 0.95rem; color: #64748b;">Nếu em phát hiện lỗi trong câu hỏi, thắc mắc về đáp án, hoặc có ý kiến đóng góp, cứ tự nhiên phản hồi ở đây nhé. Thầy sẽ xem xét ngay!</p>
+            <textarea id="feedback-text" rows="5" placeholder="Em muốn báo lỗi ở câu..." style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; resize: vertical;"></textarea>
+            <div style="text-align: right;">
+                <button onclick="document.getElementById('feedback-modal').style.display='none'" style="padding: 8px 15px; border: none; background: #e2e8f0; color: #475569; border-radius: 6px; cursor: pointer; margin-right: 10px;">Hủy</button>
+                <button onclick="submitFeedback()" style="padding: 8px 15px; border: none; background: #10b981; color: white; border-radius: 6px; cursor: pointer; font-weight: bold;">🚀 Gửi ngay</button>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/js/api.js"></script>
     <script src="/static/js/auth.js"></script>
     <script src="/static/js/portal.js?v=v7_sync"></script>
 </body>
 </html>
-<!-- BẢNG ĐÁNH GIÁ SAU KHI HOÀN THÀNH UNIT (UNIT EVALUATION FORM) -->
-<div id="survey-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center;">
-    <div style="background: white; width: 90%; max-width: 650px; border-radius: 16px; padding: 30px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); max-height: 90vh; overflow-y: auto;">
-        
-        <h2 style="color: #1e293b; text-align: center; margin-top: 0;">📊 Unit Evaluation</h2>
-        <p style="text-align: center; color: #64748b; font-size: 0.95rem; margin-bottom: 25px;">Please take a moment to share your feedback. Your responses are anonymous and will help us improve the learning experience.</p>
-
-        <style>
-            .survey-q { margin-bottom: 25px; }
-            .survey-q-title { font-weight: bold; color: #334155; margin-bottom: 12px; font-size: 1.05rem; }
-            .likert-scale { display: flex; justify-content: space-between; gap: 8px; }
-            .likert-option { flex: 1; text-align: center; cursor: pointer; }
-            .likert-option input[type="radio"] { display: none; }
-            .likert-box {
-                height: 55px; display: flex; align-items: center; justify-content: center;
-                font-size: 1.8rem; border-radius: 8px; transition: 0.2s; filter: grayscale(100%); opacity: 0.4;
-            }
-            .likert-option input[type="radio"]:checked + .likert-box {
-                filter: grayscale(0%); opacity: 1; transform: scale(1.08); box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            }
-            /* Phối màu bám sát ảnh của thầy */
-            .c1 { background-color: #f97316; } /* Orange */
-            .c2 { background-color: #fcd34d; } /* Yellow/Orange */
-            .c3 { background-color: #fbcfe8; } /* Pink */
-            .c4 { background-color: #c084fc; } /* Purple */
-            .c5 { background-color: #22c55e; } /* Green */
-            .likert-label { font-size: 0.75rem; margin-top: 8px; color: #64748b; font-weight: 600; display: block; line-height: 1.2; }
-        </style>
-
-        <form id="unit-survey-form">
-            <!-- Câu hỏi 1 -->
-            <div class="survey-q">
-                <div class="survey-q-title">1. The app is highly effective for learning and practicing grammar.</div>
-                <div class="likert-scale">
-                    <label class="likert-option"><input type="radio" name="q1" value="1"><div class="likert-box c1">😫</div><span class="likert-label">Strongly<br>disagree</span></label>
-                    <label class="likert-option"><input type="radio" name="q1" value="2"><div class="likert-box c2">🙁</div><span class="likert-label">Disagree</span></label>
-                    <label class="likert-option"><input type="radio" name="q1" value="3"><div class="likert-box c3">😐</div><span class="likert-label">Neutral</span></label>
-                    <label class="likert-option"><input type="radio" name="q1" value="4"><div class="likert-box c4">🙂</div><span class="likert-label">Agree</span></label>
-                    <label class="likert-option"><input type="radio" name="q1" value="5"><div class="likert-box c5">😍</div><span class="likert-label">Strongly<br>agree</span></label>
-                </div>
-            </div>
-
-            <!-- Câu hỏi 2 -->
-            <div class="survey-q">
-                <div class="survey-q-title">2. The app helps me master vocabulary, idioms, and phrasal verbs efficiently.</div>
-                <div class="likert-scale">
-                    <label class="likert-option"><input type="radio" name="q2" value="1"><div class="likert-box c1">😫</div><span class="likert-label">Strongly<br>disagree</span></label>
-                    <label class="likert-option"><input type="radio" name="q2" value="2"><div class="likert-box c2">🙁</div><span class="likert-label">Disagree</span></label>
-                    <label class="likert-option"><input type="radio" name="q2" value="3"><div class="likert-box c3">😐</div><span class="likert-label">Neutral</span></label>
-                    <label class="likert-option"><input type="radio" name="q2" value="4"><div class="likert-box c4">🙂</div><span class="likert-label">Agree</span></label>
-                    <label class="likert-option"><input type="radio" name="q2" value="5"><div class="likert-box c5">😍</div><span class="likert-label">Strongly<br>agree</span></label>
-                </div>
-            </div>
-
-            <!-- Câu hỏi 3 -->
-            <div class="survey-q">
-                <div class="survey-q-title">3. Overall, I feel more confident in my English skills after completing this Unit.</div>
-                <div class="likert-scale">
-                    <label class="likert-option"><input type="radio" name="q3" value="1"><div class="likert-box c1">😫</div><span class="likert-label">Strongly<br>disagree</span></label>
-                    <label class="likert-option"><input type="radio" name="q3" value="2"><div class="likert-box c2">🙁</div><span class="likert-label">Disagree</span></label>
-                    <label class="likert-option"><input type="radio" name="q3" value="3"><div class="likert-box c3">😐</div><span class="likert-label">Neutral</span></label>
-                    <label class="likert-option"><input type="radio" name="q3" value="4"><div class="likert-box c4">🙂</div><span class="likert-label">Agree</span></label>
-                    <label class="likert-option"><input type="radio" name="q3" value="5"><div class="likert-box c5">😍</div><span class="likert-label">Strongly<br>agree</span></label>
-                </div>
-            </div>
-
-            <!-- Câu hỏi mở -->
-            <div class="survey-q">
-                <div class="survey-q-title">4. Do you have any suggestions to make this app even better? (Optional)</div>
-                <textarea id="survey-feedback" rows="3" placeholder="Type your ideas here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 1rem; resize: vertical;"></textarea>
-            </div>
-
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button type="button" onclick="document.getElementById('survey-modal').style.display='none'" style="background: #f1f5f9; color: #475569; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Skip</button>
-                <button type="button" onclick="submitSurvey()" style="background: #3b82f6; color: white; padding: 10px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Submit Feedback</button>
-            </div>
-        </form>
-    </div>
-</div>

@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: PORTAL MODULE (INLINE CLOZE, AUTO-SYNC & FORCED SURVEY)
+// NAMY V3: PORTAL MODULE (INLINE CLOZE, AUTO-SYNC, FORCED SURVEY, DRAG-DROP, FEEDBACK)
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -49,6 +49,7 @@ async function loadStudentSyllabus() {
 // Biến lưu trữ tạm thời Unit đang cần đánh giá
 let pendingSurveyTopicId = null;
 let pendingSurveyTopicTitle = "";
+let currentExeData = null; // Lưu trữ data bài tập hiện tại (để lấy Note và Options chung)
 
 function renderSyllabus(syllabusData, container) {
     if (!syllabusData || syllabusData.length === 0) {
@@ -57,25 +58,31 @@ function renderSyllabus(syllabusData, container) {
     }
 
     let html = "";
-    pendingSurveyTopicId = null; // Reset mỗi lần tải lại
+    pendingSurveyTopicId = null;
 
     syllabusData.forEach(topic => {
         html += `<div class="topic-card">
             <h2 style="color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top:0;">⭐ ${topic.title}</h2>
             <div style="display: flex; flex-wrap: wrap; margin-top: 15px;">`;
         
-        let isTopicCompleted = true; // Cờ kiểm tra hoàn thành 100%
-        let hasExercises = topic.exercises && topic.exercises.length > 0;
+        let activeExercises = [];
+        if (topic.exercises && topic.exercises.length > 0) {
+            // LỌC: CHỈ LẤY NHỮNG BÀI ĐÃ ĐƯỢC ADMIN GIAO (is_published = true)
+            activeExercises = topic.exercises.filter(exe => exe.is_published === true);
+        }
+
+        let isTopicCompleted = true; 
+        let hasExercises = activeExercises.length > 0;
 
         if (!hasExercises) isTopicCompleted = false;
 
         if (hasExercises) {
-            topic.exercises.sort((a, b) => {
+            activeExercises.sort((a, b) => {
                 if (a.module_type !== b.module_type) return a.module_type === 'learning' ? -1 : 1; 
                 return a.title.localeCompare(b.title, undefined, {numeric: true, sensitivity: 'base'}); 
             });
 
-            topic.exercises.forEach(exe => {
+            activeExercises.forEach(exe => {
                 const btnClass = exe.module_type === "learning" ? "exe-learning" : "exe-practice";
                 const exeDataStr = encodeURIComponent(JSON.stringify(exe)).replace(/'/g, "%27");
                 
@@ -97,7 +104,7 @@ function renderSyllabus(syllabusData, container) {
                         syncProgressToServer(exe.id, "learning", 100, true);
                     } else { 
                         progressText = "⏳ Chưa xem"; 
-                        isTopicCompleted = false; // Đánh dấu chưa hoàn thành Unit
+                        isTopicCompleted = false; 
                     }
                     barClass = "progress-learning-bar";
                 } else {
@@ -115,11 +122,11 @@ function renderSyllabus(syllabusData, container) {
                         } else {
                             progressText = `📝 Đang làm: Đúng ${parsed.score}/${totalQ} điểm (${progressPercent}%)`;
                             syncProgressToServer(exe.id, "practice", parsed.score, false);
-                            isTopicCompleted = false; // Đánh dấu chưa hoàn thành Unit
+                            isTopicCompleted = false; 
                         }
                     } else {
                         progressText = `✍️ Làm Bài tập (0/${tempTotal} điểm)`;
-                        isTopicCompleted = false; // Đánh dấu chưa hoàn thành Unit
+                        isTopicCompleted = false; 
                     }
                 }
                 
@@ -133,27 +140,21 @@ function renderSyllabus(syllabusData, container) {
                     </div>`;
             });
         } else {
-            html += `<p style="color: #94a3b8; font-style: italic; padding-left: 8px;">New lesson is on the way. Stay tuned!</p>`;
+            html += `<p style="color: #94a3b8; font-style: italic; padding-left: 8px;">Bài học đang bị khóa hoặc chưa được giao.</p>`;
         }
         
-        // KIỂM TRA ĐIỀU KIỆN ĐỂ HIỂN THỊ NÚT KHẢO SÁT
         const isSurveyDone = localStorage.getItem(`namy_survey_done_${topic.topic_id}`);
         let btnSurveyHtml = "";
 
         if (hasExercises && isTopicCompleted && !isSurveyDone) {
-            // Trường hợp: Đã học xong 100% nhưng chưa đánh giá -> Ép làm
             btnSurveyHtml = `<button onclick="showSurvey(${topic.topic_id}, '${topic.title.replace(/'/g, "\\'")}')" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.4);">⚠️ Bắt buộc: Đánh giá Unit này</button>`;
-            
-            // Lấy Unit đầu tiên thỏa mãn để tự động pop-up
             if (!pendingSurveyTopicId) {
                 pendingSurveyTopicId = topic.topic_id;
                 pendingSurveyTopicTitle = topic.title;
             }
         } else if (hasExercises && isTopicCompleted && isSurveyDone) {
-            // Trường hợp: Đã đánh giá xong
             btnSurveyHtml = `<button disabled style="background: #10b981; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: not-allowed; font-weight: bold; font-size: 0.95rem;">✅ Đã hoàn thành đánh giá</button>`;
         } else if (hasExercises) {
-            // Trường hợp: Chưa học xong
             btnSurveyHtml = `<button disabled style="background: #e2e8f0; color: #94a3b8; border: none; padding: 8px 15px; border-radius: 8px; cursor: not-allowed; font-weight: bold; font-size: 0.95rem;">🔒 Hoàn thành bài để Đánh giá</button>`;
         }
 
@@ -162,11 +163,8 @@ function renderSyllabus(syllabusData, container) {
     
     container.innerHTML = html;
 
-    // TỰ ĐỘNG BẬT BẢNG KHẢO SÁT NẾU CÓ UNIT CHƯA ĐÁNH GIÁ
     if (pendingSurveyTopicId) {
-        setTimeout(() => {
-            showSurvey(pendingSurveyTopicId, pendingSurveyTopicTitle);
-        }, 800);
+        setTimeout(() => { showSurvey(pendingSurveyTopicId, pendingSurveyTopicTitle); }, 800);
     }
 }
 
@@ -183,6 +181,7 @@ window.openExercise = function(encodedData) {
     try {
         const exe = JSON.parse(decodeURIComponent(encodedData));
         currentExeId = exe.id; 
+        currentExeData = exe; // Lưu lại toàn bộ data
         
         if (exe.module_type === "learning") {
             document.getElementById("learning-title").innerText = exe.title;
@@ -249,6 +248,11 @@ window.restartExercise = function() {
     }
 };
 
+window.selectOption = function(val) {
+    const inputEl = document.getElementById("q_text_input");
+    if (inputEl) inputEl.value = val;
+};
+
 function renderCurrentQuestion() {
     const container = document.getElementById("practice-content");
     const feedback = document.getElementById("practice-feedback");
@@ -257,11 +261,23 @@ function renderCurrentQuestion() {
 
     feedback.innerHTML = ""; btnNext.style.display = "none";
     
+    // XỬ LÝ HIỂN THỊ KẾT QUẢ CUỐI BÀI & GHI CHÚ
     if (currentQIndex >= currentPracticeActs.length) {
-        container.innerHTML = `<div style="text-align:center; padding: 20px;">
-            <h3 style="color:#059669; font-size: 1.8rem;">🎉 Chúc mừng em đã hoàn thành!</h3>
-            <p style="font-size:1.3rem;">Điểm số cuối cùng: <b style="color:#dc2626;">${currentScore} / ${currentCalculatedTotal}</b></p>
-            <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:20px; font-size: 1.1rem; padding: 10px 20px;">🔄 Làm Lại Bài Này</button>
+        let noteHtml = "";
+        if (currentExeData && currentExeData.notes) {
+            noteHtml = `
+            <div style="text-align:left; background:#f1f5f9; padding:15px; border-radius:8px; font-size: 0.95rem; margin-top:20px; border-left: 5px solid #3b82f6;">
+                <h4 style="margin-top:0; color:#1e293b; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">📌 Ghi chú (Notes):</h4>
+                <p style="white-space: pre-line; line-height: 1.6; color:#334155;">${currentExeData.notes.replace(/\|/g, '\n')}</p>
+            </div>`;
+        }
+
+        container.innerHTML = `
+            <div style="text-align:center; padding: 20px;">
+                <h3 style="color:#059669; font-size: 1.8rem;">🎉 Chúc mừng em đã hoàn thành!</h3>
+                <p style="font-size:1.3rem;">Điểm số cuối cùng: <b style="color:#dc2626;">${currentScore} / ${currentCalculatedTotal}</b></p>
+                ${noteHtml}
+                <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:25px; font-size: 1.1rem; padding: 10px 20px;">🔄 Làm Lại Bài Này</button>
             </div>`;
         btnCheck.style.display = "none";
         
@@ -280,17 +296,17 @@ function renderCurrentQuestion() {
     let promptText = content.question || content.original || "";
     let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626; font-size: 0.95rem;">TỪ KHÓA BẮT BUỘC: [ ${content.keyword} ]</div>` : "";
     
-    // TÍNH NĂNG ĐIỀN TỪ TRỰC TIẾP (ĐÃ TỐI ƯU CSS CHO MOBILE)
+    // LẤY OPTIONS CHUNG TỪ BÀI TẬP (DẠNG KÉO THẢ)
+    let globalOptions = currentExeData && currentExeData.options ? currentExeData.options : null;
+
     if (promptText.includes("___")) {
         let inputIndex = 0;
         promptText = promptText.replace(/___/g, function() {
-            // Điều chỉnh width xuống 100px để không đẩy chữ trên di động
             let inpHtml = `<input type="text" class="q_multi_input_inline" data-index="${inputIndex}" placeholder="_____" style="width: 100px; padding: 2px 5px; border: none; border-bottom: 2px solid #3b82f6; border-radius: 0; font-size: 1.1rem; text-align: center; color: #1d4ed8; font-weight: bold; background: transparent; outline: none; margin: 0 4px; transition: 0.3s; font-family: inherit;">`;
             inputIndex++;
             return inpHtml;
         });
         
-        // Đổi text-align thành left, line-height thành 2.0, padding thành 15px, box-sizing: border-box; word-wrap: break-word
         html += `<div style="font-size: 1.15rem; font-weight: normal; margin-bottom: 20px; color:#1e293b; line-height: 2.0; text-align: left; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); box-sizing: border-box; word-wrap: break-word;">${promptText}</div>`;
         html += hintHtml;
     } 
@@ -305,8 +321,18 @@ function renderCurrentQuestion() {
     else {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += hintHtml;
-        // Đảm bảo thẻ input không tràn khung
-        html += `<div style="margin-top: 20px;"><input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box;"></div>`;
+        
+        // KIỂM TRA DẠNG CHỌN TỪ (KÉO THẢ)
+        if (globalOptions && Array.isArray(globalOptions)) {
+            html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
+            globalOptions.forEach(opt => {
+                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:8px 12px; border:1px solid #3b82f6; border-radius:20px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; transition:0.2s;">${opt}</button>`;
+            });
+            html += `</div>`;
+            html += `<div><input type="text" id="q_text_input" placeholder="Chạm vào nút phía trên để chọn từ..." readonly style="width:100%; padding: 15px; border: 2px solid #3b82f6; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box; background:#fff;"></div>`;
+        } else {
+            html += `<div style="margin-top: 20px;"><input type="text" id="q_text_input" placeholder="Nhập câu trả lời của em vào đây..." style="width:100%; padding: 15px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box;"></div>`;
+        }
     }
     container.innerHTML = html;
 }
@@ -319,7 +345,6 @@ window.checkAnswer = function() {
     const btnNext = document.getElementById("btn-next-q");
     const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
-    // XỬ LÝ Ô ĐIỀN TỪ (INLINE CLOZE)
     if (inlineInputs.length > 0) {
         let blanks = (content.answer || "").split(";");
         let blanksCorrect = 0;
@@ -329,11 +354,10 @@ window.checkAnswer = function() {
             let displayBlank = blankAns;
             let gradingBlank = blankAns;
             
-            // TÁCH ĐÁP ÁN HIỂN THỊ VÀ ĐÁP ÁN CHẤM NGẦM BẰNG DẤU "||"
             if (blankAns.includes("||")) {
                 let parts = blankAns.split("||");
                 displayBlank = parts[0].trim();
-                gradingBlank = parts[0] + " / " + parts[1]; // Gom tất cả lại để chấm
+                gradingBlank = parts[0] + " / " + parts[1];
             }
 
             let userVal = inp.value.trim().toLowerCase();
@@ -346,7 +370,7 @@ window.checkAnswer = function() {
             } else {
                 inp.style.borderBottomColor = "transparent"; inp.style.backgroundColor = "#fee2e2"; inp.style.color = "#dc2626"; inp.style.borderRadius = "6px"; inp.style.padding = "2px 8px";
                 if (displayOptions.length > 0) {
-                    inp.value = userVal ? `${userVal} (Sửa: ${displayOptions.join(" hoặc ")})` : `(Đáp án: ${displayOptions.join(" hoặc ")})`;
+                    inp.value = userVal ? `${userVal} (Sửa: ${displayOptions[0]})` : `(Đáp án: ${displayOptions[0]})`;
                 }
                 let tempWidth = inp.value.length * 9 + 30; 
                 if (tempWidth > 140) inp.style.width = tempWidth + "px";
@@ -360,7 +384,6 @@ window.checkAnswer = function() {
         return;
     }
 
-    // XỬ LÝ NHẬP TỰ LUẬN HOẶC TRẮC NGHIỆM
     let userAnswer = "";
     if (content.options && Array.isArray(content.options)) {
         const selected = document.querySelector('input[name="q_opt"]:checked');
@@ -377,11 +400,10 @@ window.checkAnswer = function() {
     let displayPart = rawAnswer;
     let gradingPart = rawAnswer;
 
-    // TÁCH ĐÁP ÁN HIỂN THỊ VÀ ĐÁP ÁN CHẤM NGẦM BẰNG DẤU "||"
     if (rawAnswer.includes("||")) {
         let parts = rawAnswer.split("||");
         displayPart = parts[0].trim();
-        gradingPart = parts[0] + " / " + parts[1]; // Gom tất cả lại để chấm
+        gradingPart = parts[0] + " / " + parts[1];
     }
 
     let normalizedUser = userAnswer.toLowerCase().replace(/\s*;\s*/g, ";").trim();
@@ -392,9 +414,8 @@ window.checkAnswer = function() {
         feedback.innerHTML = `<span style="color:#16a34a;">✅ Chính xác! Giỏi lắm!</span>`;
         currentScore++;
     } else {
-        // CHỈ HIỂN THỊ NHỮNG ĐÁP ÁN ĐỨNG TRƯỚC DẤU "||"
         let displayOptions = displayPart.split("/").map(s => `<span style="color:#1e3a8a; font-weight:bold;">${s.trim()}</span>`);
-        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br>${displayOptions.join(" hoặc ")}</span>`;
+        feedback.innerHTML = `<span style="color:#dc2626;">❌ Sai rồi. Đáp án đúng là:<br>${displayOptions[0]}</span>`;
     }
     btnCheck.style.display = "none"; btnNext.style.display = "block";
 };
@@ -406,7 +427,7 @@ window.nextQuestion = function() {
 };
 
 // =======================
-// MODULE KHẢO SÁT (BẮT BUỘC)
+// MODULE KHẢO SÁT & GÓP Ý
 // =======================
 let currentSurveyTopicId = null;
 let currentSurveyTopicTitle = "";
@@ -414,11 +435,8 @@ let currentSurveyTopicTitle = "";
 window.showSurvey = function(topicId, topicTitle) {
     currentSurveyTopicId = topicId;
     currentSurveyTopicTitle = topicTitle;
-    
     const modal = document.getElementById("survey-modal");
-    modal.style.display = "flex";
-    
-    // Sửa tiêu đề bảng để HS biết đang đánh giá Unit nào
+    if(modal) modal.style.display = "flex";
     const titleEl = modal.querySelector("h2");
     if(titleEl) titleEl.innerHTML = `📊 Đánh giá: ${topicTitle}`;
 }
@@ -456,14 +474,50 @@ window.submitSurvey = async function() {
             alert("Cảm ơn em đã gửi đánh giá! Hệ thống đã ghi nhận. 💖");
             document.getElementById("survey-modal").style.display = "none";
             document.getElementById("unit-survey-form").reset(); 
-            
-            // Đánh dấu là đã làm khảo sát cho Unit này ở máy học sinh
             localStorage.setItem(`namy_survey_done_${currentSurveyTopicId}`, "true");
-            
-            // Tải lại giao diện để biến nút đỏ thành nút xanh ✅
             loadStudentSyllabus(); 
         }
     } catch (error) {
         alert("Lỗi kết nối máy chủ! Vui lòng thử lại sau.");
+    }
+}
+
+window.submitFeedback = async function() {
+    const text = document.getElementById("feedback-text").value.trim();
+    if (!text) {
+        alert("⚠️ Em chưa nhập nội dung góp ý!");
+        return;
+    }
+    const username = localStorage.getItem("username") || "Unknown";
+    try {
+        await fetch("/api/submit_feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: username, content: text, time: new Date().toISOString() })
+        });
+        alert("Cảm ơn em! Góp ý của em đã được gửi đến thầy Nam. 💖");
+        document.getElementById('feedback-modal').style.display = 'none';
+        document.getElementById("feedback-text").value = "";
+    } catch (err) {
+        alert("Lỗi kết nối. Em thử lại sau nhé!");
+    }
+}
+
+// Hàm dùng trên trang Admin để xóa 1 bài tập
+window.deleteSingleExercise = function(username, exerciseId) {
+    if (confirm(`Thầy có chắc chắn muốn reset lại bài tập ID: ${exerciseId} của học sinh ${username} không?`)) {
+        fetch("/api/delete_single_progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: username, exercise_id: parseInt(exerciseId) })
+        })
+        .then(res => {
+            if (res.ok) {
+                alert("Đã xóa dữ liệu bài tập thành công!");
+                // Nếu đang dùng admin.js, gọi loadStudentDetail(username) ở đây
+            } else {
+                alert("Lỗi khi xóa!");
+            }
+        });
     }
 }

@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: ADMIN CMS MODULE (VISUAL BAR CHART & SPLIT PROGRESS)
+// NAMY V3: ADMIN CMS MODULE (VISUAL BAR CHART, SCORE CALCULATION & EXERCISE MANAGEMENT)
 // ==========================================
 
 let currentSyllabusData = [];
@@ -116,9 +116,6 @@ async function fetchStats() {
     }
 }
 
-// ==========================================
-// TÍNH NĂNG MỚI: VẼ BIỂU ĐỒ BAR CHART CSS
-// ==========================================
 window.showStudentDetails = function(username, detailsStr) {
     const modalName = document.getElementById("detail-student-name");
     const modalData = document.getElementById("detail-student-data");
@@ -132,10 +129,34 @@ window.showStudentDetails = function(username, detailsStr) {
     const details = JSON.parse(decodeURIComponent(detailsStr));
     let html = "";
 
+    // ==========================================
+    // 1. TÍNH TỔNG ĐIỂM (CỘNG DỒN SỐ CÂU ĐÚNG)
+    // ==========================================
+    let totalScore = 0;
+    if (details && details.length > 0) {
+        details.forEach(d => {
+            if (d.type === 'practice' && d.score) {
+                // bóc tách từ chuỗi "10/20" -> lấy 10
+                let match = String(d.score).match(/(\d+)\/(\d+)/);
+                if (match) {
+                    totalScore += parseInt(match[1]);
+                } else if (!isNaN(parseInt(d.score))) {
+                    totalScore += parseInt(d.score);
+                }
+            }
+        });
+    }
+
+    // Hiển thị ra giao diện khối điểm đã tạo ở admin.html
+    const scoreDisplay = document.getElementById("total-score-admin");
+    if (scoreDisplay) {
+        scoreDisplay.style.display = "block";
+        scoreDisplay.innerHTML = `🏆 Tổng điểm thực hành tích lũy: <b style="color: #e11d48; font-size: 1.8rem;">${totalScore}</b> điểm`;
+    }
+
     if (!details || details.length === 0) {
         html = "<p style='color: #64748b; font-style: italic; text-align:center;'>Học sinh này chưa tham gia bài học nào.</p>";
     } else {
-        // --- 1. CHÚ THÍCH MÀU SẮC (LEGEND) ---
         html += `
         <div style="display: flex; gap: 15px; margin-bottom: 20px; font-size: 0.85rem; justify-content: center; flex-wrap: wrap;">
             <span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#94a3b8; border-radius:3px;"></div> Lý thuyết</span>
@@ -144,11 +165,8 @@ window.showStudentDetails = function(username, detailsStr) {
             <span style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#ef4444; border-radius:3px;"></div> Yếu (< 50%)</span>
         </div>`;
 
-        // --- 2. KHUNG BIỂU ĐỒ (CHART CONTAINER) ---
         html += `
         <div style="position: relative; height: 220px; border-left: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1; margin-bottom: 120px; margin-left: 30px; display: flex; align-items: flex-end; padding-left: 10px; gap: 15px; overflow-x: auto; padding-top: 20px;">
-            
-            <!-- Trục Y: Đường gạch đứt báo 50% và 100% -->
             <div style="position: absolute; bottom: 50%; left: 0; width: 100%; border-bottom: 1px dashed #cbd5e1; z-index: 1;">
                 <span style="position: absolute; left: -35px; bottom: -8px; font-size: 11px; color: #64748b; font-weight:bold;">50%</span>
             </div>
@@ -157,15 +175,12 @@ window.showStudentDetails = function(username, detailsStr) {
             </div>
         `;
 
-        // --- 3. VẼ TỪNG CỘT DỮ LIỆU ---
         details.forEach(d => {
             let pct = 0;
-            
-            // Thuật toán bóc tách điểm (ví dụ: "Đúng 1/8 câu" -> lấy 1 chia 8)
             if (d.type === 'learning') {
                 pct = 100;
             } else {
-                let match = d.score.match(/(\d+)\/(\d+)/);
+                let match = String(d.score).match(/(\d+)\/(\d+)/);
                 if (match) {
                     let correct = parseInt(match[1]);
                     let total = parseInt(match[2]);
@@ -173,15 +188,13 @@ window.showStudentDetails = function(username, detailsStr) {
                 }
             }
 
-            // Đổi màu cột cảnh báo
-            let barColor = "#94a3b8"; // Xám cho Lý thuyết
+            let barColor = "#94a3b8"; 
             if (d.type === 'practice') {
-                if (pct < 50) barColor = "#ef4444"; // Đỏ (Yếu)
-                else if (pct < 80) barColor = "#f97316"; // Cam (Khá)
-                else barColor = "#22c55e"; // Xanh lá (Tốt)
+                if (pct < 50) barColor = "#ef4444"; 
+                else if (pct < 80) barColor = "#f97316"; 
+                else barColor = "#22c55e"; 
             }
 
-            // Cắt ngắn tên bài để khỏi dài
             let shortName = d.exercise_name.length > 25 ? d.exercise_name.substring(0, 25) + "..." : d.exercise_name;
 
             html += `
@@ -190,16 +203,14 @@ window.showStudentDetails = function(username, detailsStr) {
                 
                 <div title="${d.exercise_name}: ${pct}%" style="width: 100%; height: ${pct}%; background-color: ${barColor}; border-radius: 4px 4px 0 0; transition: 0.3s; box-shadow: 2px 0 5px rgba(0,0,0,0.1);"></div>
                 
-                <!-- Tên bài học xoay dọc bên dưới -->
                 <div style="position: absolute; top: 100%; left: 50%; writing-mode: vertical-rl; transform: rotate(180deg) translateX(50%); padding-top: 8px; font-size: 11px; color: #475569; height: 110px; text-align: left; white-space: nowrap;">
                     ${shortName}
                 </div>
             </div>`;
         });
 
-        html += `</div>`; // Đóng khung biểu đồ
+        html += `</div>`; 
 
-        // --- 4. BẢNG CHI TIẾT (Giữ lại để xem rõ "Đúng 1/8 câu") ---
         html += `<table style="width: 100%; border-collapse: collapse; text-align: left;">
             <tr style="background: #f8fafc;">
                 <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; color:#475569;">Tên Bài Học</th>
@@ -223,12 +234,11 @@ window.showStudentDetails = function(username, detailsStr) {
     modalBox.style.display = "flex";
 }
 
-// ... CÁC HÀM CMS BÊN DƯỚI GIỮ NGUYÊN NHƯ CŨ ...
 async function fetchFeedbacks() {
     const fRes = await apiFetch("/get_feedbacks");
     const fbList = document.getElementById("feedback-list");
     if (fRes.ok && fbList) {
-        fbList.innerHTML = fRes.data.map(f => `<div style="background:#f9f9f9; padding:10px; margin-bottom:8px; border-left:3px solid #2e7d32;"><b>${f.username}</b> <i>(${f.location})</i>: ${f.message}</div>`).join("");
+        fbList.innerHTML = fRes.data.map(f => `<div style="background:#f9f9f9; padding:10px; margin-bottom:8px; border-left:3px solid #2e7d32;"><b>${f.username}</b> <i>(${f.location || f.time})</i>: ${f.message || f.content}</div>`).join("");
     }
 }
 
@@ -405,18 +415,70 @@ function populateExerciseCombobox(topicOrder) {
     }
 }
 
+// ==========================================
+// 2. LIVE PREVIEW - CẬP NHẬT CÔNG TẮC & NÚT XÓA BÀI
+// ==========================================
 function updateLivePreview() {
     const box = document.getElementById("preview-course-content");
     if (!box) return;
-    box.innerHTML = "<p><i>*Đây là toàn bộ cấu trúc bài học đang có trong DB*</i></p>";
+    box.innerHTML = "<p><i>*Quản lý Tắt/Bật Giao bài & Xóa từng bài học tại đây*</i></p>";
+    
     currentSyllabusData.forEach(topic => {
         const sec = document.createElement("div");
-        sec.style.border = "1px solid #ccc"; sec.style.padding = "10px"; sec.style.margin = "10px 0";
-        sec.innerHTML = `<strong>${topic.title}</strong><br>`;
+        sec.style.border = "1px solid #334155"; sec.style.padding = "10px"; sec.style.margin = "10px 0"; sec.style.borderRadius = "8px"; sec.style.background = "#0f172a";
+        sec.innerHTML = `<strong style="color:#38bdf8; font-size:1.1rem;">⭐ ${topic.title}</strong><br>`;
+        
         topic.exercises.forEach(exe => {
-            const color = exe.module_type === "learning" ? "blue" : "orange";
-            sec.innerHTML += `<div style="margin-left: 20px; color: ${color};">↳ [${exe.module_type}] ${exe.title} (${exe.activities.length} acts)</div>`;
+            const color = exe.module_type === "learning" ? "#60a5fa" : "#fb923c"; // Xanh cho Lý thuyết, Cam cho Bài tập
+            const isPub = exe.is_published !== false; // Mặc định là true nếu chưa set
+            const publishBtnText = isPub ? "🟢 Đã Giao" : "🔴 Đang Ẩn";
+            const publishBtnColor = isPub ? "#16a34a" : "#64748b";
+
+            sec.innerHTML += `
+            <div style="margin-left: 20px; margin-top: 8px; color: ${color}; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px dashed #334155; padding-bottom: 8px;">
+                <span>↳ [${exe.module_type}] ${exe.title} (${exe.activities.length} câu)</span>
+                <div style="display:flex; gap:8px;">
+                    <button onclick="togglePublish(${exe.id}, ${isPub})" style="background:${publishBtnColor}; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:0.8rem; min-width: 90px;">${publishBtnText}</button>
+                    <button onclick="deleteExerciseCMS(${exe.id}, '${exe.title.replace(/'/g, "\\'")}')" style="background:#ef4444; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:0.8rem;">🗑️ Xóa</button>
+                </div>
+            </div>`;
         });
         box.appendChild(sec);
     });
 }
+
+// Hàm Bật/Tắt Giao Bài
+window.togglePublish = async function(exerciseId, currentStatus) {
+    const newStatus = !currentStatus;
+    try {
+        const res = await fetch("/api/toggle_publish", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ exercise_id: parseInt(exerciseId), is_published: newStatus })
+        });
+        if (res.ok) {
+            loadCmsComboboxes(); // Load lại data để cập nhật giao diện
+        } else {
+            alert("Lỗi khi cập nhật trạng thái giao bài!");
+        }
+    } catch (error) {
+        alert("Lỗi kết nối máy chủ!");
+    }
+};
+
+// Hàm Xóa vĩnh viễn 1 bài (Lý thuyết / Bài tập)
+window.deleteExerciseCMS = async function(exerciseId, exeTitle) {
+    if (confirm(`⚠️ CẢNH BÁO: Thầy có chắc chắn muốn xóa vĩnh viễn bài "${exeTitle}" không?\n\nToàn bộ câu hỏi và điểm số của học sinh liên quan đến bài này sẽ bị xóa. Thao tác này không thể hoàn tác!`)) {
+        try {
+            const res = await fetch(`/api/delete_exercise/${exerciseId}`, { method: "DELETE" });
+            if (res.ok) {
+                alert("🗑️ Đã xóa bài thành công!");
+                loadCmsComboboxes(); 
+            } else {
+                alert("Lỗi khi xóa bài tập!");
+            }
+        } catch (error) {
+            alert("Lỗi kết nối máy chủ!");
+        }
+    }
+};

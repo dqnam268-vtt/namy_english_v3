@@ -42,9 +42,11 @@ class Exercise(Base):
     
     module_type = Column(String(50), nullable=False, default="learning")
     
+    # DÒNG MỚI ĐƯỢC THÊM VÀO ĐỂ LƯU TRẠNG THÁI GIAO BÀI
+    is_published = Column(Boolean, default=True)
+    
     topic = relationship("Topic", back_populates="exercises")
     activities = relationship("Activity", back_populates="exercise", cascade="all, delete-orphan")
-    # LIÊN KẾT BÀI TẬP VỚI TIẾN ĐỘ
     progresses = relationship("Progress", back_populates="exercise", cascade="all, delete-orphan")
 
 # ==========================================
@@ -69,12 +71,12 @@ class Progress(Base):
     
     progress_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.user_id"))
-    exercise_id = Column(Integer, ForeignKey("exercises.exercise_id")) # ĐÃ SỬA THÀNH EXERCISE_ID
+    exercise_id = Column(Integer, ForeignKey("exercises.exercise_id"))
     score = Column(Integer, default=0)  
     is_completed = Column(Boolean, default=False)  
     
     user = relationship("User", back_populates="progresses")
-    exercise = relationship("Exercise", back_populates="progresses") # ĐÃ SỬA LIÊN KẾT
+    exercise = relationship("Exercise", back_populates="progresses")
 
 # ==========================================
 # 6. MÔ HÌNH HÒM THƯ PHẢN HỒI (FEEDBACKS)

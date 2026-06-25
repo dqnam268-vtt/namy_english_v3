@@ -95,7 +95,13 @@ def get_syllabus(mode: Optional[str] = None, db: Session = Depends(get_db)):
         exercises = query_ex.order_by(models.Exercise.order_num).all()
         for exc in exercises:
             act_list = [{"id": a.activity_id, "type": a.activity_type, "content": a.content, "order_num": a.order_num} for a in exc.activities]
-            topic_data["exercises"].append({"id": exc.exercise_id, "title": exc.title, "module_type": exc.module_type, "activities": act_list})
+            topic_data["exercises"].append({
+                "id": exc.exercise_id, 
+                "title": exc.title, 
+                "module_type": exc.module_type, 
+                "is_published": getattr(exc, 'is_published', True), # Trả về trạng thái giao bài
+                "activities": act_list
+            })
             
         if mode and len(topic_data["exercises"]) == 0:
             continue
@@ -188,9 +194,6 @@ def get_stats(db: Session = Depends(get_db)):
         "total_feedbacks": db.query(models.Feedback).count()
     }
 
-# ==============================================================
-# TÍNH TOÁN % LÝ THUYẾT, BÀI TẬP VÀ ĐIỂM SỐ TỪNG CÂU
-# ==============================================================
 @app.get("/api/users")
 def get_users(db: Session = Depends(get_db)):
     users = db.query(models.User).filter(models.User.role == "student").all()
@@ -324,6 +327,7 @@ def clear_topic(topic_order: int, db: Session = Depends(get_db)):
     deleted_count = 0
     for exe in exercises:
         db.query(models.Activity).filter(models.Activity.exercise_id == exe.exercise_id).delete()
+        db.query(models.Progress).filter(models.Progress.exercise_id == exe.exercise_id).delete()
         db.delete(exe)
         deleted_count += 1
         
@@ -366,17 +370,12 @@ def update_progress(prog: ProgressUpdate, db: Session = Depends(get_db)):
 @app.get("/api/force_reset_progress")
 def force_reset_progress():
     try:
-        # 1. Đánh sập bảng progress cũ đang bị lỗi cấu trúc
         models.Progress.__table__.drop(engine, checkfirst=True)
-        # 2. Yêu cầu hệ thống xây lại bảng progress với cấu trúc mới (có exercise_id)
         models.Base.metadata.create_all(bind=engine)
         return {"status": "success", "message": "🎉 Đã đập đi xây lại bảng Tiến độ (Progress) trên mây thành công!"}
     except Exception as e:
         return {"status": "error", "message": f"Lỗi: {str(e)}"}
 
-# ==============================================================
-# HÀM MỚI: API NHẬN ĐÁNH GIÁ (SURVEY) VÀ LƯU VÀO BẢNG FEEDBACK
-# ==============================================================
 class SurveySubmit(BaseModel):
     username: str
     topic_id: int
@@ -392,14 +391,84 @@ def submit_survey(survey: SurveySubmit, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
         
-    # Đóng gói điểm số thành một câu báo cáo đẹp mắt có chứa icon ngôi sao
     msg = f"Ngữ pháp: {survey.grammar}⭐ | Từ vựng: {survey.vocab}⭐ | Chung: {survey.overall}⭐"
     if survey.suggestion:
         msg += f" | Góp ý: {survey.suggestion}"
         
-    # Lưu vào DB với chữ "Khảo sát:" đứng trước để Admin dễ lọc
     new_fb = models.Feedback(user_id=user.user_id, message=msg, location=f"Khảo sát: {survey.topic_title}")
     db.add(new_fb)
     db.commit()
     
     return {"status": "success", "message": "Đã lưu đánh giá!"}
+
+# ==============================================================
+# HÀM MỚI: 4 API XỬ LÝ (GÓP Ý, BẬT/TẮT BÀI, XÓA BÀI, XÓA TIẾN ĐỘ)
+# ==============================================================
+
+class FeedbackSubmit(BaseModel):
+    username: str
+    content: str
+    time: str
+
+@app.post("/api/submit_feedback")
+def submit_general_feedback(feedback: FeedbackSubmit, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username == feedback.username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
+    
+    new_fb = models.Feedback(
+        user_id=user.user_id, 
+        message=feedback.content, 
+        location=f"Góp ý tự do"
+    )
+    db.add(new_fb)
+    db.commit()
+    return {"status": "success", "message": "Góp ý đã được ghi nhận!"}
+
+class TogglePublish(BaseModel):
+    exercise_id: int
+    is_published: bool
+
+@app.post("/api/toggle_publish")
+def toggle_publish(data: TogglePublish, db: Session = Depends(get_db)):
+    exe = db.query(models.Exercise).filter(models.Exercise.exercise_id == data.exercise_id).first()
+    if not exe:
+        raise HTTPException(status_code=404, detail="Không tìm thấy bài học")
+    
+    # Gắn thuộc tính is_published vào database
+    exe.is_published = data.is_published
+    db.commit()
+    return {"status": "success", "message": "Cập nhật trạng thái thành công!"}
+
+@app.delete("/api/delete_exercise/{exercise_id}")
+def delete_exercise(exercise_id: int, db: Session = Depends(get_db)):
+    exe = db.query(models.Exercise).filter(models.Exercise.exercise_id == exercise_id).first()
+    if not exe:
+        raise HTTPException(status_code=404, detail="Không tìm thấy bài học")
+    
+    db.query(models.Activity).filter(models.Activity.exercise_id == exercise_id).delete()
+    db.query(models.Progress).filter(models.Progress.exercise_id == exercise_id).delete()
+    db.delete(exe)
+    db.commit()
+    return {"status": "success", "message": "Đã xóa bài tập thành công!"}
+
+class DeleteProgress(BaseModel):
+    username: str
+    exercise_id: int
+
+@app.post("/api/delete_single_progress")
+def delete_single_progress(data: DeleteProgress, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username == data.username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
+        
+    prog = db.query(models.Progress).filter(
+        models.Progress.user_id == user.user_id,
+        models.Progress.exercise_id == data.exercise_id
+    ).first()
+    
+    if prog:
+        db.delete(prog)
+        db.commit()
+        return {"status": "success", "message": "Đã xóa điểm để học sinh làm lại!"}
+    return {"status": "error", "message": "Không tìm thấy dữ liệu bài làm"}
