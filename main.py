@@ -25,7 +25,7 @@ for html_file in ["index.html", "portal.html", "syllabus.html", "admin.html"]:
 try:
     #models.Base.metadata.drop_all(bind=engine) # <--- Thêm dòng này để xóa bảng cũ
     models.Base.metadata.create_all(bind=engine) # Tạo lại bảng mới với cột is_published
-    print("🚀 NAMY V3 STATUS: ĐÃ ĐẬP ĐI XÂY LẠI DATABASE THÀNH CÔNG!")
+    print("🚀 HỆ THỐNG ĐÃ SẴN SÀNG!")
 except Exception as e:
     print(f"❌ LỖI NGHIÊM TRỌNG: KHÔNG THỂ KẾT NỐI DATABASE! {e}")
 

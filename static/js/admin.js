@@ -136,7 +136,6 @@ window.showStudentDetails = function(username, detailsStr) {
     if (details && details.length > 0) {
         details.forEach(d => {
             if (d.type === 'practice' && d.score) {
-                // bóc tách từ chuỗi "10/20" -> lấy 10
                 let match = String(d.score).match(/(\d+)\/(\d+)/);
                 if (match) {
                     totalScore += parseInt(match[1]);
@@ -147,7 +146,6 @@ window.showStudentDetails = function(username, detailsStr) {
         });
     }
 
-    // Hiển thị ra giao diện khối điểm đã tạo ở admin.html
     const scoreDisplay = document.getElementById("total-score-admin");
     if (scoreDisplay) {
         scoreDisplay.style.display = "block";
@@ -315,6 +313,9 @@ function initAdminCMS() {
         });
     }
 
+    // ==========================================
+    // KHỐI CHỨC NĂNG UPLOAD JSON ĐÃ ĐƯỢC CẬP NHẬT
+    // ==========================================
     const btnUploadJson = document.getElementById("btn-upload-json");
     if (btnUploadJson) {
         btnUploadJson.addEventListener("click", async () => {
@@ -327,24 +328,43 @@ function initAdminCMS() {
             btnUploadJson.innerText = `Đang xử lý ${fileInput.files.length} file...`;
             
             let successCount = 0; let errorCount = 0;
+            let errorDetails = ""; // Biến mới để gom lỗi
 
             for (let i = 0; i < fileInput.files.length; i++) {
                 const file = fileInput.files[i];
                 try {
                     const jsonData = await new Promise((resolve, reject) => {
                         const reader = new FileReader();
-                        reader.onload = e => resolve(JSON.parse(e.target.result));
-                        reader.onerror = e => reject(e);
+                        reader.onload = e => {
+                            try {
+                                resolve(JSON.parse(e.target.result)); // Thử đọc JSON
+                            } catch(err) {
+                                reject(`File "${file.name}" sai cấu trúc (Có ký tự lạ hoặc thiếu ngoặc).`);
+                            }
+                        };
+                        reader.onerror = e => reject(`Không đọc được file ${file.name}`);
                         reader.readAsText(file);
                     });
                     
                     const res = await apiFetch("/upload_json", "POST", jsonData);
-                    if (res.ok) successCount++; else errorCount++;
-                } catch (error) { errorCount++; }
+                    if (res.ok) {
+                        successCount++; 
+                    } else {
+                        errorCount++;
+                        errorDetails += `\n- File "${file.name}": Máy chủ từ chối (Thiếu trường dữ liệu chuẩn).`;
+                    }
+                } catch (error) { 
+                    errorCount++; 
+                    errorDetails += `\n- ${error}`;
+                }
             }
 
-            if (errorCount === 0) showStatus(msg, `✅ Đã nạp ${successCount} bài tập!`, "success");
-            else showStatus(msg, `⚠️ ${successCount} thành công, ${errorCount} lỗi.`, "error");
+            if (errorCount === 0) {
+                showStatus(msg, `✅ Đã nạp ${successCount} bài tập!`, "success");
+            } else {
+                showStatus(msg, `⚠️ ${successCount} thành công, ${errorCount} lỗi.`, "error");
+                alert("CHI TIẾT LỖI:\n" + errorDetails); // Bật cảnh báo lỗi chi tiết
+            }
 
             fileInput.value = ""; 
             loadCmsComboboxes();  
@@ -459,26 +479,3 @@ window.togglePublish = async function(exerciseId, currentStatus) {
         if (res.ok) {
             loadCmsComboboxes(); // Load lại data để cập nhật giao diện
         } else {
-            alert("Lỗi khi cập nhật trạng thái giao bài!");
-        }
-    } catch (error) {
-        alert("Lỗi kết nối máy chủ!");
-    }
-};
-
-// Hàm Xóa vĩnh viễn 1 bài (Lý thuyết / Bài tập)
-window.deleteExerciseCMS = async function(exerciseId, exeTitle) {
-    if (confirm(`⚠️ CẢNH BÁO: Thầy có chắc chắn muốn xóa vĩnh viễn bài "${exeTitle}" không?\n\nToàn bộ câu hỏi và điểm số của học sinh liên quan đến bài này sẽ bị xóa. Thao tác này không thể hoàn tác!`)) {
-        try {
-            const res = await fetch(`/api/delete_exercise/${exerciseId}`, { method: "DELETE" });
-            if (res.ok) {
-                alert("🗑️ Đã xóa bài thành công!");
-                loadCmsComboboxes(); 
-            } else {
-                alert("Lỗi khi xóa bài tập!");
-            }
-        } catch (error) {
-            alert("Lỗi kết nối máy chủ!");
-        }
-    }
-};
