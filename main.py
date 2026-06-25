@@ -23,8 +23,9 @@ for html_file in ["index.html", "portal.html", "syllabus.html", "admin.html"]:
             f.write(f"<h2>NamY V3 - Hệ thống đang chạy! Thiếu file giao diện: {html_file}</h2>")
 
 try:
-    models.Base.metadata.create_all(bind=engine)
-    print("🚀 NAMY V3 STATUS: KẾT NỐI VÀ KHỞI TẠO DATABASE THÀNH CÔNG!")
+    #models.Base.metadata.drop_all(bind=engine) # <--- Thêm dòng này để xóa bảng cũ
+    models.Base.metadata.create_all(bind=engine) # Tạo lại bảng mới với cột is_published
+    print("🚀 NAMY V3 STATUS: ĐÃ ĐẬP ĐI XÂY LẠI DATABASE THÀNH CÔNG!")
 except Exception as e:
     print(f"❌ LỖI NGHIÊM TRỌNG: KHÔNG THỂ KẾT NỐI DATABASE! {e}")
 
