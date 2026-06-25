@@ -23,7 +23,7 @@ for html_file in ["index.html", "portal.html", "syllabus.html", "admin.html"]:
             f.write(f"<h2>NamY V3 - Hệ thống đang chạy! Thiếu file giao diện: {html_file}</h2>")
 
 try:
-    #models.Base.metadata.drop_all(bind=engine) # <--- Thêm dòng này để xóa bảng cũ
+    models.Base.metadata.drop_all(bind=engine) # <--- Thêm dòng này để xóa bảng cũ
     models.Base.metadata.create_all(bind=engine) # Tạo lại bảng mới với cột is_published
     print("🚀 HỆ THỐNG ĐÃ SẴN SÀNG!")
 except Exception as e:
