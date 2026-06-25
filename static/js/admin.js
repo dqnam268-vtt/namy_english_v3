@@ -479,3 +479,26 @@ window.togglePublish = async function(exerciseId, currentStatus) {
         if (res.ok) {
             loadCmsComboboxes(); // Load lại data để cập nhật giao diện
         } else {
+            alert("Lỗi khi cập nhật trạng thái giao bài!");
+        }
+    } catch (error) {
+        alert("Lỗi kết nối máy chủ!");
+    }
+};
+
+// Hàm Xóa vĩnh viễn 1 bài (Lý thuyết / Bài tập)
+window.deleteExerciseCMS = async function(exerciseId, exeTitle) {
+    if (confirm(`⚠️ CẢNH BÁO: Thầy có chắc chắn muốn xóa vĩnh viễn bài "${exeTitle}" không?\n\nToàn bộ câu hỏi và điểm số của học sinh liên quan đến bài này sẽ bị xóa. Thao tác này không thể hoàn tác!`)) {
+        try {
+            const res = await fetch(`/api/delete_exercise/${exerciseId}`, { method: "DELETE" });
+            if (res.ok) {
+                alert("🗑️ Đã xóa bài thành công!");
+                loadCmsComboboxes(); 
+            } else {
+                alert("Lỗi khi xóa bài tập!");
+            }
+        } catch (error) {
+            alert("Lỗi kết nối máy chủ!");
+        }
+    }
+};
