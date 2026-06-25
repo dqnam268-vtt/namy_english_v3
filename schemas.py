@@ -18,7 +18,7 @@ class LoginResponse(BaseModel):
 class UserCreate(BaseModel):
     username: str
     password: str
-    role: str = "student"
+    role: Optional[str] = "student"
 
 # ==========================================
 # 2. DỮ LIỆU HÒM THƯ (FEEDBACK)
@@ -34,14 +34,14 @@ class FeedbackCreate(BaseModel):
 class ExerciseCreate(BaseModel):
     title: str
     topic_order: int  # Gửi số thứ tự chuyên đề (1 đến 15)
-    order_num: int = 1
-    module_type: str = "learning" 
+    order_num: Optional[int] = 1
+    module_type: Optional[str] = "learning" 
 
 class ActivityCreate(BaseModel):
     exercise_id: int
     activity_type: str
     content: Dict[str, Any]
-    order_num: int = 1
+    order_num: Optional[int] = 1
 
 # ==========================================
 # 4. DỮ LIỆU NẠP NHANH TỪ FILE JSON (BULK UPLOAD)
@@ -49,9 +49,17 @@ class ActivityCreate(BaseModel):
 class BulkActivity(BaseModel):
     type: str
     content: Dict[str, Any]
+    
+    # Cấu hình bỏ qua lỗi nếu JSON có chứa dữ liệu thừa
+    class Config:
+        extra = "ignore"
 
 class BulkExerciseUpload(BaseModel):
     topic_order: int
-    module_type: str
+    module_type: Optional[str] = "learning"
     exercise_title: str
     activities: List[BulkActivity]
+
+    # Cấu hình bỏ qua lỗi nếu JSON có chứa dữ liệu thừa
+    class Config:
+        extra = "ignore"
