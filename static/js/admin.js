@@ -26,7 +26,33 @@ window.switchTab = function(tabId) {
 async function initAdminDashboard() {
     fetchStats();
     fetchFeedbacks();
+// Thêm đoạn này vào trong hàm initAdminDashboard()
+    const bulkRegisterBtn = document.getElementById("btn-bulk-register");
+    if (bulkRegisterBtn) {
+        bulkRegisterBtn.addEventListener("click", async () => {
+            const data = document.getElementById("bulk-users-data").value.trim();
+            const msg = document.getElementById("bulk-message");
+            if (!data) return showStatus(msg, "Vui lòng nhập dữ liệu!", "error");
 
+            const users = data.split('\n').map(line => {
+                const [username, password] = line.split(',').map(s => s.trim());
+                return { username, password };
+            }).filter(u => u.username && u.password && u.password.length >= 6);
+
+            if (users.length === 0) return showStatus(msg, "Dữ liệu sai định dạng hoặc mật khẩu < 6 ký tự!", "error");
+
+            bulkRegisterBtn.disabled = true;
+            const res = await apiFetch("/register_bulk", "POST", users);
+            if (res.ok) {
+                showStatus(msg, `✅ ${res.data.message}`, "success");
+                document.getElementById("bulk-users-data").value = "";
+                fetchStats(); // Cập nhật lại số lượng học sinh
+            } else {
+                showStatus(msg, "❌ Lỗi tạo tài khoản!", "error");
+            }
+            bulkRegisterBtn.disabled = false;
+        });
+    }
     const exportBtn = document.getElementById("btn-export-excel");
     if (exportBtn) {
         exportBtn.addEventListener("click", () => {
