@@ -2,7 +2,7 @@
 // NAMY V3: PORTAL MODULE (INLINE CLOZE, AUTO-SYNC, FORCED SURVEY, DRAG-DROP, FEEDBACK)
 // ==========================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     try {
         if (window.location.pathname.includes("/portal")) {
             if (typeof checkAuth === "function") checkAuth("student");
@@ -11,12 +11,67 @@ document.addEventListener("DOMContentLoaded", () => {
             const nameEl = document.getElementById("student-name");
             if (nameEl) nameEl.innerText = "Welcome, " + studentName + "!";
             
+            // 🟢 KHẮC PHỤC LỖI: Tự động kéo dữ liệu từ Server về máy trước khi vẽ giao diện
+            await restoreProgressFromServer();
+            
             loadStudentSyllabus();
         }
     } catch (err) {
         console.error("Lỗi khởi tạo:", err);
     }
 });
+
+// Hàm kéo tiến độ học tập cũ từ máy chủ về LocalStorage
+async function restoreProgressFromServer() {
+    const username = localStorage.getItem("username");
+    if (!username) return;
+    
+    try {
+        // Dùng API lấy chi tiết học sinh (Thường dùng cho trang Admin)
+        const response = await fetch("/api/get_student_detail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: username })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            // 1. Phục hồi tiến độ bài tập
+            if (data && data.progress) {
+                let progList = Array.isArray(data.progress) ? data.progress : Object.values(data.progress);
+                progList.forEach(p => {
+                    if (p.module_type === "learning") {
+                        if (p.is_completed) {
+                            localStorage.setItem(`namy_theory_${p.exercise_id}`, "completed");
+                        }
+                    } else {
+                        // Chỉ phục hồi nếu trình duyệt chưa có dữ liệu này
+                        const existing = localStorage.getItem(`namy_progress_${p.exercise_id}`);
+                        if (!existing) {
+                            localStorage.setItem(`namy_progress_${p.exercise_id}`, JSON.stringify({
+                                qIndex: p.is_completed ? 999 : 0, // 999 để ép hiện màn hình chúc mừng
+                                score: p.score || 0,
+                                total: 0, // Để hệ thống tự đếm lại tổng số câu hỏi
+                                isCompleted: p.is_completed
+                            }));
+                        }
+                    }
+                });
+            }
+            
+            // 2. Phục hồi dữ liệu khảo sát (nếu có)
+            if (data && data.surveys) {
+                let surveyList = Array.isArray(data.surveys) ? data.surveys : Object.values(data.surveys);
+                surveyList.forEach(s => {
+                    localStorage.setItem(`namy_survey_done_${s.topic_id || s}`, "true");
+                });
+            }
+        }
+    } catch (error) {
+        console.log("Khôi phục tiến độ thất bại:", error);
+    }
+}
 
 async function syncProgressToServer(exeId, moduleType, score, isCompleted) {
     const username = localStorage.getItem("username");
