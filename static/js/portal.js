@@ -373,7 +373,7 @@ window.checkAnswer = function() {
     const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
     if (inlineInputs.length > 0) {
-        // ĐÃ SỬA LỖI: KIỂM TRA ĐIỀU KIỆN TRỐNG TRƯỚC KHI CHẤM
+        // KIỂM TRA ĐIỀU KIỆN TRỐNG TRƯỚC KHI CHẤM
         let isEmpty = true;
         inlineInputs.forEach(inp => {
             if (inp.value.trim() !== "") isEmpty = false;
@@ -398,8 +398,9 @@ window.checkAnswer = function() {
                 gradingBlank = parts[0] + " / " + parts[1];
             }
 
-            let userVal = inp.value.trim().toLowerCase();
-            let correctAnswers = gradingBlank.split("/").map(s => s.trim().toLowerCase());
+            // BỘ LỌC CHỖ TRỐNG: Chuyển chữ thường, cắt khoảng trắng 2 đầu, gom nhiều khoảng trắng thành 1
+            let userVal = inp.value.trim().toLowerCase().replace(/\s+/g, " ");
+            let correctAnswers = gradingBlank.split("/").map(s => s.trim().toLowerCase().replace(/\s+/g, " "));
             let displayOptions = displayBlank.split("/").map(s => s.trim());
             
             if (userVal !== "" && correctAnswers.includes(userVal)) {
@@ -444,8 +445,9 @@ window.checkAnswer = function() {
         gradingPart = parts[0] + " / " + parts[1];
     }
 
-    let normalizedUser = userAnswer.toLowerCase().replace(/\s*;\s*/g, ";").trim();
-    let possibleAnswers = gradingPart.toLowerCase().replace(/\s*;\s*/g, ";").trim().split("/").map(s => s.trim());
+    // BỘ LỌC CÂU DÀI: Ép toàn bộ khoảng trắng thừa thành 1 khoảng trắng duy nhất
+    let normalizedUser = userAnswer.toLowerCase().replace(/\s+/g, " ").replace(/\s*;\s*/g, ";").trim();
+    let possibleAnswers = gradingPart.toLowerCase().replace(/\s+/g, " ").replace(/\s*;\s*/g, ";").trim().split("/").map(s => s.trim());
     const isCorrect = possibleAnswers.includes(normalizedUser);
 
     if (isCorrect) {
