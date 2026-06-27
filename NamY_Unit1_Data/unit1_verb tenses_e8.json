@@ -142,6 +142,48 @@
         "question": "<b>Fill in the blanks with a suitable word or phrase.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>20. A: Where's Peter?<br>B: Oh, he'll be here soon. He's just <b>___</b> shop.",
         "answer": "gone to the"
       }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with a suitable word or phrase.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>21. Your manners are terrible. You really <b>___</b> about them.",
+        "answer": "ought to do something || ought to do something / should do something"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with a suitable word or phrase.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>22. That <b>___</b> Marilyn Monroe you saw yesterday. She's been dead for years.",
+        "answer": "cannot have been || cannot have been / was not / can't have been / wasn't"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with a suitable word or phrase.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>23. I didn't answer the phone <b>___</b> it would be a wrong number.",
+        "answer": "since I knew || since I knew / as I knew / since I was sure / as I was sure"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with a suitable word or phrase.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>24. Don't you realise <b>___</b> things cost these days? You can't buy a car for £100!",
+        "answer": "how much"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with a suitable word or phrase.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>25. <b>___</b> good saying that now - it's too late.",
+        "answer": "It is no || It is no / It's no"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with a suitable word or phrase.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>26. <b>___</b> guilty, the murderer denied everything.",
+        "answer": "Even though he was || Even though he was / Although he was"
+      }
     }
   ]
 }

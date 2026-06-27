@@ -98,6 +98,70 @@
         "keyword": "SUCCEEDED",
         "answer": "Only Sheila succeeded in coming up with the solution to the problem. || Only Sheila succeeded in finding the solution to the problem. / Only Sheila succeeded in coming up with the solution to the problem / Only Sheila succeeded in finding the solution to the problem"
       }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "13. My boss says I can use his yacht whenever I want to.",
+        "keyword": "DISPOSAL",
+        "answer": "My boss has put his yacht at my disposal. || My boss says his yacht is at my disposal. / My boss has put his yacht at my disposal / My boss says his yacht is at my disposal"
+      }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "14. The news was a shock to us.",
+        "keyword": "ABACK",
+        "answer": "We were taken aback by the news. || We were taken aback by the news"
+      }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "15. James realised that he could never be an architect.",
+        "keyword": "CUT",
+        "answer": "James realised that he wasn't cut out to be an architect. || James realised that he was not cut out to be an architect. / James realised that he wasn't cut out to be an architect / James realised that he was not cut out to be an architect"
+      }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "16. They chose not to drive because they thought there would be too much snow.",
+        "keyword": "FEAR",
+        "answer": "They chose not to drive for fear that there would be too much snow. || They chose not to drive for fear that there might be too much snow. / They chose not to drive for fear that there would be too much snow / They chose not to drive for fear that there might be too much snow"
+      }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "17. I'm sick of that programme; I've watched it too often.",
+        "keyword": "OFF",
+        "answer": "I've gone off that programme. || I have gone off that programme. / I've gone off that programme / I have gone off that programme"
+      }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "18. I never have enough time.",
+        "keyword": "SHORT",
+        "answer": "I am always short of time. || I'm always short of time. / I am always short of time / I'm always short of time"
+      }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "19. They tried very hard to finish by midnight.",
+        "keyword": "BEST",
+        "answer": "They did their best to finish by midnight. || They did their best to finish by midnight"
+      }
+    },
+    {
+      "type": "Viết lại câu (Sentence Transformation)",
+      "content": {
+        "question": "20. The criminal got away through the back window.",
+        "keyword": "ESCAPE",
+        "answer": "The criminal made his escape through the back window. || The criminal managed to escape through the back window. / The criminal effected his escape through the back window. / The criminal made his escape through the back window / The criminal managed to escape through the back window / The criminal effected his escape through the back window"
+      }
     }
   ]
 }
