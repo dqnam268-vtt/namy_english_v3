@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from sqlalchemy import func  # Tích hợp hàm toán học để đếm số câu
+from sqlalchemy import func
 from pydantic import BaseModel
 import bcrypt
 
@@ -23,8 +23,7 @@ for html_file in ["index.html", "portal.html", "syllabus.html", "admin.html"]:
             f.write(f"<h2>NamY V3 - Hệ thống đang chạy! Thiếu file giao diện: {html_file}</h2>")
 
 try:
-    #models.Base.metadata.drop_all(bind=engine) # <--- Thêm dòng này để xóa bảng cũ
-    models.Base.metadata.create_all(bind=engine) # Tạo lại bảng mới với cột is_published
+    models.Base.metadata.create_all(bind=engine)
     print("🚀 HỆ THỐNG ĐÃ SẴN SÀNG!")
 except Exception as e:
     print(f"❌ LỖI NGHIÊM TRỌNG: KHÔNG THỂ KẾT NỐI DATABASE! {e}")
@@ -100,7 +99,7 @@ def get_syllabus(mode: Optional[str] = None, db: Session = Depends(get_db)):
                 "id": exc.exercise_id, 
                 "title": exc.title, 
                 "module_type": exc.module_type, 
-                "is_published": getattr(exc, 'is_published', True), # Trả về trạng thái giao bài
+                "is_published": getattr(exc, 'is_published', True),
                 "activities": act_list
             })
             
@@ -368,6 +367,56 @@ def update_progress(prog: ProgressUpdate, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": "Đã đồng bộ tiến độ lên máy chủ thành công!"}
 
+# ==============================================================
+# HÀM MỚI BỔ SUNG: TRẢ DỮ LIỆU CŨ CHO PORTAL KHI HỌC SINH LOGIN LẠI
+# ==============================================================
+class StudentDetailRequest(BaseModel):
+    username: str
+
+@app.post("/api/get_student_detail")
+def get_student_detail(req: StudentDetailRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username == req.username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
+        
+    progress_records = db.query(models.Progress).filter(models.Progress.user_id == user.user_id).all()
+    
+    prog_list = []
+    for p in progress_records:
+        exe = db.query(models.Exercise).filter(models.Exercise.exercise_id == p.exercise_id).first()
+        if exe:
+            # Tự động đếm lại tổng số câu hỏi từ các hoạt động
+            acts = db.query(models.Activity).filter(models.Activity.exercise_id == exe.exercise_id).all()
+            total = 0
+            for a in acts:
+                ans = a.content.get("answer", "") if isinstance(a.content, dict) else ""
+                if ans and ";" in ans:
+                    total += len(ans.split(";"))
+                else:
+                    total += 1
+                    
+            prog_list.append({
+                "exercise_id": p.exercise_id,
+                "module_type": exe.module_type,
+                "score": getattr(p, "score", 0),
+                "total": total if total > 0 else 10,
+                "is_completed": getattr(p, "is_completed", False)
+            })
+            
+    # Lấy danh sách ID các unit đã làm khảo sát
+    surveys = db.query(models.Feedback).filter(
+        models.Feedback.user_id == user.user_id,
+        models.Feedback.location.like("Khảo sát:%")
+    ).all()
+    survey_tids = []
+    for s in surveys:
+        t_title = s.location.replace("Khảo sát: ", "")
+        topic = db.query(models.Topic).filter(models.Topic.title == t_title).first()
+        if topic:
+            survey_tids.append(topic.topic_id)
+            
+    return {"progress": prog_list, "surveys": survey_tids}
+
 @app.get("/api/force_reset_progress")
 def force_reset_progress():
     try:
@@ -402,10 +451,6 @@ def submit_survey(survey: SurveySubmit, db: Session = Depends(get_db)):
     
     return {"status": "success", "message": "Đã lưu đánh giá!"}
 
-# ==============================================================
-# HÀM MỚI: 4 API XỬ LÝ (GÓP Ý, BẬT/TẮT BÀI, XÓA BÀI, XÓA TIẾN ĐỘ)
-# ==============================================================
-
 class FeedbackSubmit(BaseModel):
     username: str
     content: str
@@ -436,7 +481,6 @@ def toggle_publish(data: TogglePublish, db: Session = Depends(get_db)):
     if not exe:
         raise HTTPException(status_code=404, detail="Không tìm thấy bài học")
     
-    # Gắn thuộc tính is_published vào database
     exe.is_published = data.is_published
     db.commit()
     return {"status": "success", "message": "Cập nhật trạng thái thành công!"}

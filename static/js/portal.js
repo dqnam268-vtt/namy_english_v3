@@ -1,5 +1,5 @@
 // ==========================================
-// NAMY V3: PORTAL MODULE (INLINE CLOZE, AUTO-SYNC, FORCED SURVEY, DRAG-DROP, FEEDBACK)
+// NAMY V3: PORTAL MODULE (BẢN ĐỒNG BỘ KÉP DATABASE & LOCALSTORAGE)
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -11,23 +11,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             const nameEl = document.getElementById("student-name");
             if (nameEl) nameEl.innerText = "Welcome, " + studentName + "!";
             
-            // 🟢 KHẮC PHỤC LỖI: Tự động kéo dữ liệu từ Server về máy trước khi vẽ giao diện
+            // 1. KÉO dữ liệu từ Database Server về máy ngay khi vừa đăng nhập
             await restoreProgressFromServer();
             
-            loadStudentSyllabus();
+            // 2. Tải danh sách bài tập ra màn hình
+            await loadStudentSyllabus();
+            
+            // 3. Đắp màu thanh tiến độ cho các bài đã làm
+            setTimeout(() => { updateProgressUIFromLocal(); }, 500);
         }
     } catch (err) {
         console.error("Lỗi khởi tạo:", err);
     }
 });
 
-// Hàm kéo tiến độ học tập cũ từ máy chủ về LocalStorage
 async function restoreProgressFromServer() {
     const username = localStorage.getItem("username");
     if (!username) return;
     
     try {
-        // Dùng API lấy chi tiết học sinh (Thường dùng cho trang Admin)
+        console.log("⏳ [Đang tải...] Kéo dữ liệu từ Database...");
         const response = await fetch("/api/get_student_detail", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -36,40 +39,31 @@ async function restoreProgressFromServer() {
         
         if (response.ok) {
             const data = await response.json();
-            
-            // 1. Phục hồi tiến độ bài tập
             if (data && data.progress) {
                 let progList = Array.isArray(data.progress) ? data.progress : Object.values(data.progress);
                 progList.forEach(p => {
                     if (p.module_type === "learning") {
-                        if (p.is_completed) {
-                            localStorage.setItem(`namy_theory_${p.exercise_id}`, "completed");
-                        }
+                        if (p.is_completed) localStorage.setItem(`namy_theory_${p.exercise_id}`, "completed");
                     } else {
-                        // Chỉ phục hồi nếu trình duyệt chưa có dữ liệu này
-                        const existing = localStorage.getItem(`namy_progress_${p.exercise_id}`);
-                        if (!existing) {
-                            localStorage.setItem(`namy_progress_${p.exercise_id}`, JSON.stringify({
-                                qIndex: p.is_completed ? 999 : 0, // 999 để ép hiện màn hình chúc mừng
-                                score: p.score || 0,
-                                total: 0, // Để hệ thống tự đếm lại tổng số câu hỏi
-                                isCompleted: p.is_completed
-                            }));
-                        }
+                        localStorage.setItem(`namy_progress_${p.exercise_id}`, JSON.stringify({
+                            qIndex: p.is_completed ? 999 : 0, 
+                            score: p.score || 0,
+                            total: p.total || 0, 
+                            isCompleted: p.is_completed
+                        }));
                     }
                 });
             }
-            
-            // 2. Phục hồi dữ liệu khảo sát (nếu có)
             if (data && data.surveys) {
                 let surveyList = Array.isArray(data.surveys) ? data.surveys : Object.values(data.surveys);
                 surveyList.forEach(s => {
-                    localStorage.setItem(`namy_survey_done_${s.topic_id || s}`, "true");
+                    let tid = typeof s === 'object' ? s.topic_id : s;
+                    localStorage.setItem(`namy_survey_done_${tid}`, "true");
                 });
             }
         }
     } catch (error) {
-        console.log("Khôi phục tiến độ thất bại:", error);
+        console.log("❌ [Lỗi phục hồi]:", error);
     }
 }
 
@@ -80,10 +74,52 @@ async function syncProgressToServer(exeId, moduleType, score, isCompleted) {
         const response = await fetch("/api/update_progress", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, exercise_id: parseInt(exeId), module_type: moduleType, score: parseInt(score), is_completed: isCompleted })
+            body: JSON.stringify({ 
+                username: username, 
+                exercise_id: parseInt(exeId), 
+                module_type: moduleType, 
+                score: parseInt(score), 
+                is_completed: isCompleted 
+            })
         });
-        if (response.ok) localStorage.setItem(`namy_synced_${exeId}_${score}`, "true");
-    } catch (error) { console.log("Lỗi đồng bộ:", error); }
+        if (response.ok) {
+            localStorage.setItem(`namy_synced_${exeId}_${score}`, "true");
+            console.log(`✅ Lưu Database thành công bài: ${exeId}`);
+        } else {
+            console.error("❌ Máy chủ Backend từ chối lưu dữ liệu!");
+        }
+    } catch (error) { 
+        console.log("❌ Lỗi mạng khi lưu:", error); 
+    }
+}
+
+function updateProgressUIFromLocal() {
+    document.querySelectorAll('.exe-btn').forEach(btn => {
+        const str = btn.getAttribute("onclick");
+        if(str) {
+            const match = str.match(/"id":\s*(\d+)/);
+            if(match && match[1]) {
+                const exeId = match[1];
+                const progressData = localStorage.getItem(`namy_progress_${exeId}`);
+                if (progressData) {
+                    const parsed = JSON.parse(progressData);
+                    const bar = btn.querySelector('.mini-progress-bar');
+                    const text = btn.querySelector('.mini-progress-text');
+                    if (bar && text) {
+                        let total = parsed.total > 0 ? parsed.total : 10;
+                        let percent = Math.round((parsed.score / total) * 100);
+                        if (percent > 100) percent = 100;
+                        bar.style.width = percent + "%";
+                        text.innerText = parsed.isCompleted ? `✅ Hoàn thành: Đúng ${parsed.score}/${total} điểm` : `📝 Đang làm: Đúng ${parsed.score}/${total} điểm (${percent}%)`;
+                        if (parsed.isCompleted) {
+                            bar.classList.remove('progress-learning-bar');
+                            bar.classList.add('progress-practice-bar');
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 async function loadStudentSyllabus() {
@@ -101,10 +137,9 @@ async function loadStudentSyllabus() {
     }
 }
 
-// Biến lưu trữ tạm thời Unit đang cần đánh giá
 let pendingSurveyTopicId = null;
 let pendingSurveyTopicTitle = "";
-let currentExeData = null; // Lưu trữ data bài tập hiện tại
+let currentExeData = null; 
 
 function renderSyllabus(syllabusData, container) {
     if (!syllabusData || syllabusData.length === 0) {
@@ -369,7 +404,6 @@ function renderCurrentQuestion() {
     let promptText = content.question || content.original || "";
     let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626; font-size: 0.95rem;">TỪ KHÓA BẮT BUỘC: [ ${content.keyword} ]</div>` : "";
     
-    // ĐÃ SỬA LỖI: Tìm mảng Options ở cả bên trong 'content' và bên ngoài 'currentExeData'
     let currentOptions = content.options || (currentExeData && currentExeData.options) || null;
 
     if (promptText.includes("___")) {
@@ -380,7 +414,6 @@ function renderCurrentQuestion() {
             return inpHtml;
         });
         
-        // Render khối nút bấm
         if (currentOptions && Array.isArray(currentOptions)) {
             html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
             currentOptions.forEach(opt => {
@@ -428,7 +461,6 @@ window.checkAnswer = function() {
     const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
     if (inlineInputs.length > 0) {
-        // KIỂM TRA ĐIỀU KIỆN TRỐNG TRƯỚC KHI CHẤM
         let isEmpty = true;
         inlineInputs.forEach(inp => {
             if (inp.value.trim() !== "") isEmpty = false;
@@ -453,7 +485,6 @@ window.checkAnswer = function() {
                 gradingBlank = parts[0] + " / " + parts[1];
             }
 
-            // BỘ LỌC CHỖ TRỐNG: Chuyển chữ thường, cắt khoảng trắng 2 đầu, gom nhiều khoảng trắng thành 1
             let userVal = inp.value.trim().toLowerCase().replace(/\s+/g, " ");
             let correctAnswers = gradingBlank.split("/").map(s => s.trim().toLowerCase().replace(/\s+/g, " "));
             let displayOptions = displayBlank.split("/").map(s => s.trim());
@@ -500,7 +531,6 @@ window.checkAnswer = function() {
         gradingPart = parts[0] + " / " + parts[1];
     }
 
-    // BỘ LỌC CÂU DÀI: Ép toàn bộ khoảng trắng thừa thành 1 khoảng trắng duy nhất
     let normalizedUser = userAnswer.toLowerCase().replace(/\s+/g, " ").replace(/\s*;\s*/g, ";").trim();
     let possibleAnswers = gradingPart.toLowerCase().replace(/\s+/g, " ").replace(/\s*;\s*/g, ";").trim().split("/").map(s => s.trim());
     const isCorrect = possibleAnswers.includes(normalizedUser);
@@ -521,9 +551,6 @@ window.nextQuestion = function() {
     renderCurrentQuestion();
 };
 
-// =======================
-// MODULE KHẢO SÁT & GÓP Ý
-// =======================
 let currentSurveyTopicId = null;
 let currentSurveyTopicTitle = "";
 
@@ -598,7 +625,6 @@ window.submitFeedback = async function() {
     }
 }
 
-// Hàm dùng trên trang Admin để xóa 1 bài tập
 window.deleteSingleExercise = function(username, exerciseId) {
     if (confirm(`Thầy có chắc chắn muốn reset lại bài tập ID: ${exerciseId} của học sinh ${username} không?`)) {
         fetch("/api/delete_single_progress", {
@@ -609,7 +635,6 @@ window.deleteSingleExercise = function(username, exerciseId) {
         .then(res => {
             if (res.ok) {
                 alert("Đã xóa dữ liệu bài tập thành công!");
-                // Nếu đang dùng admin.js, gọi loadStudentDetail(username) ở đây
             } else {
                 alert("Lỗi khi xóa!");
             }
