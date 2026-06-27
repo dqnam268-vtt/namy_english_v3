@@ -167,8 +167,16 @@
 
         <div id="tab-survey" class="cms-panel">
             <div class="card">
-                <h3>🌟 Kết Quả Khảo Sát Đánh Giá Unit</h3>
-                <p class="subtitle">Hệ thống tự động thu thập và sàng lọc đánh giá từ tính năng bắt buộc khảo sát sau mỗi Unit.</p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                    <div>
+                        <h3 style="margin-top: 0;">🌟 Kết Quả Khảo Sát Đánh Giá Unit</h3>
+                        <p class="subtitle" style="margin-top: 5px;">Hệ thống tự động thu thập và sàng lọc đánh giá từ tính năng bắt buộc khảo sát sau mỗi Unit.</p>
+                    </div>
+                    <button onclick="window.location.href='/api/export_surveys'" class="btn btn-success" style="padding: 10px 20px; font-weight: bold; font-size: 0.95rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(16,185,129,0.3); display: flex; align-items: center; gap: 8px;">
+                        📥 Tải về Excel
+                    </button>
+                </div>
+                
                 <div style="max-height: 500px; overflow-y:auto; border: 1px solid #e2e8f0; border-radius: 8px;">
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
                         <thead style="background:#f1f5f9; position: sticky; top: 0;">

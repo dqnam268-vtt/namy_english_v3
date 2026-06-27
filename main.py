@@ -517,3 +517,43 @@ def delete_single_progress(data: DeleteProgress, db: Session = Depends(get_db)):
         db.commit()
         return {"status": "success", "message": "Đã xóa điểm để học sinh làm lại!"}
     return {"status": "error", "message": "Không tìm thấy dữ liệu bài làm"}
+
+import io
+import csv
+from fastapi.responses import StreamingResponse
+
+@app.get("/api/export_surveys")
+def export_surveys(db: Session = Depends(get_db)):
+    # Lấy toàn bộ dữ liệu khảo sát từ Database
+    surveys = db.query(models.Feedback, models.User.username)\
+                .join(models.User, models.Feedback.user_id == models.User.user_id)\
+                .filter(models.Feedback.location.like("Khảo sát:%")).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Viết tiêu đề cột cho file Excel
+    writer.writerow(["Học Sinh", "Chuyên Đề", "Ngữ Pháp (Sao)", "Từ Vựng (Sao)", "Đánh Giá Chung (Sao)", "Góp Ý Chi Tiết"])
+
+    for fb, uname in surveys:
+        # Bóc tách tên chuyên đề
+        topic = fb.location.replace("Khảo sát: ", "").strip()
+        
+        # Bóc tách từng số điểm từ chuỗi message (VD: "Ngữ pháp: 5⭐ | Từ vựng: 3⭐ | Chung: 1⭐")
+        parts = fb.message.split(" | ")
+        grammar = parts[0].replace("Ngữ pháp: ", "").replace("⭐", "").strip() if len(parts) > 0 else ""
+        vocab = parts[1].replace("Từ vựng: ", "").replace("⭐", "").strip() if len(parts) > 1 else ""
+        overall = parts[2].replace("Chung: ", "").replace("⭐", "").strip() if len(parts) > 2 else ""
+        suggestion = parts[3].replace("Góp ý: ", "").strip() if len(parts) > 3 else ""
+
+        # Ghi một dòng vào file
+        writer.writerow([uname, topic, grammar, vocab, overall, suggestion])
+
+    output.seek(0)
+    
+    # Mã hóa utf-8-sig để Excel hiển thị tiếng Việt không bị lỗi font
+    return StreamingResponse(
+        iter([output.getvalue().encode("utf-8-sig")]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=Ket_Qua_Khao_Sat_NamY.csv"}
+    )
