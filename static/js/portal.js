@@ -49,7 +49,7 @@ async function loadStudentSyllabus() {
 // Biến lưu trữ tạm thời Unit đang cần đánh giá
 let pendingSurveyTopicId = null;
 let pendingSurveyTopicTitle = "";
-let currentExeData = null; // Lưu trữ data bài tập hiện tại (để lấy Note và Options chung)
+let currentExeData = null; // Lưu trữ data bài tập hiện tại
 
 function renderSyllabus(syllabusData, container) {
     if (!syllabusData || syllabusData.length === 0) {
@@ -67,7 +67,6 @@ function renderSyllabus(syllabusData, container) {
         
         let activeExercises = [];
         if (topic.exercises && topic.exercises.length > 0) {
-            // LỌC: CHỈ LẤY NHỮNG BÀI ĐÃ ĐƯỢC ADMIN GIAO (is_published = true)
             activeExercises = topic.exercises.filter(exe => exe.is_published === true);
         }
 
@@ -181,7 +180,7 @@ window.openExercise = function(encodedData) {
     try {
         const exe = JSON.parse(decodeURIComponent(encodedData));
         currentExeId = exe.id; 
-        currentExeData = exe; // Lưu lại toàn bộ data
+        currentExeData = exe;
         
         if (exe.module_type === "learning") {
             document.getElementById("learning-title").innerText = exe.title;
@@ -249,20 +248,16 @@ window.restartExercise = function() {
 };
 
 window.selectOption = function(val) {
-    // Trường hợp 1: Có ô nhập đa điểm (inline blank)
     const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
     if (inlineInputs.length > 0) {
-        // Tìm ô trống đầu tiên chưa có chữ để điền
         for (let i = 0; i < inlineInputs.length; i++) {
             if (!inlineInputs[i].value) {
                 inlineInputs[i].value = val;
-                // Tự động điều chỉnh độ rộng ô input cho đẹp
                 let tempWidth = val.length * 10 + 30; 
                 if (tempWidth > 100) inlineInputs[i].style.width = tempWidth + "px";
-                return; // Điền xong thì thoát
+                return; 
             }
         }
-        // Nếu học sinh đã điền hết nhưng muốn đổi ý, sẽ ghi đè ô cuối cùng
         let lastInput = inlineInputs[inlineInputs.length - 1];
         lastInput.value = val;
         let tempWidth = val.length * 10 + 30; 
@@ -270,7 +265,6 @@ window.selectOption = function(val) {
         return;
     }
 
-    // Trường hợp 2: Có ô nhập đơn
     const inputEl = document.getElementById("q_text_input");
     if (inputEl) inputEl.value = val;
 };
@@ -283,11 +277,9 @@ function renderCurrentQuestion() {
 
     feedback.innerHTML = ""; btnNext.style.display = "none";
     
-    // 1. XỬ LÝ MÀN HÌNH CHÚC MỪNG VÀ BẢNG NOTES KHI HẾT BÀI
     if (currentQIndex >= currentPracticeActs.length) {
         let noteHtml = "";
         
-        // Trích xuất bảng Note từ câu hỏi đầu tiên (nếu có)
         if (currentPracticeActs.length > 0 && currentPracticeActs[0].content.final_notes_html) {
             noteHtml = currentPracticeActs[0].content.final_notes_html;
         } else if (currentExeData && currentExeData.notes) {
@@ -322,9 +314,9 @@ function renderCurrentQuestion() {
     let promptText = content.question || content.original || "";
     let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626; font-size: 0.95rem;">TỪ KHÓA BẮT BUỘC: [ ${content.keyword} ]</div>` : "";
     
-    let globalOptions = currentExeData && currentExeData.options ? currentExeData.options : null;
+    // ĐÃ SỬA LỖI: Tìm mảng Options ở cả bên trong 'content' và bên ngoài 'currentExeData'
+    let currentOptions = content.options || (currentExeData && currentExeData.options) || null;
 
-    // 2. XỬ LÝ GIAO DIỆN KẾT HỢP CHỖ TRỐNG (___) VÀ NÚT CHỌN
     if (promptText.includes("___")) {
         let inputIndex = 0;
         promptText = promptText.replace(/___/g, function() {
@@ -333,10 +325,10 @@ function renderCurrentQuestion() {
             return inpHtml;
         });
         
-        // Render khối nút bấm nếu có dữ liệu
-        if (globalOptions && Array.isArray(globalOptions)) {
+        // Render khối nút bấm
+        if (currentOptions && Array.isArray(currentOptions)) {
             html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
-            globalOptions.forEach(opt => {
+            currentOptions.forEach(opt => {
                 html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:8px 12px; border:1px solid #3b82f6; border-radius:20px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; transition:0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">${opt}</button>`;
             });
             html += `</div>`;
@@ -346,7 +338,6 @@ function renderCurrentQuestion() {
         html += `<div style="font-size: 1.15rem; font-weight: normal; margin-bottom: 20px; color:#1e293b; line-height: 2.0; text-align: left; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); box-sizing: border-box; word-wrap: break-word;">${promptText}</div>`;
         html += hintHtml;
     } 
-    // Các dạng câu hỏi còn lại giữ nguyên...
     else if (content.options && Array.isArray(content.options)) {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += `<div style="display:flex; flex-direction:column; gap: 10px;">`;
@@ -359,9 +350,9 @@ function renderCurrentQuestion() {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += hintHtml;
         
-        if (globalOptions && Array.isArray(globalOptions)) {
+        if (currentOptions && Array.isArray(currentOptions)) {
             html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
-            globalOptions.forEach(opt => {
+            currentOptions.forEach(opt => {
                 html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:8px 12px; border:1px solid #3b82f6; border-radius:20px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; transition:0.2s;">${opt}</button>`;
             });
             html += `</div>`;
@@ -382,6 +373,17 @@ window.checkAnswer = function() {
     const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
     if (inlineInputs.length > 0) {
+        // ĐÃ SỬA LỖI: KIỂM TRA ĐIỀU KIỆN TRỐNG TRƯỚC KHI CHẤM
+        let isEmpty = true;
+        inlineInputs.forEach(inp => {
+            if (inp.value.trim() !== "") isEmpty = false;
+        });
+
+        if (isEmpty) {
+            alert("⚠️ Em chưa nhập câu trả lời! Hãy chọn hoặc gõ đáp án trước khi kiểm tra nhé.");
+            return;
+        }
+
         let blanks = (content.answer || "").split(";");
         let blanksCorrect = 0;
         
@@ -421,14 +423,14 @@ window.checkAnswer = function() {
     }
 
     let userAnswer = "";
-    if (content.options && Array.isArray(content.options)) {
+    if (content.options && Array.isArray(content.options) && !content.question.includes("___")) {
         const selected = document.querySelector('input[name="q_opt"]:checked');
-        if (!selected) { alert("Em chưa chọn đáp án nào!"); return; }
+        if (!selected) { alert("⚠️ Em chưa chọn đáp án nào!"); return; }
         userAnswer = selected.value;
     } else {
         const inputEl = document.getElementById("q_text_input");
         if (!inputEl) return;
-        if (!inputEl.value.trim()) { alert("Em chưa nhập câu trả lời!"); return; }
+        if (!inputEl.value.trim()) { alert("⚠️ Em chưa nhập câu trả lời!"); return; }
         userAnswer = inputEl.value.trim();
     }
 
