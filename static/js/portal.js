@@ -249,6 +249,28 @@ window.restartExercise = function() {
 };
 
 window.selectOption = function(val) {
+    // Trường hợp 1: Có ô nhập đa điểm (inline blank)
+    const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
+    if (inlineInputs.length > 0) {
+        // Tìm ô trống đầu tiên chưa có chữ để điền
+        for (let i = 0; i < inlineInputs.length; i++) {
+            if (!inlineInputs[i].value) {
+                inlineInputs[i].value = val;
+                // Tự động điều chỉnh độ rộng ô input cho đẹp
+                let tempWidth = val.length * 10 + 30; 
+                if (tempWidth > 100) inlineInputs[i].style.width = tempWidth + "px";
+                return; // Điền xong thì thoát
+            }
+        }
+        // Nếu học sinh đã điền hết nhưng muốn đổi ý, sẽ ghi đè ô cuối cùng
+        let lastInput = inlineInputs[inlineInputs.length - 1];
+        lastInput.value = val;
+        let tempWidth = val.length * 10 + 30; 
+        if (tempWidth > 100) lastInput.style.width = tempWidth + "px";
+        return;
+    }
+
+    // Trường hợp 2: Có ô nhập đơn
     const inputEl = document.getElementById("q_text_input");
     if (inputEl) inputEl.value = val;
 };
@@ -261,10 +283,14 @@ function renderCurrentQuestion() {
 
     feedback.innerHTML = ""; btnNext.style.display = "none";
     
-    // XỬ LÝ HIỂN THỊ KẾT QUẢ CUỐI BÀI & GHI CHÚ
+    // 1. XỬ LÝ MÀN HÌNH CHÚC MỪNG VÀ BẢNG NOTES KHI HẾT BÀI
     if (currentQIndex >= currentPracticeActs.length) {
         let noteHtml = "";
-        if (currentExeData && currentExeData.notes) {
+        
+        // Trích xuất bảng Note từ câu hỏi đầu tiên (nếu có)
+        if (currentPracticeActs.length > 0 && currentPracticeActs[0].content.final_notes_html) {
+            noteHtml = currentPracticeActs[0].content.final_notes_html;
+        } else if (currentExeData && currentExeData.notes) {
             noteHtml = `
             <div style="text-align:left; background:#f1f5f9; padding:15px; border-radius:8px; font-size: 0.95rem; margin-top:20px; border-left: 5px solid #3b82f6;">
                 <h4 style="margin-top:0; color:#1e293b; border-bottom:1px solid #cbd5e1; padding-bottom:8px;">📌 Ghi chú (Notes):</h4>
@@ -296,9 +322,9 @@ function renderCurrentQuestion() {
     let promptText = content.question || content.original || "";
     let hintHtml = content.keyword ? `<div style="margin-top:10px; font-weight:bold; color:#dc2626; font-size: 0.95rem;">TỪ KHÓA BẮT BUỘC: [ ${content.keyword} ]</div>` : "";
     
-    // LẤY OPTIONS CHUNG TỪ BÀI TẬP (DẠNG KÉO THẢ)
     let globalOptions = currentExeData && currentExeData.options ? currentExeData.options : null;
 
+    // 2. XỬ LÝ GIAO DIỆN KẾT HỢP CHỖ TRỐNG (___) VÀ NÚT CHỌN
     if (promptText.includes("___")) {
         let inputIndex = 0;
         promptText = promptText.replace(/___/g, function() {
@@ -307,9 +333,20 @@ function renderCurrentQuestion() {
             return inpHtml;
         });
         
+        // Render khối nút bấm nếu có dữ liệu
+        if (globalOptions && Array.isArray(globalOptions)) {
+            html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
+            globalOptions.forEach(opt => {
+                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:8px 12px; border:1px solid #3b82f6; border-radius:20px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; transition:0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">${opt}</button>`;
+            });
+            html += `</div>`;
+            html += `<p style="font-size:0.85rem; color:#64748b; margin-top:-5px; margin-bottom:15px; font-style:italic;">* Chạm vào từ phía trên để tự động điền vào chỗ trống, hoặc gõ trực tiếp.</p>`;
+        }
+
         html += `<div style="font-size: 1.15rem; font-weight: normal; margin-bottom: 20px; color:#1e293b; line-height: 2.0; text-align: left; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); box-sizing: border-box; word-wrap: break-word;">${promptText}</div>`;
         html += hintHtml;
     } 
+    // Các dạng câu hỏi còn lại giữ nguyên...
     else if (content.options && Array.isArray(content.options)) {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += `<div style="display:flex; flex-direction:column; gap: 10px;">`;
@@ -322,7 +359,6 @@ function renderCurrentQuestion() {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += hintHtml;
         
-        // KIỂM TRA DẠNG CHỌN TỪ (KÉO THẢ)
         if (globalOptions && Array.isArray(globalOptions)) {
             html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
             globalOptions.forEach(opt => {
