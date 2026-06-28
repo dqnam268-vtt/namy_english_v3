@@ -1,0 +1,77 @@
+{
+  "topic_order": 2,
+  "module_type": "practice",
+  "exercise_title": "Unit 2: Exercise 1 (Modal Verbs)",
+  "activities": [
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b style=\"color:#0284c7;\">📝 Fill in the blanks with the correct form of \"can\", \"be able to\", \"must\" or \"have to\".</b><br><br>1. One ___ pass certain exams to be accepted by this college.",
+        "answer": "has to || has to / Has to"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "2. Although the room was full of smoke, he ___ phone the fire brigade.",
+        "answer": "was able to || was able to / Was able to"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "3. If I go by train, I ___ buy a ticket.",
+        "answer": "will have to || will have to / Will have to / 'll have to"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "4. You ___ be careful with electricity.",
+        "answer": "must / have to || must / have to / Must / Have to"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "5. As a child he ___ play squash for hours.",
+        "answer": "could || could / Could"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "6. If you want to be a member of the club, you ___ register in time.",
+        "answer": "must || must / Must"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "7. In the end we ___ use all the meat we'd bought so we threw it away.",
+        "answer": "couldn't / weren't able to || couldn't / could not / weren't able to / were not able to / Couldn't / Could not / Weren't able to / Were not able to"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "8. She was so short she ___ reach the door handle.",
+        "answer": "couldn't / wasn't able to || couldn't / could not / wasn't able to / was not able to / Couldn't / Could not / Wasn't able to / Was not able to"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "9. ___ we really stay so late at the party?",
+        "answer": "Must || Must / must"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "10. Our father told us that we ___ be home by 10 p.m.",
+        "answer": "had to / must || had to / must / Had to / Must"
+      }
+    }
+  ]
+}

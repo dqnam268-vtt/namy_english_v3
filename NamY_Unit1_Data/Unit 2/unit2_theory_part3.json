@@ -1,0 +1,294 @@
+{
+  "topic_order": 2,
+  "module_type": "learning",
+  "exercise_title": "Unit 2: Idioms and Fixed Phrases",
+  "activities": [
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "above board",
+        "meaning": "honest"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bark up the wrong tree",
+        "meaning": "to make a mistake"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "be broke",
+        "meaning": "to have no money at all"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "be full of beans",
+        "meaning": "to be very lively"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "be in the black books",
+        "meaning": "not very popular"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "beat about/around the bush",
+        "meaning": "to avoid saying what one means directly"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "behind bars",
+        "meaning": "in prison"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "big headed",
+        "meaning": "conceited; boastful"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "black and blue all over",
+        "meaning": "covered with bruises"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "blessing in disguise",
+        "meaning": "sth which appears bad at first but then turns out well"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "blue-eyed boy",
+        "meaning": "favourite"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bolt from the blue",
+        "meaning": "suddenly"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "brainwave",
+        "meaning": "sudden clear idea/thought"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "break even",
+        "meaning": "to show neither loss nor profit"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "browned off",
+        "meaning": "fed up; bored"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "butter the boss up",
+        "meaning": "to flatter sb"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "by and large",
+        "meaning": "generally speaking"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "catch sb red-handed",
+        "meaning": "to be caught while committing a crime"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "chip off the old block",
+        "meaning": "sb who is very like one of his parents"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cost a bomb",
+        "meaning": "very expensive"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "deal a blow to",
+        "meaning": "to damage one's hopes"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "don't hold your breath",
+        "meaning": "wait for sb anxiously"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "drive a hard bargain",
+        "meaning": "to be a tough businessman"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "drop a brick",
+        "meaning": "to say sth tactlessly"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "feel in one's bones",
+        "meaning": "feeling sth instinctively"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "get your own back",
+        "meaning": "to take/get revenge"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "have a bee in one's bonnet",
+        "meaning": "to have an obsession about sth"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "have butterflies in one's stomach",
+        "meaning": "to be very nervous about sth"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "in black and white",
+        "meaning": "in writing; clear"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "in cold blood",
+        "meaning": "(of a murder) done deliberately"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "in the balance",
+        "meaning": "uncertain"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "kick the bucket",
+        "meaning": "to die"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "lay bare",
+        "meaning": "to make public"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "make a clean breast of",
+        "meaning": "to confess"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "make one's blood boil",
+        "meaning": "to cause sb to become very angry"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "on the spur of the moment",
+        "meaning": "without thinking about sth"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "out of the blue",
+        "meaning": "suddenly and unexpectedly"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "ring a bell",
+        "meaning": "to remind sb of sth"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "see the back of",
+        "meaning": "to be glad to see sb leave"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "take the bull by the horns",
+        "meaning": "to take a bold step immediately"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "wet blanket",
+        "meaning": "dull person who spoils people's happiness"
+      }
+    }
+  ]
+}
