@@ -57,6 +57,11 @@
         <div id="syllabus-container">
             <div style="text-align:center; padding: 40px; color: #64748b;">⏳ Loading...</div>
         </div>
+
+        <!-- FOOTER BẢN QUYỀN MỜ DƯỚI ĐÁY TRANG -->
+        <div style="text-align: center; padding: 30px 20px 20px; color: #64748b; font-size: 0.85rem; font-weight: 500; opacity: 0.6;">
+            Made with ❤️ by NAMY
+        </div>
     </div>
 
     <div id="learning-modal" class="modal">
@@ -106,17 +111,15 @@
                 .likert-option input[type="radio"]:checked + .likert-box {
                     filter: grayscale(0%); opacity: 1; transform: scale(1.08); box-shadow: 0 4px 10px rgba(0,0,0,0.15);
                 }
-                /* Phối màu bám sát ảnh của thầy */
-                .c1 { background-color: #f97316; } /* Orange */
-                .c2 { background-color: #fcd34d; } /* Yellow/Orange */
-                .c3 { background-color: #fbcfe8; } /* Pink */
-                .c4 { background-color: #c084fc; } /* Purple */
-                .c5 { background-color: #22c55e; } /* Green */
+                .c1 { background-color: #f97316; }
+                .c2 { background-color: #fcd34d; }
+                .c3 { background-color: #fbcfe8; }
+                .c4 { background-color: #c084fc; }
+                .c5 { background-color: #22c55e; }
                 .likert-label { font-size: 0.75rem; margin-top: 8px; color: #64748b; font-weight: 600; display: block; line-height: 1.2; }
             </style>
 
             <form id="unit-survey-form">
-                <!-- Câu hỏi 1 -->
                 <div class="survey-q">
                     <div class="survey-q-title">1. The app is highly effective for learning and practicing grammar.</div>
                     <div class="likert-scale">
@@ -128,7 +131,6 @@
                     </div>
                 </div>
 
-                <!-- Câu hỏi 2 -->
                 <div class="survey-q">
                     <div class="survey-q-title">2. The app helps me master vocabulary, idioms, and phrasal verbs efficiently.</div>
                     <div class="likert-scale">
@@ -140,7 +142,6 @@
                     </div>
                 </div>
 
-                <!-- Câu hỏi 3 -->
                 <div class="survey-q">
                     <div class="survey-q-title">3. Overall, I feel more confident in my English skills after completing this Unit.</div>
                     <div class="likert-scale">
@@ -152,7 +153,6 @@
                     </div>
                 </div>
 
-                <!-- Câu hỏi mở -->
                 <div class="survey-q">
                     <div class="survey-q-title">4. Do you have any suggestions to make this app even better? (Optional)</div>
                     <textarea id="survey-feedback" rows="3" placeholder="Type your ideas here..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 1rem; resize: vertical;"></textarea>
