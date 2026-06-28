@@ -94,7 +94,10 @@ def get_syllabus(mode: Optional[str] = None, db: Session = Depends(get_db)):
             
         exercises = query_ex.order_by(models.Exercise.order_num).all()
         for exc in exercises:
-            act_list = [{"id": a.activity_id, "type": a.activity_type, "content": a.content, "order_num": a.order_num} for a in exc.activities]
+            # 🟢 SỬA LỖI Ở ĐÂY: Ép hệ thống phải sắp xếp các thẻ (activities) theo đúng số thứ tự (order_num) tăng dần
+            sorted_acts = sorted(exc.activities, key=lambda x: getattr(x, 'order_num', 0))
+            
+            act_list = [{"id": a.activity_id, "type": a.activity_type, "content": a.content, "order_num": a.order_num} for a in sorted_acts]
             topic_data["exercises"].append({
                 "id": exc.exercise_id, 
                 "title": exc.title, 
