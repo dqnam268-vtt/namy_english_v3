@@ -1,0 +1,14 @@
+{
+  "topic_order": 1,
+  "module_type": "practice",
+  "exercise_title": "Unit 1: Exercise 3",
+  "activities": [
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the \"Present Perfect\" or \"Present Perfect Continuous\".</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>This is the famous site of Stonehenge, which (1) <b>___</b> (be) the subject of archaeological debate for many years. No one (2) <b>___</b> (yet/explain) satisfactorily why or how it was built, although teams of experts (3) <b>___</b> (excavate) the site for years and a team of American scientists (4) <b>___</b> (recently/start) working around the area with sophisticated new equipment. Popular theories (5) <b>___</b> (suggest) that Stonehenge was built as a temple, but no one (6) <b>___</b> (manage) to work out how the stones were transported here. A group of university students from Bangor (7) <b>___</b> (discuss) the possibility of re-enacting a journey from Wales (where such stones are found) overland to Stonehenge and sponsors (8) <b>___</b> (come) forward with offers of money. The British Museum (9) <b>___</b> (also/announce) a forthcoming exhibition of artefacts of the Stonehenge period which they (10) <b>___</b> (gather) from all over Northern Europe over the last five years. Well, ladies and gentlemen, I hope you (11) <b>___</b> (enjoy) your visit; thank you for your attention.",
+        "answer": "has been ; has yet explained ; have been excavating ; has/have recently started ; have suggested ; has managed ; have been discussing / have discussed ; have been coming / have come ; has also announced ; have been gathering ; have enjoyed"
+      }
+    }
+  ]
+}

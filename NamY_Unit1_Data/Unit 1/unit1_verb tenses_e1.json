@@ -1,0 +1,63 @@
+{
+  "topic_order": 1,
+  "module_type": "practice",
+  "exercise_title": "Unit 1: Exercise 1 (Present Tenses)",
+  "activities": [
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>1. I <i>am seeing</i> (see) a dentist about a filling I <b>___</b> (need).",
+        "answer": "need"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>2. Workers at that factory <b>___</b> (be) on strike since Tuesday.",
+        "answer": "have been"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>3. They won't employ him as he <b>___</b> (not / have) any experience.",
+        "answer": "does not have"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>4. \"What <b>___</b> (you / do)?\" \"I <b>___</b> (think) about my plans for Christmas.\"",
+        "answer": "are you doing ; am thinking"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>5. \"Why is the room stuffy?\" \"Because too many people <b>___</b> (smoke) in here.\"",
+        "answer": "have been smoking"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>6. In spite of our doubts, he <b>___</b> (seem) to have been right.",
+        "answer": "seems"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>7. She <b>___</b> (see) that boy for six months even though her parents disapprove.",
+        "answer": "has been seeing"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "<b>Put the verbs in brackets into the correct tense.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>8. Hot air balloons <b>___</b> (work) on the principle that heat <b>___</b> (rise).",
+        "answer": "work ; rises"
+      }
+    }
+  ]
+}

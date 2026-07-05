@@ -1,0 +1,87 @@
+{
+  "topic_order": 1,
+  "module_type": "practice",
+  "exercise_title": "Unit 1: Exercise 16 (Collocations)",
+  "activities": [
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "1. to <b>___</b> a secret",
+        "options": ["pledge", "challenge", "scrape", "bend", "disclose", "show", "subscribe", "be hooked", "lead", "release"],
+        "answer": "disclose"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "2. to <b>___</b> to a magazine",
+        "options": ["lead", "bend", "subscribe", "challenge", "scrape", "pledge", "show", "be hooked", "release"],
+        "answer": "subscribe"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "3. to <b>___</b> the rules",
+        "options": ["show", "be hooked", "release", "lead", "pledge", "scrape", "bend", "challenge"],
+        "answer": "bend"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "4. to <b>___</b> someone's authority",
+        "options": ["scrape", "challenge", "show", "release", "be hooked", "lead", "pledge"],
+        "answer": "challenge"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "5. to <b>___</b> your loyalty to someone",
+        "options": ["lead", "be hooked", "release", "pledge", "show", "scrape"],
+        "answer": "pledge"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "6. to <b>___</b> a piece of news",
+        "options": ["show", "scrape", "be hooked", "lead", "release"],
+        "answer": "release"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "7. to <b>___</b> sympathy to someone",
+        "options": ["be hooked", "lead", "show", "scrape"],
+        "answer": "show"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "8. to <b>___</b> on gambling",
+        "options": ["lead", "scrape", "be hooked"],
+        "answer": "be hooked"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "9. to <b>___</b> through an exam",
+        "options": ["lead", "scrape"],
+        "answer": "scrape"
+      }
+    },
+    {
+      "type": "Luyện Từ Vựng (Vocabulary)",
+      "content": {
+        "question": "10. to <b>___</b> a group of people",
+        "options": ["lead"],
+        "answer": "lead"
+      }
+    }
+  ]
+}

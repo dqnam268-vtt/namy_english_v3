@@ -1,0 +1,42 @@
+{
+  "topic_order": 1,
+  "module_type": "practice",
+  "exercise_title": "Unit 1: Exercise 2 (Been vs Gone)",
+  "activities": [
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with \"have been to\", \"have been in\" or \"have gone to\" in their correct form. </b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>1. I <b>___</b> (never) Paris, although I've always wanted to.",
+        "answer": "have never been to"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with \"have been to\", \"have been in\" or \"have gone to\" in their correct form.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>2. Mr Smith <b>___</b> Moscow. He'll be back next Friday at the latest.",
+        "answer": "has gone to"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with \"have been to\", \"have been in\" or \"have gone to\" in their correct form.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>3. I <b>___</b> London for three years now.",
+        "answer": "have been in"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with \"have been to\", \"have been in\" or \"have gone to\" in their correct form.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>>4. Since you <b>___</b> India, can you tell me what I ought to see there?",
+        "answer": "have been to"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Fill in the blanks with \"have been to\", \"have been in\" or \"have gone to\" in their correct form.</b><br><i>(Requirement: Do not use contractions. Answers are not case-sensitive.)</i><br><br>5. They <b>___</b> the supermarket, but they should be back soon.",
+        "answer": "have gone to"
+      }
+    }
+  ]
+}

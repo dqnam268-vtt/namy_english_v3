@@ -1,0 +1,98 @@
+{
+  "topic_order": 1,
+  "module_type": "practice",
+  "exercise_title": "Unit 1: Exercise 12 (Phrasal Verbs with Be)",
+  "activities": [
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "1. Susan gets all the perks because she's <b>___</b> the administration.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "in with",
+        "explanation": "be in with = to be in favour with",
+        "final_notes_html": "<div style='text-align:left; background:#f1f5f9; padding:15px; border-radius:8px; border-left:4px solid #10b981; font-size:0.9rem; line-height:1.6; margin-top:15px;'><b>📚 BẢNG TỔNG HỢP (PHRASAL VERBS WITH BE):</b><br><b>1. be in with</b> = to be in favour with<br><b>2. be beneath</b> = to be demeaning<br><b>3. be down on</b> = to be hostile to sb<br><b>4. be in for it</b> = to be about to receive punishment / to be about to be in trouble<br><b>5. be down with</b> = to be ill (with a disease)<br><b>6. be into</b> = to take an interest in sth<br><b>7. be off</b> = to cease to want<br><b>8. be on</b> = to be shown on TV, at the cinema etc.<br><b>9. be up to</b> = to do<br><b>10. be out</b> = to be in bloom</div>"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "2. She feels it is <b>___</b> her to socialise with uneducated people.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "beneath",
+        "explanation": "be beneath = to be demeaning"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "3. As an ex-smoker, Paul is <b>___</b> people who smoke.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "down on",
+        "explanation": "be down on = to be hostile to sb"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "4. He'll be <b>___</b> it when his parents discover he took the money.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "in for",
+        "explanation": "be in for it = to be about to receive punishment / to be about to be in trouble"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "5. Half the staff are <b>___</b> the flu this week.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "down with",
+        "explanation": "be down with = to be ill (with a disease)"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "6. She doesn't eat crisps or chocolate; she's <b>___</b> health foods.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "into",
+        "explanation": "be into = to take an interest in sth"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "7. Our dog has been <b>___</b> its food for days now.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "off",
+        "explanation": "be off = to cease to want"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "8. Do you know what's <b>___</b> at the cinema tonight?",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "on",
+        "explanation": "be on = to be shown on TV, at the cinema etc."
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "9. I don't know what he's been <b>___</b>, but he looks very embarrassed.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "up to",
+        "explanation": "be up to = to do"
+      }
+    },
+    {
+      "type": "Luyện Ngữ Pháp (Grammar)",
+      "content": {
+        "question": "10. The roses have been <b>___</b> for a few days now.",
+        "options": ["beneath", "off", "up to", "in for", "in with", "down on", "out", "on", "down with", "into"],
+        "answer": "out",
+        "explanation": "be out = to be in bloom"
+      }
+    }
+  ]
+}

@@ -310,7 +310,7 @@ def seed_data(db: Session = Depends(get_db)):
 def init_users(db: Session = Depends(get_db)):
     admin_user = db.query(models.User).filter(models.User.username == "admin").first()
     if not admin_user:
-        db.add(models.User(username="admin", password_hash=hash_password("123456"), role="admin"))
+        db.add(models.User(username="admin", password_hash=hash_password("NamY2412"), role="admin"))
         
     student_user = db.query(models.User).filter(models.User.username == "namy_student").first()
     if not student_user:
