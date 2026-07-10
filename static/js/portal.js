@@ -204,15 +204,19 @@ function renderSyllabus(syllabusData, container) {
                     if (savedProgress) {
                         const parsed = JSON.parse(savedProgress);
                         const totalQ = parsed.total || tempTotal || 1;
-                        progressPercent = Math.round((parsed.score / totalQ) * 100);
+                        
+                        // [ĐÃ FIX] Khóa an toàn: Ép điểm ảo về bằng tổng số câu hỏi
+                        let safeScore = parsed.score > totalQ ? totalQ : parsed.score;
+                        
+                        progressPercent = Math.round((safeScore / totalQ) * 100);
                         if (progressPercent > 100) progressPercent = 100;
 
                         if (parsed.isCompleted) {
-                            progressText = `✅ Hoàn thành: Đúng ${parsed.score}/${totalQ} điểm`;
-                            syncProgressToServer(exe.id, "practice", parsed.score, true);
+                            progressText = `✅ Hoàn thành: Đúng ${safeScore}/${totalQ} điểm`;
+                            syncProgressToServer(exe.id, "practice", safeScore, true); // Tự động đồng bộ điểm đã chữa lành lên Database
                         } else {
-                            progressText = `📝 Đang làm: Đúng ${parsed.score}/${totalQ} điểm (${progressPercent}%)`;
-                            syncProgressToServer(exe.id, "practice", parsed.score, false);
+                            progressText = `📝 Đang làm: Đúng ${safeScore}/${totalQ} điểm (${progressPercent}%)`;
+                            syncProgressToServer(exe.id, "practice", safeScore, false);
                             isTopicCompleted = false; 
                         }
                     } else {
