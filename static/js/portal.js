@@ -370,8 +370,10 @@ function renderCurrentQuestion() {
     feedback.innerHTML = ""; btnNext.style.display = "none";
     
     if (currentQIndex >= currentPracticeActs.length) {
+        // [MỚI THÊM] Khóa an toàn & Tự động chữa lành điểm ảo
+        let safeScore = currentScore > currentCalculatedTotal ? currentCalculatedTotal : currentScore;
+
         let noteHtml = "";
-        
         if (currentPracticeActs.length > 0 && currentPracticeActs[0].content.final_notes_html) {
             noteHtml = currentPracticeActs[0].content.final_notes_html;
         } else if (currentExeData && currentExeData.notes) {
@@ -385,14 +387,15 @@ function renderCurrentQuestion() {
         container.innerHTML = `
             <div style="text-align:center; padding: 20px;">
                 <h3 style="color:#059669; font-size: 1.8rem;">🎉 Chúc mừng em đã hoàn thành!</h3>
-                <p style="font-size:1.3rem;">Điểm số cuối cùng: <b style="color:#dc2626;">${currentScore} / ${currentCalculatedTotal}</b></p>
+                <p style="font-size:1.3rem;">Điểm số cuối cùng: <b style="color:#dc2626;">${safeScore} / ${currentCalculatedTotal}</b></p>
                 ${noteHtml}
                 <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:25px; font-size: 1.1rem; padding: 10px 20px;">🔄 Làm Lại Bài Này</button>
             </div>`;
         btnCheck.style.display = "none";
         
-        localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({ qIndex: currentPracticeActs.length, score: currentScore, total: currentCalculatedTotal, isCompleted: true }));
-        syncProgressToServer(currentExeId, "practice", currentScore, true);
+        // Ghi đè điểm đã chữa lành lên LocalStorage và gửi lại lên Database
+        localStorage.setItem(`namy_progress_${currentExeId}`, JSON.stringify({ qIndex: currentPracticeActs.length, score: safeScore, total: currentCalculatedTotal, isCompleted: true }));
+        syncProgressToServer(currentExeId, "practice", safeScore, true);
         loadStudentSyllabus(); 
         return;
     }

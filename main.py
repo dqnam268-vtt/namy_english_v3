@@ -243,7 +243,10 @@ def get_users(db: Session = Depends(get_db)):
                 if prog.is_completed:
                     practice_done += 1
                     
-                score_str = f"{prog.score}/{total_qs}"
+                # [MỚI THÊM] Chặn hiển thị điểm ảo trên bảng Admin
+                safe_score = prog.score if prog.score <= total_qs else total_qs
+                score_str = f"{safe_score}/{total_qs}"
+                
                 short_title = exe.title.split(":")[0] if ":" in exe.title else exe.title
                 practice_scores.append(f"{short_title} ({score_str})")
                 
