@@ -46,11 +46,11 @@ async function restoreProgressFromServer() {
                         if (p.is_completed) localStorage.setItem(`namy_theory_${p.exercise_id}`, "completed");
                     } else {
                         localStorage.setItem(`namy_progress_${p.exercise_id}`, JSON.stringify({
-                            qIndex: p.is_completed ? 999 : 0, 
-                            score: p.score || 0,
-                            total: p.total || 0, 
-                            isCompleted: p.is_completed
-                        }));
+    				qIndex: p.is_completed ? 999 : 0, 
+    				score: p.is_completed ? (p.score || 0) : 0, // Đã fix: Nếu chưa xong thì reset điểm về 0
+    				total: p.total || 0, 
+    				isCompleted: p.is_completed
+			}));
                     }
                 });
             }
@@ -107,10 +107,12 @@ function updateProgressUIFromLocal() {
                     const text = btn.querySelector('.mini-progress-text');
                     if (bar && text) {
                         let total = parsed.total > 0 ? parsed.total : 10;
-                        let percent = Math.round((parsed.score / total) * 100);
-                        if (percent > 100) percent = 100;
-                        bar.style.width = percent + "%";
-                        text.innerText = parsed.isCompleted ? `✅ Hoàn thành: Đúng ${parsed.score}/${total} điểm` : `📝 Đang làm: Đúng ${parsed.score}/${total} điểm (${percent}%)`;
+			// Đã fix: Chặn đứng điểm ảo, nếu điểm cao hơn tổng số câu thì ép về bằng tổng số câu
+			let safeScore = parsed.score > total ? total : parsed.score; 
+			let percent = Math.round((safeScore / total) * 100);
+			if (percent > 100) percent = 100;
+			bar.style.width = percent + "%";
+			text.innerText = parsed.isCompleted ? `✅ Hoàn thành: Đúng ${safeScore}/${total} điểm` : `📝 Đang làm: Đúng ${safeScore}/${total} điểm (${percent}%)`;
                         if (parsed.isCompleted) {
                             bar.classList.remove('progress-learning-bar');
                             bar.classList.add('progress-practice-bar');
