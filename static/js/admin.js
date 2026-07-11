@@ -77,23 +77,16 @@ async function initAdminDashboard() {
 }
 
 async function fetchStats() {
-    const sRes = await apiFetch("/stats");
-    if (sRes.ok) {
-        document.getElementById("stat-students").innerText = sRes.data.total_students;
-        const statTopics = document.getElementById("stat-topics") || document.getElementById("stat-weeks");
-        if(statTopics) statTopics.innerText = sRes.data.total_topics;
-        document.getElementById("stat-feedbacks").innerText = sRes.data.total_feedbacks;
-    }
-
-    const uRes = await apiFetch("/users");
+	const uRes = await apiFetch("/users");
     if (uRes.ok) {
         const thead = document.querySelector("table thead tr");
         if (thead) {
+            // Định hình lại 4 cột duy nhất
             thead.innerHTML = `
-                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 20%;">Tài Khoản</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 30%;">Tài Khoản</th>
                 <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 25%;">📖 Lý Thuyết</th>
-                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 40%;">✍️ Bài Tập & Điểm</th>
-                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: center;">Thao tác</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 25%;">✍️ Bài Tập & Điểm</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: center; width: 20%;">🏆 Tổng Điểm</th>
             `;
         }
 
@@ -101,46 +94,49 @@ async function fetchStats() {
         if(body) {
             let html = "";
             uRes.data.forEach(u => {
-                const detailsStr = encodeURIComponent(JSON.stringify(u.details || []));
-                
-                let scoresHtml = "";
-                if (u.practice_scores && u.practice_scores.length > 0) {
-                    scoresHtml = `<div style="margin-top: 8px;">` + 
-                        u.practice_scores.map(s => `<span style="background: #fffbeb; color: #b45309; padding: 3px 8px; border-radius: 6px; border: 1px solid #fcd34d; margin-right: 6px; display: inline-block; margin-bottom: 6px; font-weight: 500; font-size: 0.85rem;">${s}</span>`).join("") +
-                        `</div>`;
-                } else {
-                    scoresHtml = `<div style="margin-top: 8px; font-size: 0.85rem; color: #94a3b8; font-style: italic;">Chưa phát sinh điểm bài tập</div>`;
-                }
+                // Thêm icon huy chương cho Top 3
+                let rankBadge = "";
+                if (u.rank === 1) rankBadge = "🥇 ";
+                else if (u.rank === 2) rankBadge = "🥈 ";
+                else if (u.rank === 3) rankBadge = "🥉 ";
+                else if (u.rank) rankBadge = `<span style="color:#94a3b8; font-size:0.9rem; margin-right:5px;">#${u.rank}</span> `;
 
-                html += `<tr>
-                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #1e293b; vertical-align: top;">${u.username}</td>
+                html += `<tr style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
                     
-                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: top;">
-                        <div style="background: #e0f2fe; border-radius: 10px; width: 100%; height: 8px; margin-bottom: 5px; overflow: hidden;">
+                    <!-- Cột 1: Tài khoản (Gắn kèm Rank) -->
+                    <td style="padding: 15px; font-weight: bold; color: #1e293b; font-size: 1.05rem;">
+                        ${rankBadge}${u.username}
+                    </td>
+                    
+                    <!-- Cột 2: Thanh tiến độ Lý thuyết -->
+                    <td style="padding: 15px;">
+                        <div style="background: #e0f2fe; border-radius: 10px; width: 100%; max-width: 120px; height: 8px; margin-bottom: 5px; overflow: hidden;">
                             <div style="background: #0284c7; height: 100%; width: ${u.theory_pct}%;"></div>
                         </div>
-                        <span style="color: #0284c7; font-weight: bold; font-size: 1.1rem;">${u.theory_pct}%</span> 
+                        <span style="color: #0284c7; font-weight: bold; font-size: 1.05rem;">${u.theory_pct}%</span> 
                         <span style="color: #64748b; font-size: 0.85rem;">(${u.theory_text})</span>
                     </td>
                     
-                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: top;">
-                        <div style="background: #dcfce3; border-radius: 10px; width: 100%; height: 8px; margin-bottom: 5px; overflow: hidden;">
+                    <!-- Cột 3: Thanh tiến độ Bài tập (Bỏ tiểu mục vàng) -->
+                    <td style="padding: 15px;">
+                        <div style="background: #dcfce3; border-radius: 10px; width: 100%; max-width: 120px; height: 8px; margin-bottom: 5px; overflow: hidden;">
                             <div style="background: #16a34a; height: 100%; width: ${u.practice_pct}%;"></div>
                         </div>
-                        <span style="color: #16a34a; font-weight: bold; font-size: 1.1rem;">${u.practice_pct}%</span>
+                        <span style="color: #16a34a; font-weight: bold; font-size: 1.05rem;">${u.practice_pct}%</span>
                         <span style="color: #64748b; font-size: 0.85rem;">(${u.practice_text})</span>
-                        ${scoresHtml}
                     </td>
                     
-                    <td style="padding: 15px; border-bottom: 1px solid #e2e8f0; text-align: center; vertical-align: top;">
-                        <button onclick="showStudentDetails('${u.username}', '${detailsStr}')" style="background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; white-space: nowrap;">🔍 Xem biểu đồ</button>
+                    <!-- Cột 4: Tổng điểm in đậm nổi bật -->
+                    <td style="padding: 15px; text-align: center;">
+                        <span style="font-weight: 800; color: #e11d48; font-size: 1.4rem;">${u.total_score || 0}</span>
+                        <div style="font-size: 0.8rem; color: #64748b; margin-top: -2px;">điểm</div>
                     </td>
                 </tr>`;
             });
             body.innerHTML = html;
         }
     }
-}
+    }
 
 window.showStudentDetails = function(username, detailsStr) {
     const modalName = document.getElementById("detail-student-name");
