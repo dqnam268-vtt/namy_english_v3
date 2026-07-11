@@ -393,11 +393,11 @@ function renderCurrentQuestion() {
         }
 
         container.innerHTML = `
-            <div style="text-align:center; padding: 10px;">
-                <h3 style="color:#059669; font-size: 1.25rem; margin-bottom: 10px;">🎉 Chúc mừng em đã hoàn thành!</h3>
-                <p style="font-size:1.05rem; margin-top: 5px; white-space: nowrap;">Điểm số cuối cùng: <b style="color:#dc2626; font-size: 1.15rem;">${safeScore} / ${currentCalculatedTotal}</b></p>
+            <div style="text-align:center; padding: 15px 5px;">
+                <div style="color:#059669; font-size: 1.3rem; font-weight: bold; margin-bottom: 5px;">🎉 Chúc mừng em đã hoàn thành!</div>
+                <div style="font-size:1.1rem; color:#1e293b; margin-bottom: 15px;">Điểm số cuối cùng: <b style="color:#dc2626; font-size: 1.25rem;">${safeScore} / ${currentCalculatedTotal}</b></div>
                 ${noteHtml}
-                <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:20px; font-size: 1rem; padding: 10px 20px;">🔄 Làm Lại Bài Này</button>
+                <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:20px; font-size: 1rem; padding: 10px 20px; width: 100%; max-width: 250px;">🔄 Làm Lại Bài Này</button>
             </div>`;
         btnCheck.style.display = "none";
         
@@ -422,22 +422,38 @@ function renderCurrentQuestion() {
     if (promptText.includes("___")) {
         let inputIndex = 0;
         promptText = promptText.replace(/___/g, function() {
-            let inpHtml = `<input type="text" class="q_multi_input_inline" data-index="${inputIndex}" placeholder="_____" style="width: 100px; padding: 2px 5px; border: none; border-bottom: 2px solid #3b82f6; border-radius: 0; font-size: 1.1rem; text-align: center; color: #1d4ed8; font-weight: bold; background: transparent; outline: none; margin: 0 4px; transition: 0.3s; font-family: inherit;">`;
+            let inpHtml = `<input type="text" class="q_multi_input_inline" data-index="${inputIndex}" placeholder="_____" style="width: 80px; padding: 0px 5px; border: none; border-bottom: 2px solid #3b82f6; border-radius: 0; font-size: 1rem; text-align: center; color: #1d4ed8; font-weight: bold; background: transparent; outline: none; margin: 0 2px; transition: 0.3s; font-family: inherit;">`;
             inputIndex++;
             return inpHtml;
         });
         
         if (currentOptions && Array.isArray(currentOptions)) {
-            html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
+            html += `<div style="display:flex; flex-wrap:wrap; justify-content: center; gap:8px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1;">`;
             currentOptions.forEach(opt => {
-                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:8px 12px; border:1px solid #3b82f6; border-radius:20px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; transition:0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">${opt}</button>`;
+                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:6px 12px; border:1px solid #3b82f6; border-radius:15px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; font-size: 0.9rem; transition:0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">${opt}</button>`;
             });
             html += `</div>`;
-            html += `<p style="font-size:0.85rem; color:#64748b; margin-top:-5px; margin-bottom:15px; font-style:italic;">* Chạm vào từ phía trên để tự động điền vào chỗ trống, hoặc gõ trực tiếp.</p>`;
+            // Đã gỡ bỏ dòng chú thích "Chạm vào từ phía trên..."
         }
 
-        html += `<div style="font-size: 1.15rem; font-weight: normal; margin-bottom: 20px; color:#1e293b; line-height: 2.0; text-align: left; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); box-sizing: border-box; word-wrap: break-word;">${promptText}</div>`;
-        html += hintHtml;
+        // Tách tiêu đề (Choose the best alternative) và làm nhỏ lại
+        let splitText = promptText.split("<br><br>");
+        let questionContent = promptText;
+        let instructionText = "";
+        
+        if (splitText.length > 1) {
+            instructionText = `<div style="font-size: 0.95rem; color:#64748b; font-style: italic; margin-bottom: 8px; text-align: left;">${splitText[0].replace(/<\/?b>/g, '')}</div>`;
+            questionContent = splitText[1];
+        }
+
+        // In ra câu hỏi với font size nhỏ hơn (1rem) và thu gọn khoảng cách
+        html += `<div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 20px;">
+                    ${instructionText}
+                    <div style="font-size: 1rem; font-weight: 500; color:#1e293b; line-height: 1.8; text-align: left; word-wrap: break-word;">${questionContent}</div>
+                 </div>`;
+        
+        html += hintHtml; // Đây là dòng cuối cùng của khối if này
+    }
     } 
     else if (content.options && Array.isArray(content.options)) {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
