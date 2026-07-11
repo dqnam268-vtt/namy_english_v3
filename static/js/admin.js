@@ -77,66 +77,154 @@ async function initAdminDashboard() {
 }
 
 async function fetchStats() {
-	const uRes = await apiFetch("/users");
+    const uRes = await apiFetch("/users");
     if (uRes.ok) {
+        // 1. Tự động quét dữ liệu để tìm xem hệ thống đang có những Unit nào
+        let unitSet = new Set();
+        uRes.data.forEach(u => {
+            if (u.details) {
+                u.details.forEach(d => {
+                    if (d.type === 'practice') {
+                        let matchUnit = d.exercise_name.match(/Unit\s+(\d+)/i);
+                        if (matchUnit) unitSet.add(parseInt(matchUnit[1]));
+                    }
+                });
+            }
+        });
+        
+        // Sắp xếp các Unit theo thứ tự tăng dần (Unit 1, Unit 2...)
+        let sortedUnits = Array.from(unitSet).sort((a, b) => a - b);
+
+        // 2. Cập nhật lại Thanh tiêu đề của Bảng quản trị (Dynamic Columns)
         const thead = document.querySelector("table thead tr");
         if (thead) {
-            // Định hình lại 4 cột duy nhất
-            thead.innerHTML = `
-                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 30%;">Tài Khoản</th>
-                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 25%;">📖 Lý Thuyết</th>
-                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 25%;">✍️ Bài Tập & Điểm</th>
-                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: center; width: 20%;">🏆 Tổng Điểm</th>
+            let headerHtml = `
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 15%;">Tài Khoản</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 15%;">📖 Lý Thuyết</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: left; width: 15%;">✍️ Bài Tập (%)</th>
             `;
+            
+            // Tự động thêm cột tổng điểm cho từng Unit cụ thể
+            sortedUnits.forEach(uNum => {
+                headerHtml += `<th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: center; width: 12%;">🏆 Tổng Unit ${uNum}</th>`;
+            });
+            
+            headerHtml += `
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: center; width: 13%;">🏅 Tổng Tích Lũy</th>
+                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1; text-align: center; width: 12%;">Thao tác</th>
+            `;
+            thead.innerHTML = headerHtml;
         }
 
+        // 3. Tính toán điểm số và đổ dữ liệu vào từng hàng của học sinh
         const body = document.querySelector("table tbody");
         if(body) {
-            let html = "";
+            let processedStudents = [];
+
             uRes.data.forEach(u => {
-                // Thêm icon huy chương cho Top 3
+                let unitScores = {};
+                sortedUnits.forEach(uNum => unitScores[uNum] = 0); // Khởi tạo điểm các Unit = 0
+                let grandTotal = 0;
+
+                // Thuật toán bóc tách điểm từ cấu trúc chuỗi "Đúng X/Y câu"
+                if (u.details) {
+                    u.details.forEach(d => {
+                        if (d.type === 'practice' && d.score) {
+                            let matchScore = String(d.score).match(/(\d+)\/(\d+)/);
+                            if (matchScore) {
+                                let scoreEarned = parseInt(matchScore[1]);
+                                grandTotal += scoreEarned;
+
+                                // Xác định bài tập này thuộc Unit nào để cộng dồn vào Unit đó
+                                let matchUnit = d.exercise_name.match(/Unit\s+(\d+)/i);
+                                if (matchUnit) {
+                                    let uNum = parseInt(matchUnit[1]);
+                                    if (unitScores[uNum] !== undefined) {
+                                        unitScores[uNum] += scoreEarned;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                processedStudents.push({
+                    username: u.username,
+                    theory_pct: u.theory_pct,
+                    theory_text: u.theory_text,
+                    practice_pct: u.practice_pct,
+                    practice_text: u.practice_text,
+                    unitScores: unitScores,
+                    grandTotal: grandTotal,
+                    details: u.details || []
+                });
+            });
+
+            // THUẬT TOÁN XẾP HẠNG: Ưu tiên ai có Tổng điểm tích lũy cao nhất xếp lên trên
+            processedStudents.sort((a, b) => b.grandTotal - a.grandTotal);
+
+            let html = "";
+            processedStudents.forEach((student, index) => {
+                // Tạo Badge hạng huy chương cho Top 3 học giỏi nhất lớp
+                let rankNum = index + 1;
                 let rankBadge = "";
-                if (u.rank === 1) rankBadge = "🥇 ";
-                else if (u.rank === 2) rankBadge = "🥈 ";
-                else if (u.rank === 3) rankBadge = "🥉 ";
-                else if (u.rank) rankBadge = `<span style="color:#94a3b8; font-size:0.9rem; margin-right:5px;">#${u.rank}</span> `;
+                if (rankNum === 1) rankBadge = "🥇 ";
+                else if (rankNum === 2) rankBadge = "🥈 ";
+                else if (rankNum === 3) rankBadge = "🥉 ";
+                else rankBadge = `<span style="color:#94a3b8; font-size:0.85rem; margin-right:4px;">#${rankNum}</span> `;
+
+                const detailsData = encodeURIComponent(JSON.stringify(student.details));
 
                 html += `<tr style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
                     
-                    <!-- Cột 1: Tài khoản (Gắn kèm Rank) -->
-                    <td style="padding: 15px; font-weight: bold; color: #1e293b; font-size: 1.05rem;">
-                        ${rankBadge}${u.username}
+                    <td style="padding: 12px; font-weight: bold; color: #1e293b; vertical-align: middle;">
+                        ${rankBadge}${student.username}
                     </td>
                     
-                    <!-- Cột 2: Thanh tiến độ Lý thuyết -->
-                    <td style="padding: 15px;">
-                        <div style="background: #e0f2fe; border-radius: 10px; width: 100%; max-width: 120px; height: 8px; margin-bottom: 5px; overflow: hidden;">
-                            <div style="background: #0284c7; height: 100%; width: ${u.theory_pct}%;"></div>
+                    <td style="padding: 12px; vertical-align: middle;">
+                        <div style="background: #e0f2fe; border-radius: 10px; width: 100%; max-width: 100px; height: 6px; margin-bottom: 3px; overflow: hidden;">
+                            <div style="background: #0284c7; height: 100%; width: ${student.theory_pct}%;"></div>
                         </div>
-                        <span style="color: #0284c7; font-weight: bold; font-size: 1.05rem;">${u.theory_pct}%</span> 
-                        <span style="color: #64748b; font-size: 0.85rem;">(${u.theory_text})</span>
+                        <span style="color: #0284c7; font-weight: bold; font-size: 0.95rem;">${student.theory_pct}%</span> 
+                        <span style="color: #64748b; font-size: 0.8rem;">(${student.theory_text})</span>
                     </td>
                     
-                    <!-- Cột 3: Thanh tiến độ Bài tập (Bỏ tiểu mục vàng) -->
-                    <td style="padding: 15px;">
-                        <div style="background: #dcfce3; border-radius: 10px; width: 100%; max-width: 120px; height: 8px; margin-bottom: 5px; overflow: hidden;">
-                            <div style="background: #16a34a; height: 100%; width: ${u.practice_pct}%;"></div>
+                    <td style="padding: 12px; vertical-align: middle;">
+                        <div style="background: #dcfce3; border-radius: 10px; width: 100%; max-width: 100px; height: 6px; margin-bottom: 3px; overflow: hidden;">
+                            <div style="background: #16a34a; height: 100%; width: ${student.practice_pct}%;"></div>
                         </div>
-                        <span style="color: #16a34a; font-weight: bold; font-size: 1.05rem;">${u.practice_pct}%</span>
-                        <span style="color: #64748b; font-size: 0.85rem;">(${u.practice_text})</span>
+                        <span style="color: #16a34a; font-weight: bold; font-size: 0.95rem;">${student.practice_pct}%</span>
+                        <span style="color: #64748b; font-size: 0.8rem;">(${student.practice_text})</span>
+                    </td>`;
+
+                // Cột Động: Điền điểm tổng của từng Unit tương ứng
+                sortedUnits.forEach(uNum => {
+                    let uScore = student.unitScores[uNum] || 0;
+                    html += `
+                    <td style="padding: 12px; text-align: center; vertical-align: middle; background: #faf5ff;">
+                        <span style="font-weight: bold; color: #7c3aed; font-size: 1.1rem;">${uScore}</span>
+                        <span style="font-size:0.75rem; color:#a21caf;">đ</span>
+                    </td>`;
+                });
+
+                html += `
+                    <td style="padding: 12px; text-align: center; vertical-align: middle; background: #fff1f2;">
+                        <span style="font-weight: 800; color: #e11d48; font-size: 1.25rem;">${student.grandTotal}</span>
+                        <div style="font-size: 0.75rem; color: #991b1b; margin-top: -2px;">Tổng điểm</div>
                     </td>
-                    
-                    <!-- Cột 4: Tổng điểm in đậm nổi bật -->
-                    <td style="padding: 15px; text-align: center;">
-                        <span style="font-weight: 800; color: #e11d48; font-size: 1.4rem;">${u.total_score || 0}</span>
-                        <div style="font-size: 0.8rem; color: #64748b; margin-top: -2px;">điểm</div>
+
+                    <td style="padding: 12px; text-align: center; vertical-align: middle;">
+                        <button onclick="showStudentDetails('${student.username}', '${detailsData}')" 
+                                style="background:#3b82f6; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.85rem; transition:0.2s;">
+                            🔍 Chi tiết
+                        </button>
                     </td>
                 </tr>`;
             });
             body.innerHTML = html;
         }
     }
-    }
+}
 
 window.showStudentDetails = function(username, detailsStr) {
     const modalName = document.getElementById("detail-student-name");
