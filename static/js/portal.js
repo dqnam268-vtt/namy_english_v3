@@ -428,14 +428,13 @@ function renderCurrentQuestion() {
         });
         
         if (currentOptions && Array.isArray(currentOptions)) {
-            html += `<div style="display:flex; flex-wrap:wrap; justify-content: center; gap:8px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1;">`;
+            // [ĐÃ FIX] Thêm max-height và overflow-y:auto để tạo thanh cuộn, thu nhỏ chữ và padding thành dạng thẻ (chip)
+            html += `<div style="display:flex; flex-wrap:wrap; justify-content: flex-start; align-content: flex-start; gap:6px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1; max-height: 140px; overflow-y: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">`;
             currentOptions.forEach(opt => {
-                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:6px 12px; border:1px solid #3b82f6; border-radius:15px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; font-size: 0.9rem; transition:0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">${opt}</button>`;
+                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:5px 10px; border:1px solid #3b82f6; border-radius:12px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; font-size: 0.85rem; transition:0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-align: left;">${opt}</button>`;
             });
             html += `</div>`;
-            // Đã gỡ bỏ dòng chú thích "Chạm vào từ phía trên..."
         }
-
         // Tách tiêu đề (Choose the best alternative) và làm nhỏ lại
         let splitText = promptText.split("<br><br>");
         let questionContent = promptText;
@@ -466,10 +465,11 @@ function renderCurrentQuestion() {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += hintHtml;
         
-        if (currentOptions && Array.isArray(currentOptions)) {
-            html += `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #cbd5e1;">`;
+       if (currentOptions && Array.isArray(currentOptions)) {
+            // [ĐÃ FIX] Thu nhỏ nút bấm và tạo hộp cuộn giới hạn chiều cao 140px
+            html += `<div style="display:flex; flex-wrap:wrap; justify-content: flex-start; align-content: flex-start; gap:6px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1; max-height: 140px; overflow-y: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">`;
             currentOptions.forEach(opt => {
-                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:8px 12px; border:1px solid #3b82f6; border-radius:20px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; transition:0.2s;">${opt}</button>`;
+                html += `<button onclick="selectOption('${opt.replace(/'/g, "\\'")}')" style="padding:5px 10px; border:1px solid #3b82f6; border-radius:12px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-weight:bold; font-size: 0.85rem; transition:0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-align: left;">${opt}</button>`;
             });
             html += `</div>`;
             html += `<div><input type="text" id="q_text_input" placeholder="Chạm vào nút phía trên để chọn từ..." readonly style="width:100%; padding: 15px; border: 2px solid #3b82f6; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box; background:#fff;"></div>`;
