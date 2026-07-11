@@ -1,0 +1,88 @@
+{
+  "topic_order": 2,
+  "module_type": "practice",
+  "exercise_title": "Unit 2: Exercise 11",
+  "activities": [
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>1. Did you notice the \"<b>___</b>\" sign outside the house next door?",
+        "options": ["for sale", "on sale"],
+        "answer": "for sale",
+        "final_notes_html": "<h4 style='color: #1d4ed8; margin-bottom: 10px; border-bottom: 2px solid #bfdbfe; padding-bottom: 5px;'>📚 Ghi chú Từ vựng (Vocabulary Notes):</h4><ul style='text-align: left; padding-left: 20px; margin-top: 10px; color: #334155;'><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>for sale</b> = offered to be sold. <i>(e.g. The car is for sale.)</i><br><b style='color: #0f172a;'>on sale</b> = at a reduced price / available to be bought. <i>(e.g. The magazine is on sale every Thursday.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>absorbed by</b> = soaked up by. <i>(e.g. Light is absorbed more by black than white.)</i><br><b style='color: #0f172a;'>absorbed in</b> = fascinated by / spending a lot of time on sth. <i>(e.g. Tom is absorbed in his studies.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>in possession of</b> = owning. <i>(e.g. The government is in possession of the file.)</i><br><b style='color: #0f172a;'>in the possession of</b> = owned by. <i>(e.g. The file is in the possession of the government.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>meddle with</b> = interfere with objects. <i>(e.g. Don't meddle with electricity.)</i><br><b style='color: #0f172a;'>meddle in</b> = interfere with situations. <i>(e.g. Don't meddle in other people's affairs.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>in sight</b> = within someone's range of vision. <i>(e.g. The helicopter came in sight.)</i><br><b style='color: #0f172a;'>on sight</b> = as soon as sth is seen. <i>(e.g. We were ordered to shoot the enemy on sight.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>advise sb of</b> = inform sb about sth. <i>(e.g. The bank advised me of my overdraft.)</i><br><b style='color: #0f172a;'>advise sb on</b> = give sb advice about. <i>(e.g. I asked the doctor to advise me on dieting.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>at hand</b> = nearby, convenient. <i>(e.g. I always keep some water at hand during the night.)</i><br><b style='color: #0f172a;'>in hand</b> = being dealt with. <i>(e.g. The matter in hand.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>support sb with</b> = help sb by doing sth. <i>(e.g. He helped to support the child with gifts of money.)</i><br><b style='color: #0f172a;'>support sb in</b> = help sb in a particular situation. <i>(e.g. Who will support me in this crisis?)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>on sight</b> = as soon as sth is seen.<br><b style='color: #0f172a;'>by sight</b> = by the appearance. <i>(e.g. We know him by sight but don't know his name.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>respond with</b> = react in a certain way. <i>(e.g. The audience responded with a round of applause.)</i><br><b style='color: #0f172a;'>respond to</b> = react to sth. <i>(e.g. Nobody responded to his cries for help.)</i></li></ul>"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>2. There's no point trying to talk to Stuart; he's totally <b>___</b> that magazine.",
+        "options": ["absorbed by", "absorbed in"],
+        "answer": "absorbed in"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>3. He was arrested at the airport for being <b>___</b> a dangerous weapon.",
+        "options": ["in possession of", "in the possession of"],
+        "answer": "in possession of"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>4. The director of the firm received an anonymous letter, warning him not to <b>___</b> other people's business.",
+        "options": ["meddle with", "meddle in"],
+        "answer": "meddle in"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>5. As soon as the leopard came <b>___</b>, the hunter raised his rifle and shot.",
+        "options": ["in sight", "on sight"],
+        "answer": "in sight"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>6. This letter is to <b>___</b> the fact that your overdraft currently stands at £64.35.",
+        "options": ["advise you of", "advise you on"],
+        "answer": "advise you of"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>7. Some people believe that the end of the world is <b>___</b>.",
+        "options": ["at hand", "in hand"],
+        "answer": "at hand"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>8. The most upsetting part of her relationship with her parents was that they rarely <b>___</b> her decisions.",
+        "options": ["supported her with", "supported her in"],
+        "answer": "supported her in"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>9. Even though they knew each other <b>___</b> they never exchanged words.",
+        "options": ["on sight", "by sight"],
+        "answer": "by sight"
+      }
+    },
+    {
+      "type": "Grammar",
+      "content": {
+        "question": "<b>Choose the best alternative.</b><br><br>10. When the magician was asked the secret of his trick, he <b>___</b> a smile.",
+        "options": ["responded with", "responded to"],
+        "answer": "responded with"
+      }
+    }
+  ]
+}

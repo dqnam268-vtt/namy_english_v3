@@ -328,7 +328,11 @@ window.openExercise = function(encodedData) {
                 currentScore = 0;
             }
 
-            document.getElementById("practice-title").innerHTML = `${exe.title} <button onclick="restartExercise()" style="float:right; font-size:0.9rem; padding: 6px 12px; cursor:pointer; border-radius:8px; border:1px solid #cbd5e1; background:#f1f5f9; color:#475569; font-weight:bold; transition: 0.2s;">🔄 Làm lại từ đầu</button>`;
+            document.getElementById("practice-title").innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                    <span style="font-size: 1.1rem; line-height: 1.4; flex: 1; word-break: break-word;">${exe.title}</span>
+                    <button onclick="restartExercise()" style="font-size: 0.85rem; padding: 6px 10px; cursor: pointer; border-radius: 8px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; font-weight: bold; transition: 0.2s; white-space: nowrap; flex-shrink: 0;">🔄 Làm lại</button>
+                </div>`;
             document.getElementById("practice-modal").style.display = "flex";
             renderCurrentQuestion();
         }
@@ -389,11 +393,11 @@ function renderCurrentQuestion() {
         }
 
         container.innerHTML = `
-            <div style="text-align:center; padding: 20px;">
-                <h3 style="color:#059669; font-size: 1.8rem;">🎉 Chúc mừng em đã hoàn thành!</h3>
-                <p style="font-size:1.3rem;">Điểm số cuối cùng: <b style="color:#dc2626;">${safeScore} / ${currentCalculatedTotal}</b></p>
+            <div style="text-align:center; padding: 10px;">
+                <h3 style="color:#059669; font-size: 1.25rem; margin-bottom: 10px;">🎉 Chúc mừng em đã hoàn thành!</h3>
+                <p style="font-size:1.05rem; margin-top: 5px; white-space: nowrap;">Điểm số cuối cùng: <b style="color:#dc2626; font-size: 1.15rem;">${safeScore} / ${currentCalculatedTotal}</b></p>
                 ${noteHtml}
-                <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:25px; font-size: 1.1rem; padding: 10px 20px;">🔄 Làm Lại Bài Này</button>
+                <button class="btn btn-primary" onclick="restartExercise()" style="margin-top:20px; font-size: 1rem; padding: 10px 20px;">🔄 Làm Lại Bài Này</button>
             </div>`;
         btnCheck.style.display = "none";
         
