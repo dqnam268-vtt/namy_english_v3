@@ -525,6 +525,16 @@ def export_progress(db: Session = Depends(get_db)):
         headers={"Content-Disposition": "attachment; filename=Bao_Cao_Tien_Do_Chi_Tiet.csv"}
     )
 
+class SurveySubmit(BaseModel):
+    username: str
+    topic_id: int
+    topic_title: str
+    grammar: int
+    vocab: int
+    overall: int
+    suggestion: str
+
+
 @app.post("/api/submit_survey")
 def submit_survey(survey: SurveySubmit, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.username == survey.username).first()
