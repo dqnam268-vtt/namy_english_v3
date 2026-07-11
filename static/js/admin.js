@@ -26,52 +26,46 @@ window.switchTab = function(tabId) {
 async function initAdminDashboard() {
     fetchStats();
     fetchFeedbacks();
-// Thêm đoạn này vào trong hàm initAdminDashboard()
-    const bulkRegisterBtn = document.getElementById("btn-bulk-register");
-    if (bulkRegisterBtn) {
-        bulkRegisterBtn.addEventListener("click", async () => {
-            const data = document.getElementById("bulk-users-data").value.trim();
-            const msg = document.getElementById("bulk-message");
-            if (!data) return showStatus(msg, "Vui lòng nhập dữ liệu!", "error");
-
-            const users = data.split('\n').map(line => {
-                const [username, password] = line.split(',').map(s => s.trim());
-                return { username, password };
-            }).filter(u => u.username && u.password && u.password.length >= 6);
-
-            if (users.length === 0) return showStatus(msg, "Dữ liệu sai định dạng hoặc mật khẩu < 6 ký tự!", "error");
-
-            bulkRegisterBtn.disabled = true;
-            const res = await apiFetch("/register_bulk", "POST", users);
-            if (res.ok) {
-                showStatus(msg, `✅ ${res.data.message}`, "success");
-                document.getElementById("bulk-users-data").value = "";
-                fetchStats(); // Cập nhật lại số lượng học sinh
-            } else {
-                showStatus(msg, "❌ Lỗi tạo tài khoản!", "error");
-            }
-            bulkRegisterBtn.disabled = false;
-        });
-    }
-    const exportBtn = document.getElementById("btn-export-excel");
+const exportBtn = document.getElementById("btn-export-excel");
     if (exportBtn) {
-        exportBtn.addEventListener("click", () => {
-            const rows = document.querySelectorAll("table tr");
+        // Gỡ bỏ sự kiện cũ (nếu có) để tránh click đúp
+        const newExportBtn = exportBtn.cloneNode(true);
+        exportBtn.parentNode.replaceChild(newExportBtn, exportBtn);
+
+        newExportBtn.addEventListener("click", () => {
+            // Lấy toàn bộ các hàng trong bảng
+            const rows = document.querySelectorAll("#users-table tr");
             let csv = [];
-            for (let i = 0; i < rows.length; i++) {
-                let row = [], cols = rows[i].querySelectorAll("td, th");
-                let limit = cols.length >= 4 ? 3 : cols.length; 
-                for (let j = 0; j < limit; j++) {
-                    let cellText = cols[j].innerText.replace(/\n/g, ' | ').replace(/%/g, '% ');
-                    row.push('"' + cellText + '"');
+            
+            // Xử lý BOM để Excel mở lên không bị lỗi font Tiếng Việt
+            let csvContent = "\uFEFF"; 
+
+            rows.forEach(row => {
+                let rowData = [];
+                const cols = row.querySelectorAll("th, td");
+                
+                // Quét tất cả các cột, NHƯNG BỎ QUA cột cuối cùng (cột "Thao tác")
+                for (let j = 0; j < cols.length - 1; j++) {
+                    // Lấy text hiển thị, dọn dẹp khoảng trắng và dấu xuống dòng
+                    let cellText = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/\s+/g, " ").trim();
+                    
+                    // Bọc trong dấu ngoặc kép để tránh bị vỡ cột nếu text có chứa dấu phẩy
+                    rowData.push(`"${cellText}"`);
                 }
-                csv.push(row.join(","));
-            }
-            const csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
-            const a = document.createElement("a");
-            a.download = "Bao_Cao_Tien_Do.csv";
-            a.href = window.URL.createObjectURL(csvFile);
-            a.click();
+                csv.push(rowData.join(","));
+            });
+
+            csvContent += csv.join("\n");
+            
+            // Tạo file và kích hoạt tải về
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Tien_Do_Lop_Hoc_Tong_Quan.csv";
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
     }
 }
