@@ -454,7 +454,6 @@ function renderCurrentQuestion() {
         
         html += hintHtml; // Đây là dòng cuối cùng của khối if này
     }
-    } 
     else if (content.options && Array.isArray(content.options)) {
         html += `<div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color:#1e293b; line-height: 1.5;">${promptText}</div>`;
         html += `<div style="display:flex; flex-direction:column; gap: 10px;">`;
