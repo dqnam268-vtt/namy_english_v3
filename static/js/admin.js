@@ -235,9 +235,20 @@ window.showStudentDetails = function(username, detailsStr) {
         alert("Thiếu HTML Modal chi tiết trong file admin.html."); return;
     }
 
-    modalName.innerHTML = `Biểu đồ Phân tích của: <b style="color:#dc2626;">${username}</b>`;
+    // [CẬP NHẬT] Gắn thêm nút Tải Excel Chi Tiết ngay cạnh tên học sinh
+    modalName.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span>Biểu đồ Phân tích của: <b style="color:#dc2626;">${username}</b></span>
+            <button onclick="window.location.href='/api/export_student_detail/${username}'" 
+                    style="background:#10b981; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:0.9rem; margin-right: 30px; box-shadow:0 2px 4px rgba(16,185,129,0.2);">
+                📥 Xuất Excel Chi Tiết
+            </button>
+        </div>
+    `;
+
     const details = JSON.parse(decodeURIComponent(detailsStr));
     let html = "";
+    // ... (Phần code bên dưới của hàm showStudentDetails giữ nguyên)
 
     // ==========================================
     // 1. TÍNH TỔNG ĐIỂM (CỘNG DỒN SỐ CÂU ĐÚNG)

@@ -423,16 +423,27 @@ def get_student_detail(req: StudentDetailRequest, db: Session = Depends(get_db))
             
     return {"progress": prog_list, "surveys": survey_tids}
 
+import io
+import csv
+import re
+from fastapi.responses import StreamingResponse
+
 @app.get("/api/export_progress")
 def export_progress(db: Session = Depends(get_db)):
     users = db.query(models.User).filter(models.User.role == "student").all()
     
     all_exercises = db.query(models.Exercise).all()
-    practice_exes = [e for e in all_exercises if e.module_type == "practice"]
-    practice_exes.sort(key=lambda x: (x.topic_id, x.order_num))
-    
     total_learning = len([e for e in all_exercises if e.module_type == "learning"])
-    total_practice = len(practice_exes)
+    total_practice = len([e for e in all_exercises if e.module_type == "practice"])
+    
+    # Quét tất cả các Unit hiện có để tạo cột động
+    unit_set = set()
+    for exe in all_exercises:
+        if exe.module_type == "practice":
+            match = re.search(r"Unit\s+(\d+)", exe.title, re.IGNORECASE)
+            if match:
+                unit_set.add(int(match.group(1)))
+    sorted_units = sorted(list(unit_set))
     
     all_acts = db.query(models.Activity.exercise_id, models.Activity.content).all()
     act_map = {}
@@ -453,9 +464,9 @@ def export_progress(db: Session = Depends(get_db)):
             
         learning_done = 0
         practice_done = 0
-        total_score = 0
+        grand_total = 0
         total_attempts = 0
-        exe_scores = {} 
+        unit_scores = {uNum: 0 for uNum in sorted_units}
         
         for prog, exe in progresses:
             total_qs = act_map.get(exe.exercise_id, 1)
@@ -468,61 +479,93 @@ def export_progress(db: Session = Depends(get_db)):
                     practice_done += 1
                 
                 safe_score = prog.score if prog.score <= total_qs else total_qs
-                total_score += safe_score
-                exe_scores[exe.exercise_id] = f"{safe_score}/{total_qs}"
+                grand_total += safe_score
+                
+                match = re.search(r"Unit\s+(\d+)", exe.title, re.IGNORECASE)
+                if match:
+                    uNum = int(match.group(1))
+                    unit_scores[uNum] += safe_score
+        
+        theory_pct = round((learning_done / total_learning * 100)) if total_learning > 0 else 0
+        practice_pct = round((practice_done / total_practice * 100)) if total_practice > 0 else 0
         
         result.append({
             "username": u.username,
-            "theory_pct": round((learning_done / total_learning * 100)) if total_learning > 0 else 0,
-            "theory_text": f"{learning_done}/{total_learning}",
-            "practice_pct": round((practice_done / total_practice * 100)) if total_practice > 0 else 0,
-            "practice_text": f"{practice_done}/{total_practice}",
-            "total_score": total_score,
-            "total_attempts": total_attempts,
-            "exe_scores": exe_scores
+            "theory_text": f"{theory_pct}% ({learning_done}/{total_learning})",
+            "practice_text": f"{practice_pct}% ({practice_done}/{total_practice})",
+            "unit_scores": unit_scores,
+            "grand_total": grand_total,
+            "total_attempts": total_attempts
         })
         
-    # Sort: Điểm giảm dần -> Số bài làm tăng dần
-    result.sort(key=lambda x: (-x["total_score"], x["total_attempts"]))
+    # Sort: Điểm giảm dần, số lần làm tăng dần
+    result.sort(key=lambda x: (-x["grand_total"], x["total_attempts"]))
     
     output = io.StringIO()
     writer = csv.writer(output)
     
-    # Tạo tiêu đề cột (Đã tách riêng các thông số thành từng cột)
-    headers = [
-        "Hạng", 
-        "Tài Khoản", 
-        "Lý Thuyết (%)", 
-        "Lý Thuyết (Số bài)", 
-        "Bài Tập (%)", 
-        "Bài Tập (Số bài)", 
-        "Tổng Điểm Tích Lũy"
-    ]
-    for exe in practice_exes:
-        headers.append(exe.title)
+    # Dựng cột Header y chang giao diện Admin
+    headers = ["Hạng", "Tài Khoản", "📖 Lý Thuyết", "✍️ Bài Tập (%)"]
+    for uNum in sorted_units:
+        headers.append(f"🏆 Tổng Unit {uNum}")
+    headers.append("🏅 Tổng Tích Lũy")
         
     writer.writerow(headers)
     
     for idx, u in enumerate(result):
-        row = [
-            idx + 1,
-            u["username"],
-            f"{u['theory_pct']}%",
-            u["theory_text"],
-            f"{u['practice_pct']}%",
-            u["practice_text"],
-            u["total_score"]
-        ]
-        for exe in practice_exes:
-            row.append(u["exe_scores"].get(exe.exercise_id, "Chưa làm"))
-            
+        row = [idx + 1, u["username"], u["theory_text"], u["practice_text"]]
+        for uNum in sorted_units:
+            row.append(u["unit_scores"][uNum])
+        row.append(u["grand_total"])
         writer.writerow(row)
         
     output.seek(0)
     return StreamingResponse(
         iter([output.getvalue().encode("utf-8-sig")]),
         media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=Bao_Cao_Tien_Do_Chi_Tiet.csv"}
+        headers={"Content-Disposition": "attachment; filename=Bang_Xep_Hang_Tong_Quan.csv"}
+    )
+
+# API MỚI: XUẤT EXCEL CHI TIẾT THEO TỪNG HỌC SINH
+@app.get("/api/export_student_detail/{username}")
+def export_student_detail(username: str, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy học sinh")
+
+    all_acts = db.query(models.Activity.exercise_id, models.Activity.content).all()
+    act_map = {}
+    for exe_id, content in all_acts:
+        if exe_id not in act_map: act_map[exe_id] = 0
+        ans = content.get("answer", "") if isinstance(content, dict) else ""
+        if ans and ";" in ans:
+            act_map[exe_id] += len(ans.split(";"))
+        else:
+            act_map[exe_id] += 1
+
+    progresses = db.query(models.Progress, models.Exercise)\
+        .join(models.Exercise, models.Progress.exercise_id == models.Exercise.exercise_id)\
+        .filter(models.Progress.user_id == user.user_id).order_by(models.Exercise.topic_id, models.Exercise.order_num).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Tên Bài Học", "Phân Loại", "Kết Quả"])
+
+    for prog, exe in progresses:
+        total_qs = act_map.get(exe.exercise_id, 1)
+        if exe.module_type == "learning":
+            status = "Đã ghi nhớ" if prog.is_completed else "Chưa xong"
+            writer.writerow([exe.title, "📖 Lý thuyết", status])
+        else:
+            safe_score = prog.score if prog.score <= total_qs else total_qs
+            status = f"Đúng {safe_score}/{total_qs} câu"
+            writer.writerow([exe.title, "✍️ Bài tập", status])
+
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue().encode("utf-8-sig")]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=Chi_Tiet_Tien_Do_{username}.csv"}
     )
 
 class SurveySubmit(BaseModel):
