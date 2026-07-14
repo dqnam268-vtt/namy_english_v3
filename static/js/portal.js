@@ -182,9 +182,17 @@ function renderSyllabus(syllabusData, container) {
                 
                 if (exe.activities) {
                     exe.activities.forEach(a => {
-                        let aAns = (a.content && a.content.answer) ? a.content.answer : "";
-                        if (aAns && aAns.includes(";")) tempTotal += aAns.split(";").length;
-                        else tempTotal += 1;
+                        // Kéo nội dung câu hỏi ra để kiểm tra
+                        let qText = (a.content && (a.content.question || a.content.original)) ? String(a.content.question || a.content.original) : "";
+                        // Chỉ lấy đáp án chính (trước dấu ||) để tránh đếm nhầm biến thể
+                        let aAns = (a.content && a.content.answer) ? String(a.content.answer).split("||")[0] : "";
+                        
+                        // Chỉ đếm dấu ";" nếu câu hỏi thực sự có khoảng trống "___"
+                        if (qText.includes("___") && aAns.includes(";")) {
+                            tempTotal += aAns.split(";").length;
+                        } else {
+                            tempTotal += 1;
+                        }
                     });
                 }
 
@@ -313,9 +321,14 @@ window.openExercise = function(encodedData) {
             currentPracticeActs = exe.activities;
             currentCalculatedTotal = 0;
             currentPracticeActs.forEach(act => {
-                let ans = (act.content && act.content.answer) ? act.content.answer : "";
-                if (ans && ans.includes(";")) currentCalculatedTotal += ans.split(";").length;
-                else currentCalculatedTotal += 1;
+                let qText = (act.content && (act.content.question || act.content.original)) ? String(act.content.question || act.content.original) : "";
+                let ans = (act.content && act.content.answer) ? String(act.content.answer).split("||")[0] : "";
+                
+                if (qText.includes("___") && ans.includes(";")) {
+                    currentCalculatedTotal += ans.split(";").length;
+                } else {
+                    currentCalculatedTotal += 1;
+                }
             });
 
             const savedProgress = localStorage.getItem(`namy_progress_${currentExeId}`);
