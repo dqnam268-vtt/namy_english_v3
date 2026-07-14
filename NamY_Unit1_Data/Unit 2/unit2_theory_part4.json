@@ -1,0 +1,777 @@
+{
+  "topic_order": 2,
+  "module_type": "learning",
+  "exercise_title": "Unit 2: Words with Prepositions",
+  "activities": [
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "back out of",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bad at sth",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bad to sb",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bags of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "ban on",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "barter for",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "base sth on",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bash in/up",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "basis for/of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bear with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bearer of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "(make a) beeline for",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "beg (sb) for",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "begin by (+ gerund)",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "begin with (+ noun)",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "belief in",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "believe in",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "belong to sb",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "benefit from",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "benefit of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bet (sth) on",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "beware of",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bit of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "blame sb for sth",
+        "meaning": "(v) (but: put the blame on)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "boast of/about sth",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "book into",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bored with/by",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "borrow sth from sb",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bother about/with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bottom of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "breach of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "break into/out of",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "brilliant at",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "bump into",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "burst into",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "busy with",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "campaign for",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "capable of",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "care for sb/sth",
+        "meaning": "(v) (= like, look after)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "(take) care of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "care about",
+        "meaning": "(v) (= be concerned about)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "(in the) care of sb",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "careful about",
+        "meaning": "(adj) (= take care when doing sth)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "careful of",
+        "meaning": "(adj) (= avoid danger to oneself, e.g. be careful of the dog)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "careful with",
+        "meaning": "(adj) (= take care not to do harm to an object)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "careless about/of",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "centre of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "certain of",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "challenge sb to sth",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "change in/to",
+        "meaning": "(v) (= become sth else)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "change sth for sth",
+        "meaning": "(v) (= replace with)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "changeable towards",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "characteristic of",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "charge at",
+        "meaning": "(v) (= rush towards)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "charge sb with",
+        "meaning": "(v) (= accuse of)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cheque for (money)",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "choice between (two things)",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "choice in (a matter)",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "choice of (a number of things)",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "clever at (+ gerund)",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "clever with",
+        "meaning": "(adj) (hands, tools etc)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "close to",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "coax sb into",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "coincide with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "collaborate with sb on sth/in + gerund",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "collide with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "comment on",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "communicate with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "compare with/to",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "complain to sb about/of sth/sb",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "compliment on",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "comply with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "concentrate on",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "concern about",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "confidence in",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "confident of",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "confine to",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "confusion about",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "congratulate sb on sth",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "connected to",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "connection between",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "conscious of",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "consent to",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "consist of",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "consistent with",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "consult sb on/about sth",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "consumption of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "content with",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "contrary to",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "contrast with/to",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "contribute to",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "control of/over",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "convert to/into",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "convince of",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cope with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "correction of",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "correspond with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "count on sb for sth",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cover in/with",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "crash into",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "craving for",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "crazy about",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "crime against",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "crowded with",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cruel to",
+        "meaning": "(adj)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cruelty to",
+        "meaning": "(n)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cry about (sth which has happened)",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cry for (sth you want)",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "cure of",
+        "meaning": "(v)"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "word": "curious about",
+        "meaning": "(adj)"
+      }
+    }
+  ]
+}

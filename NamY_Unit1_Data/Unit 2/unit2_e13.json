@@ -1,0 +1,88 @@
+{
+  "topic_order": 2,
+  "module_type": "practice",
+  "exercise_title": "Unit 2: Exercise 13 (Collocations)",
+  "activities": [
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>1. to <b>___</b> with embarrassment.",
+        "options": ["flout", "imitate", "exterminate", "concede", "interrupt", "devour", "crop", "raze", "squirm", "heal"],
+        "answer": "squirm",
+        "final_notes_html": "<h4 style='color: #1d4ed8; margin-bottom: 10px; border-bottom: 2px solid #bfdbfe; padding-bottom: 5px;'>📚 Ghi chú (Vocabulary Notes):</h4><ul style='text-align: left; padding-left: 20px; margin-top: 10px; color: #334155;'><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>squirm</b> = to twist the body about <i>(also: squirm with pain, shame etc.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>concede</b> = to give way / to admit that sth is true <i>(also: concede a goal, a point, a game.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>devour</b> = to eat in a hungry or greedy manner <i>(also: devour a book (fig), devoured by fire.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>raze</b> = to destroy, esp to demolish buildings <i>(also: raze a building etc. NB \"raze sth to the ground\")</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>crop</b> = to cut short <i>(also: crop sb's hair.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>exterminate</b> = to destroy, wipe out completely <i>(also: exterminate mice, pests etc.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>interrupt</b> = to break in on <i>(also: interrupt sb's thoughts.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>flout</b> = to ignore, take no notice of <i>(also: flout rules, conventions.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>imitate</b> = to behave in exactly the same way as sb/sth else <i>(also: imitate sb's speech, gestures etc.)</i></li><li style='margin-bottom: 12px;'><b style='color: #0f172a;'>heal</b> = to cure / get better <i>(also: heal a sickness, a disagreement.)</i></li></ul>"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>2. to <b>___</b> a defeat.",
+        "options": ["flout", "imitate", "exterminate", "concede", "interrupt", "devour", "crop", "raze", "heal"],
+        "answer": "concede"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>3. to <b>___</b> a meal.",
+        "options": ["flout", "imitate", "exterminate", "interrupt", "devour", "crop", "raze", "heal"],
+        "answer": "devour"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>4. to <b>___</b> a city.",
+        "options": ["flout", "imitate", "exterminate", "interrupt", "crop", "raze", "heal"],
+        "answer": "raze"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>5. to <b>___</b> the grass.",
+        "options": ["flout", "imitate", "exterminate", "interrupt", "crop", "heal"],
+        "answer": "crop"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>6. to <b>___</b> a race of people.",
+        "options": ["flout", "imitate", "exterminate", "interrupt", "heal"],
+        "answer": "exterminate"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>7. to <b>___</b> a speech.",
+        "options": ["flout", "imitate", "interrupt", "heal"],
+        "answer": "interrupt"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>8. to <b>___</b> the law.",
+        "options": ["flout", "imitate", "heal"],
+        "answer": "flout"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>9. to <b>___</b> sb's behaviour.",
+        "options": ["imitate", "heal"],
+        "answer": "imitate"
+      }
+    },
+    {
+      "type": "Vocabulary",
+      "content": {
+        "question": "<b>Collocate the expressions with words from the given list.</b><br><br>10. to <b>___</b> a wound.",
+        "options": ["heal"],
+        "answer": "heal"
+      }
+    }
+  ]
+}
