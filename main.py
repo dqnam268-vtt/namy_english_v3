@@ -210,8 +210,12 @@ def get_users(db: Session = Depends(get_db)):
         if exe_id not in act_map:
             act_map[exe_id] = 0
             
-        ans = content.get("answer", "") if isinstance(content, dict) else ""
-        if ans and ";" in ans:
+        # Lấy câu hỏi và phần đáp án chính để kiểm tra
+        q_text = str(content.get("question", content.get("original", ""))) if isinstance(content, dict) else ""
+        ans = str(content.get("answer", "")).split("||")[0] if isinstance(content, dict) else ""
+        
+        # Chỉ đếm dấu chấm phẩy nếu câu hỏi thực sự có khoảng trống "___"
+        if "___" in q_text and ";" in ans:
             act_map[exe_id] += len(ans.split(";"))
         else:
             act_map[exe_id] += 1
@@ -391,12 +395,13 @@ def get_student_detail(req: StudentDetailRequest, db: Session = Depends(get_db))
     for p in progress_records:
         exe = db.query(models.Exercise).filter(models.Exercise.exercise_id == p.exercise_id).first()
         if exe:
-            # Tự động đếm lại tổng số câu hỏi từ các hoạt động
             acts = db.query(models.Activity).filter(models.Activity.exercise_id == exe.exercise_id).all()
             total = 0
             for a in acts:
-                ans = a.content.get("answer", "") if isinstance(a.content, dict) else ""
-                if ans and ";" in ans:
+                q_text = str(a.content.get("question", a.content.get("original", ""))) if isinstance(a.content, dict) else ""
+                ans = str(a.content.get("answer", "")).split("||")[0] if isinstance(a.content, dict) else ""
+                
+                if "___" in q_text and ";" in ans:
                     total += len(ans.split(";"))
                 else:
                     total += 1
@@ -450,8 +455,11 @@ def export_progress(db: Session = Depends(get_db)):
     for exe_id, content in all_acts:
         if exe_id not in act_map: 
             act_map[exe_id] = 0
-        ans = content.get("answer", "") if isinstance(content, dict) else ""
-        if ans and ";" in ans:
+            
+        q_text = str(content.get("question", content.get("original", ""))) if isinstance(content, dict) else ""
+        ans = str(content.get("answer", "")).split("||")[0] if isinstance(content, dict) else ""
+        
+        if "___" in q_text and ";" in ans:
             act_map[exe_id] += len(ans.split(";"))
         else:
             act_map[exe_id] += 1
@@ -537,8 +545,11 @@ def export_student_detail(username: str, db: Session = Depends(get_db)):
     act_map = {}
     for exe_id, content in all_acts:
         if exe_id not in act_map: act_map[exe_id] = 0
-        ans = content.get("answer", "") if isinstance(content, dict) else ""
-        if ans and ";" in ans:
+        
+        q_text = str(content.get("question", content.get("original", ""))) if isinstance(content, dict) else ""
+        ans = str(content.get("answer", "")).split("||")[0] if isinstance(content, dict) else ""
+        
+        if "___" in q_text and ";" in ans:
             act_map[exe_id] += len(ans.split(";"))
         else:
             act_map[exe_id] += 1
