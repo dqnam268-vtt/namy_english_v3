@@ -499,10 +499,14 @@ window.checkAnswer = function() {
     const feedback = document.getElementById("practice-feedback");
     const btnCheck = document.getElementById("btn-check-q");
     const btnNext = document.getElementById("btn-next-q");
+    
+    // [ĐÃ SỬA LỖI 1]: Khai báo biến inlineInputs để không bị lỗi ReferenceError
+    const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
-// Hàm chuẩn hóa chuỗi siêu mạnh mẽ để so sánh
+    // Hàm chuẩn hóa chuỗi siêu mạnh mẽ để so sánh
     const normalize = (str) => {
-        return str
+        if (!str) return "";
+        return String(str)
             .toLowerCase()                  // 1. Đưa hết về chữ thường
             .replace(/['"‘`’]/g, "'")       // 2. Ép mọi loại dấu nháy (cong, nghiêng, ngược) thành nháy thẳng '
             .trim()                         // 3. Cắt sạch khoảng trắng ở 2 đầu
@@ -510,6 +514,10 @@ window.checkAnswer = function() {
             .replace(/\s+/g, " ")           // 5. Bỏ khoảng trắng thừa ở giữa các chữ
             .trim();                        // 6. Chốt chặn cuối cùng
     };
+
+    // ----------------------------------------------------
+    // XỬ LÝ 1: CÂU HỎI ĐIỀN KHUYẾT (NHIỀU Ô TRỐNG)
+    // ----------------------------------------------------
     if (inlineInputs.length > 0) {
         let isEmpty = true;
         inlineInputs.forEach(inp => {
@@ -535,8 +543,9 @@ window.checkAnswer = function() {
                 gradingBlank = parts[0] + " / " + parts[1];
             }
 
-            let userVal = inp.value.trim().toLowerCase().replace(/\s+/g, " ");
-            let correctAnswers = gradingBlank.split("/").map(s => s.trim().toLowerCase().replace(/\s+/g, " "));
+            // [ĐÃ SỬA LỖI 2]: Gọi hàm normalize() để xử lý đáp án nhiều ô trống
+            let userVal = normalize(inp.value);
+            let correctAnswers = gradingBlank.split("/").map(s => normalize(s));
             let displayOptions = displayBlank.split("/").map(s => s.trim());
             
             if (userVal !== "" && correctAnswers.includes(userVal)) {
@@ -545,7 +554,7 @@ window.checkAnswer = function() {
             } else {
                 inp.style.borderBottomColor = "transparent"; inp.style.backgroundColor = "#fee2e2"; inp.style.color = "#dc2626"; inp.style.borderRadius = "6px"; inp.style.padding = "2px 8px";
                 if (displayOptions.length > 0) {
-                    inp.value = userVal ? `${userVal} (Sửa: ${displayOptions[0]})` : `(Đáp án: ${displayOptions[0]})`;
+                    inp.value = inp.value.trim() ? `${inp.value.trim()} (Sửa: ${displayOptions[0]})` : `(Đáp án: ${displayOptions[0]})`;
                 }
                 let tempWidth = inp.value.length * 9 + 30; 
                 if (tempWidth > 140) inp.style.width = tempWidth + "px";
@@ -559,6 +568,9 @@ window.checkAnswer = function() {
         return;
     }
 
+    // ----------------------------------------------------
+    // XỬ LÝ 2: TRẮC NGHIỆM VÀ TỰ LUẬN FULL CÂU
+    // ----------------------------------------------------
     let userAnswer = "";
     if (content.options && Array.isArray(content.options) && !content.question.includes("___")) {
         const selected = document.querySelector('input[name="q_opt"]:checked');
@@ -568,7 +580,7 @@ window.checkAnswer = function() {
         const inputEl = document.getElementById("q_text_input");
         if (!inputEl) return;
         if (!inputEl.value.trim()) { alert("⚠️ Em chưa nhập câu trả lời!"); return; }
-        userAnswer = inputEl.value.trim();
+        userAnswer = inputEl.value;
     }
 
     let rawAnswer = content.answer || "";
@@ -581,8 +593,9 @@ window.checkAnswer = function() {
         gradingPart = parts[0] + " / " + parts[1];
     }
 
-    let normalizedUser = userAnswer.toLowerCase().replace(/\s+/g, " ").replace(/\s*;\s*/g, ";").trim();
-    let possibleAnswers = gradingPart.toLowerCase().replace(/\s+/g, " ").replace(/\s*;\s*/g, ";").trim().split("/").map(s => s.trim());
+    // [ĐÃ SỬA LỖI 2]: Gọi hàm normalize() để xử lý đáp án tự luận full câu
+    let normalizedUser = normalize(userAnswer);
+    let possibleAnswers = gradingPart.split("/").map(s => normalize(s));
     const isCorrect = possibleAnswers.includes(normalizedUser);
 
     if (isCorrect) {
