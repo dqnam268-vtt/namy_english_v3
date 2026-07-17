@@ -499,8 +499,17 @@ window.checkAnswer = function() {
     const feedback = document.getElementById("practice-feedback");
     const btnCheck = document.getElementById("btn-check-q");
     const btnNext = document.getElementById("btn-next-q");
-    const inlineInputs = document.querySelectorAll(".q_multi_input_inline");
 
+// Hàm chuẩn hóa chuỗi siêu mạnh mẽ để so sánh
+    const normalize = (str) => {
+        return str
+            .toLowerCase()                  // 1. Đưa hết về chữ thường
+            .replace(/['"‘`’]/g, "'")       // 2. Ép mọi loại dấu nháy (cong, nghiêng, ngược) thành nháy thẳng '
+            .trim()                         // 3. Cắt sạch khoảng trắng ở 2 đầu
+            .replace(/[.?!]+$/, "")         // 4. Bỏ dấu chấm/hỏi ở cuối câu (nếu có)
+            .replace(/\s+/g, " ")           // 5. Bỏ khoảng trắng thừa ở giữa các chữ
+            .trim();                        // 6. Chốt chặn cuối cùng
+    };
     if (inlineInputs.length > 0) {
         let isEmpty = true;
         inlineInputs.forEach(inp => {
